@@ -7,6 +7,7 @@ function Pie(chart,group,seires) {
 	this.state = this.getInitialState();
 	return this.render();
 };
+Pie.type = 'pie';
 Pie.dependence = [];
 Pie.legendSymbol = function(){
 
