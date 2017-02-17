@@ -28,7 +28,8 @@ Pie.prototype = {
 	    var radius = Math.min(chart.width,chart.height)*size/2;
 	    var startAngle = series.startAngle - 90;
 	    var points = [];
-	    var totalAngle = series.endAngle - series.startAngle;
+	    var endAngle = series.endAngle?(series.endAngle - 90):(startAngle+360);
+	    var totalAngle = endAngle - startAngle;
 	    data.reduce(function(start,end,index){
 	        var startAngle = start;
 	        var endAngle = startAngle + end/sum*(totalAngle);
@@ -45,6 +46,8 @@ Pie.prototype = {
 	    	cx:cx,
 	    	cy:cy,
 	    	radius:radius,
+	    	startAngle:startAngle,
+	    	endAngle:endAngle,
 	    	innerRadius:radius*innerSize
 	    }
 	},
@@ -61,7 +64,7 @@ Pie.prototype = {
 			size:0.75,
 			innerSize:0,
 			startAngle:0,
-			endAngle:360,
+			endAngle:null,
 			sliceOffset:10,
 			states:{
 				hover:{
@@ -88,8 +91,8 @@ Pie.prototype = {
 				text:paper.text()
 			}
 		});
-		this.refreshAttr();
 		this.animate();
+		this.refreshAttr();
 		this.attachEvent();
 		return this;
 	},
@@ -136,12 +139,34 @@ Pie.prototype = {
 	},
 	handleHover(index,isHover){
 		var point = this.state.points[index];
+		var {cx,cy,radius,innerRadius} = this.state;
+		var {startAngle,endAngle} = point;
 		var color = point.color;
 		if(isHover) {
-			var hoverColor = cad.brighten(color,0.2);
+			var hoverColor = cad.brighten(color,0.3);
 			point.slice.fill(hoverColor);
+			point.slice.stopTransition().transition({
+				from:radius,
+				to:radius+20,
+				during:400,
+				ease:'elasticOut',
+				onUpdate(val){
+					var path = cad.getShapePath("sector",cx,cy,{startAngle:startAngle,endAngle:endAngle,radius:val,innerRadius:innerRadius})
+					$(this).attr("d",path);
+				}
+			})
 		} else {
 			point.slice.fill(color);
+			point.slice.stopTransition().transition({
+				from:radius+20,
+				to:radius,
+				during:400,
+				ease:'elasticOut',
+				onUpdate(val){
+					var path = cad.getShapePath("sector",cx,cy,{startAngle:startAngle,endAngle:endAngle,radius:val,innerRadius:innerRadius})
+					$(this).attr("d",path);
+				}
+			})
 		}
 		if(this.series.dataLabels.inside) {
 			if(isHover) {
@@ -177,12 +202,9 @@ Pie.prototype = {
 	},
 	animate(){
 		var chart = this.chart;
-		var {cx,cy,radius} = this.state;
-		var {startAngle,endAngle} = this.series;
+		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		radius = Math.min(chart.width,chart.height);
 		var paper = this.chart.getPaper();
-		startAngle -= 90;
-		endAngle -= 90;
 		var group = this.group;
 		var clip = paper.clipPath(function(){
 			paper.sector(cx,cy,radius,startAngle,startAngle);
@@ -193,16 +215,14 @@ Pie.prototype = {
 		path.transition({
 			from:startAngle,
 			to:endAngle,
-			ease:'easeOut',
-			during:1000,
+			ease:'easeIn',
+			during:600,
 			onUpdate:function(val){
 				path.attr("d",cad.getShapePath("sector",cx,cy,{
 					startAngle:startAngle,
 					endAngle:val,
 					radius:radius
 				}));
-			},
-			callback:function(){
 			}
 		})
 	},
@@ -212,7 +232,7 @@ Pie.prototype = {
 	componentWillUnmount(){
 
 	},
-	update(){
+	update(series){
 
 	},
 	destroy(){

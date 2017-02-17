@@ -11,10 +11,11 @@ chart.setOption({
 	series:[
 		{
 			name:'a pie chart',
-			data:[11,11,11,12,11],
-			sliceOffset:20,
+			data:[1,1,1,1,1,1,1,1,1,1],
+			sliceOffset:0,
 			size:0.75,
 			innerSize:0,
+			startAngle:0,
 			center:[0.5,0.5],
 			dataLabels:{
 				inside:false
