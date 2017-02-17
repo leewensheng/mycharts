@@ -19,13 +19,14 @@ Pie.prototype = {
 		var series = this.series;
 		var data = this.series.data;
 		var chart = this.chart;
+		var colors = series.colors ||chart.option.colors;
 		var sum = cad.sum(data);
-		var colors = ['#00A1A1',"#28FFBB","#DB1774","#F20000","blue"];
 	    var cx = series.center[0]*chart.width;
 	    var cy = series.center[1]*chart.height;
 	    var innerSize = series.innerSize;
 	    var size = series.size;
 	    var radius = Math.min(chart.width,chart.height)*size/2;
+	    radius = Math.max(radius,series.minSize);
 	    var startAngle = series.startAngle - 90;
 	    var points = [];
 	    var endAngle = series.endAngle?(series.endAngle - 90):(startAngle+360);
@@ -37,7 +38,7 @@ Pie.prototype = {
 	        	startAngle:startAngle,
 	        	endAngle:endAngle,
 	        	selected:false,
-	        	color:colors[index]
+	        	color:colors[index%colors.length]//此处应考虑点级的颜色
 	        })
 	        return endAngle;
 	    },startAngle);
@@ -55,13 +56,15 @@ Pie.prototype = {
 		return {
 			center:[0.5,0.5],
 			borderColor:"#fff",
-			borderWidth:1,
+			borderWidth:0,
 			data:[],
 			dataLabels:{
 				enable:true,
 				inside:false
 			},
+			selectMode:"single",
 			size:0.75,
+			minSize:80,
 			innerSize:0,
 			startAngle:0,
 			endAngle:null,
@@ -101,20 +104,21 @@ Pie.prototype = {
 		var chart = this.chart;
 		var paper = chart.getPaper();
 		var {width,height} = chart;
-		var {center,size,dataLabels} = this.series;
+		var {center,size,dataLabels,borderColor,borderWidth} = this.series;
 		var cx = width*center[0];
 		var cy = height*center[1];
 		var {radius,innerRadius} =this.state;
 		points.map(function(p,index){
-			var {startAngle,endAngle} = p;
+			var {startAngle,endAngle,slice} = p;
 			var path = cad.getShapePath("sector",cx,cy,{
 				startAngle:p.startAngle,
 				endAngle:p.endAngle,
 				radius:radius,
 				innerRadius:innerRadius
 			});
-			var slice = p.slice;
-			slice.attr("d",path).fill(p.color);
+			slice.attr("d",path)
+				 .fill(p.color)
+				 .stroke(borderColor,borderWidth);
 			var textPoint;
 			var dataLabel = p.dataLabel;
 			if(dataLabels.inside) {
@@ -140,12 +144,16 @@ Pie.prototype = {
 	handleHover(index,isHover){
 		var point = this.state.points[index];
 		var {cx,cy,radius,innerRadius} = this.state;
+		var sliceOffset = this.series.sliceOffset;
 		var {startAngle,endAngle} = point;
 		var color = point.color;
 		if(isHover) {
 			var hoverColor = cad.brighten(color,0.3);
 			point.slice.fill(hoverColor);
-			point.slice.stopTransition().transition({
+			if(!point.isAnimating) {
+				point.slice.stopTransition();
+			}
+			point.slice.transition({
 				from:radius,
 				to:radius+20,
 				during:400,
@@ -157,7 +165,10 @@ Pie.prototype = {
 			})
 		} else {
 			point.slice.fill(color);
-			point.slice.stopTransition().transition({
+			if(!point.isAnimating) {
+				point.slice.stopTransition();
+			}
+			point.slice.transition({
 				from:radius+20,
 				to:radius,
 				during:400,
@@ -179,23 +190,38 @@ Pie.prototype = {
 	selectPoint(index){
 		var {points,cx,cy,radius} = this.state;
 		var point = points[index];
-		var {sliceOffset} = this.series;
+		var {sliceOffset,selectMode} = this.series;
 		var {startAngle,endAngle} = point;
+		var that = this;
 		if(!point.selected) {
 			var offset = cad.Point(0,0).angleMoveTo((startAngle+endAngle)/2,sliceOffset);
-			point.slice.translate(offset.x,offset.y);
+			point.isAnimating = true;
+			point.slice.stopTransition(true)
+					    .transition({transform:"translate("+ offset.x+","+ offset.y +")"},200,null,function(){
+					    	point.isAnimating = false;
+					    });
 			point.selected = true;
+			//退回其他
 			points.map(function(p,key){
-				if(key!==index) {
-					p.slice.translate(0,0);
-					p.selected = false;
+				if(key!==index&&selectMode==='single') {
+					that.unselectPoint(p);
 				}
 			})		
 		} else {
-			point.selected = false;
-			point.slice.translate(0,0);
+			this.unselectPoint(point);
 		}
 
+	},
+	unselectPoint(point){
+		if(point.selected) {
+			point.isAnimating = true;
+			point.slice.stopTransition(true).transition({transform:"translate(0,0)"},200,null,function(){
+				point.isAnimating = false;
+			});
+		} else {
+			point.slice.translate(0,0);
+		}
+		point.selected = false;
 	},
 	alignDataLabels(){
 
@@ -207,7 +233,11 @@ Pie.prototype = {
 		var paper = this.chart.getPaper();
 		var group = this.group;
 		var clip = paper.clipPath(function(){
-			paper.sector(cx,cy,radius,startAngle,startAngle);
+			paper.addShape("sector",cx,cy,{
+											radius:radius,
+											startAngle:startAngle,
+											endAngle:startAngle + 1e-6
+										});
 		});
 		clip.attr("id","clip");
 		group.attr("clip-path","url(#clip)");
