@@ -59,7 +59,7 @@ Pie.prototype = {
 			borderWidth:0,
 			data:[],
 			dataLabels:{
-				enable:true,
+				enabled:true,
 				inside:false
 			},
 			selectMode:"single",
@@ -71,7 +71,6 @@ Pie.prototype = {
 			sliceOffset:10,
 			states:{
 				hover:{
-					enable:true
 				}
 			}
 		}
@@ -80,31 +79,41 @@ Pie.prototype = {
 		var points = this.state.points;
 		var paper = this.chart.getPaper();
 		paper.switchLayer(this.group);
-		//slice layer
 		var slice = paper.g();
-		var label = paper.g(); 
 		paper.switchLayer(slice);
 		points.map(function(p){
-			p.slice = paper.path();
+			if(!p.slice) {
+				p.slice = paper.path();
+			} 
 		});
-		paper.switchLayer(label);
-		points.map(function(p){
-			p.dataLabel = {
-				path:paper.path(),
-				text:paper.text()
-			}
-		});
+		this.initDataLabel();
 		this.animate();
 		this.refreshAttr();
 		this.attachEvent();
 		return this;
 	},
+	initDataLabel(){
+		var paper = this.chart.getPaper();
+		var points = this.state.points;
+		var group = this.group;
+		paper.switchLayer(group)
+		var labelLayer = paper.g();
+		paper.switchLayer(labelLayer);
+		points.map(function(p){
+			if(!p.dataLabel) {
+				p.dataLabel = {
+					text:paper.text()
+				}
+			}
+		});
+	},
 	refreshAttr(){
 		var points = this.state.points;
 		var chart = this.chart;
+		var series = this.series;
 		var paper = chart.getPaper();
 		var {width,height} = chart;
-		var {center,size,dataLabels,borderColor,borderWidth} = this.series;
+		var {center,size,dataLabels,borderColor,borderWidth} = series;
 		var cx = width*center[0];
 		var cy = height*center[1];
 		var {radius,innerRadius} =this.state;
@@ -121,6 +130,7 @@ Pie.prototype = {
 				 .stroke(borderColor,borderWidth);
 			var textPoint;
 			var dataLabel = p.dataLabel;
+			if(!series.dataLabels.enabled) return;
 			if(dataLabels.inside) {
 				textPoint = {x:cx,y:cy};
 				p.dataLabel.text.hide();
@@ -247,6 +257,10 @@ Pie.prototype = {
 			to:endAngle,
 			ease:'easeIn',
 			during:600,
+			callback(){
+				clip.remove();
+				group.removeAttr("clip-path");
+			},
 			onUpdate:function(val){
 				path.attr("d",cad.getShapePath("sector",cx,cy,{
 					startAngle:startAngle,
@@ -262,8 +276,8 @@ Pie.prototype = {
 	componentWillUnmount(){
 
 	},
-	update(series){
-
+	update(chart,series){
+		
 	},
 	destroy(){
 
