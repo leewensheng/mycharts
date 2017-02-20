@@ -17,10 +17,18 @@ Pie.prototype = {
 	constructor:Pie,
 	getInitialState(){
 		var series = this.series;
-		var data = this.series.data;
 		var chart = this.chart;
-		var colors = series.colors ||chart.option.colors;
-		var sum = cad.sum(data);
+		var {data,color,colors} = series;
+		if(chart.option.colors) {
+			colors = chart.option.colors;
+		}
+		var arr_value = data.map(function(val){
+			return val.value;
+		})
+		var sum = cad.sum(arr_value);
+		var max_num = cad.max(arr_value);
+		var min_num = cad.min(arr_value);
+		var mean_num = cad.mean(arr_value);
 	    var cx = series.center[0]*chart.width;
 	    var cy = series.center[1]*chart.height;
 	    var innerSize = series.innerSize;
@@ -31,17 +39,37 @@ Pie.prototype = {
 	    var points = [];
 	    var endAngle = series.endAngle?(series.endAngle - 90):(startAngle+360);
 	    var totalAngle = endAngle - startAngle;
-	    data.reduce(function(start,end,index){
-	        var startAngle = start;
-	        var endAngle = startAngle + end/sum*(totalAngle);
-	        points.push({
+	    var roseType = series.roseType;
+	    data.reduce(function(startAngle,curData,index){
+	    	var percent = curData.value/sum;
+	    	var endAngle;
+	        if(roseType !== "area") {
+	       		endAngle = startAngle + percent*totalAngle;
+	        } else {
+	        	endAngle = startAngle + totalAngle/(data.length);
+	        }
+	        var obj = {
 	        	startAngle:startAngle,
 	        	endAngle:endAngle,
-	        	selected:false,
-	        	color:colors[index%colors.length]//此处应考虑点级的颜色
-	        })
+	        	selected:curData.selected
+	        };
+	        if(!colors && color) {
+	        	//颜色差以和平均值差对比
+	        	obj.color = cad.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
+	        } else {
+	        	obj.color = colors[index%colors.length];
+	        }
+	        obj.radius = radius;
+	        if(roseType === "radius" || roseType === "area") {
+	        	obj.radius  = curData.value/max_num*radius;
+	        } 
+	        points.push(obj);
 	        return endAngle;
 	    },startAngle);
+
+	    if(roseType === "radius" || roseType === "area")  {
+	     	innerSize = 0;
+	    }
 	    return {
 	    	points:points,
 	    	cx:cx,
@@ -54,21 +82,24 @@ Pie.prototype = {
 	},
 	getDefaultSeries(){
 		return {
-			center:[0.5,0.5],
-			borderColor:"#fff",
-			borderWidth:0,
-			data:[],
+			color:null,//主色
+			colors:null,//系列色
+			center:[0.5,0.5],//中心位置
+			borderColor:"#fff",//描边颜色
+			borderWidth:0,//描边
+			data:[], //数据{name:'slcie1',value:1,color:'#fff',selected:true}
 			dataLabels:{
 				enabled:true,
 				inside:false
 			},
-			selectMode:"single",
-			size:0.75,
-			minSize:80,
-			innerSize:0,
-			startAngle:0,
-			endAngle:null,
-			sliceOffset:10,
+			roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同
+			selectMode:"single",//多选模式
+			size:0.75,//外径
+			minSize:80,//最小直径
+			innerSize:0,//内径
+			startAngle:0,//起始角度，以上向为0
+			endAngle:null,//不写则始终角差360，指定则按指定的来
+			sliceOffset:10,//选中时的偏移量
 			states:{
 				hover:{
 				}
@@ -90,6 +121,8 @@ Pie.prototype = {
 		this.animate();
 		this.refreshAttr();
 		this.attachEvent();
+		this.componentDidMount();
+		window.pie = this;
 		return this;
 	},
 	initDataLabel(){
@@ -122,7 +155,7 @@ Pie.prototype = {
 			var path = cad.getShapePath("sector",cx,cy,{
 				startAngle:p.startAngle,
 				endAngle:p.endAngle,
-				radius:radius,
+				radius:p.radius,
 				innerRadius:innerRadius
 			});
 			slice.attr("d",path)
@@ -146,26 +179,28 @@ Pie.prototype = {
 	attachEvent(){
 		var that = this;
 		this.state.points.map(function(p,index){
-			p.slice.on("click",that.selectPoint.bind(that,index));
+			p.slice.on("click",that.selectPoint.bind(that,index,false));
 			p.slice.on("mouseover",that.handleHover.bind(that,index,true));
 			p.slice.on("mouseout",that.handleHover.bind(that,index,false));
 		})
 	},
 	handleHover(index,isHover){
 		var point = this.state.points[index];
-		var {cx,cy,radius,innerRadius} = this.state;
+		var {cx,cy,innerRadius} = this.state;
 		var sliceOffset = this.series.sliceOffset;
 		var {startAngle,endAngle} = point;
 		var color = point.color;
+		var radius = point.radius;
+		var hoverRadius = radius + 15;
 		if(isHover) {
-			var hoverColor = cad.brighten(color,0.15);
+			var hoverColor = cad.brighten(color,0.12);
 			point.slice.fill(hoverColor);
 			if(!point.isAnimating) {
 				point.slice.stopTransition();
 			}
 			point.slice.transition({
 				from:radius,
-				to:radius+20,
+				to:hoverRadius,
 				during:400,
 				ease:'elasticOut',
 				onUpdate(val){
@@ -179,7 +214,7 @@ Pie.prototype = {
 				point.slice.stopTransition();
 			}
 			point.slice.transition({
-				from:radius+20,
+				from:hoverRadius,
 				to:radius,
 				during:400,
 				ease:'elasticOut',
@@ -197,13 +232,13 @@ Pie.prototype = {
 			}
 		} 
 	},
-	selectPoint(index){
+	selectPoint(index,initialSelect){
 		var {points,cx,cy,radius} = this.state;
 		var point = points[index];
 		var {sliceOffset,selectMode} = this.series;
 		var {startAngle,endAngle} = point;
 		var that = this;
-		if(!point.selected) {
+		if(!point.selected||initialSelect) {
 			var offset = cad.Point(0,0).angleMoveTo((startAngle+endAngle)/2,sliceOffset);
 			point.isAnimating = true;
 			point.slice.stopTransition(true)
@@ -271,7 +306,12 @@ Pie.prototype = {
 		})
 	},
 	componentDidMount(){
-
+		var points = this.state.points;
+		for(var i = 0; i < points.length;i++) {
+			if(points[i].selected) {
+				this.selectPoint(i,true);
+			}
+		}
 	},
 	componentWillUnmount(){
 
