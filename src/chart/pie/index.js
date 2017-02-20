@@ -158,7 +158,7 @@ Pie.prototype = {
 		var {startAngle,endAngle} = point;
 		var color = point.color;
 		if(isHover) {
-			var hoverColor = cad.brighten(color,0.3);
+			var hoverColor = cad.brighten(color,0.15);
 			point.slice.fill(hoverColor);
 			if(!point.isAnimating) {
 				point.slice.stopTransition();
