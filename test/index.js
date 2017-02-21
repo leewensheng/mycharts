@@ -1,6 +1,6 @@
 import mychart from '../src/index.js'
-import '../../src/index'
-
+import cad from '../../src/index'
+import $ from 'jquery'
 var el = document.getElementById("root");
 var t1 = Date.now();
 var chart = mychart.init(el,{height:400});
@@ -41,3 +41,18 @@ chart.setOption({
 });
 var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
+$("<button>test</button>").appendTo("body")
+.on("click",function(){
+	chart.setOption({
+		series:[
+			{
+				data:[
+					{
+						value:1,
+						name:"11"
+					}
+				]
+			}
+		]
+	})
+})

@@ -1,6 +1,8 @@
 import $ from 'jquery'
 import default_option from './option/index'
 import Pie from './chart/pie/index'
+import cad from '../../src/index'
+
 var charts = {
 	pie:Pie
 }
@@ -73,7 +75,7 @@ Chart.prototype = {
 	},
 	setOption(option){
 		if(this.option) {
-			this.option = $.extend(this.option,option);
+			this.option = cad.extend(true,this.option,option);
 			this.refresh();
 		} else {
 			this.option = option;
@@ -81,7 +83,7 @@ Chart.prototype = {
 		}
 	},
 	refresh(){
-
+		console.log(this.option)
 	},
 	destroy(){
 
