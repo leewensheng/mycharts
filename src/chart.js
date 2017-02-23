@@ -83,7 +83,7 @@ Chart.prototype = {
 		}
 	},
 	refresh(){
-		console.log(this.option)
+		
 	},
 	destroy(){
 

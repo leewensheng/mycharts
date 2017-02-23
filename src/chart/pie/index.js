@@ -1,8 +1,8 @@
 import $ from 'jquery'
 module.exports = Pie;
-function Pie(chart,group,series) {
+function Pie(chart,seriesGroup,series) {
 	this.chart = chart;
-	this.group = group;
+	this.seriesGroup = seriesGroup;
 	var default_series = this.getDefaultSeries(series);
 	this.series  = $.extend(default_series,series);
 	this.state = this.getInitialState();
@@ -48,6 +48,7 @@ Pie.prototype = {
 	        } else {
 	        	endAngle = startAngle + totalAngle/(data.length);
 	        }
+	        //point state
 	        var obj = {
 	        	startAngle:startAngle,
 	        	endAngle:endAngle,
@@ -109,7 +110,9 @@ Pie.prototype = {
 	render(){
 		var points = this.state.points;
 		var paper = this.chart.getPaper();
-		paper.switchLayer(this.group);
+		var virtualDOM = paper.createVirtualDOM("g");
+		this.group = virtualDOM;
+		paper.switchLayer(virtualDOM);
 		var slice = paper.g();
 		paper.switchLayer(slice);
 		points.map(function(p){
@@ -118,6 +121,8 @@ Pie.prototype = {
 			} 
 		});
 		this.initDataLabel();
+		virtualDOM.renderTo(this.seriesGroup.get(0));
+		return;
 		this.animate();
 		this.refreshAttr();
 		this.attachEvent();
@@ -316,7 +321,7 @@ Pie.prototype = {
 	componentWillUnmount(){
 
 	},
-	update(chart,series){
+	update(series){
 		
 	},
 	destroy(){
