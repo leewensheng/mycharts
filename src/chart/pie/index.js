@@ -108,85 +108,69 @@ Pie.prototype = {
 		}
 	},
 	render(){
+		var {chart,seriesGroup,series} = this;
+		var paper  = chart.getPaper();
 		var points = this.state.points;
-		var paper = this.chart.getPaper();
+		var {width,height} = chart;
+		var {center,size,dataLabels,borderColor,borderWidth} = series;
+		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = paper.createVirtualDOM("g");
 		this.group = virtualDOM;
 		paper.switchLayer(virtualDOM);
 		var slice = paper.g();
 		paper.switchLayer(slice);
-		points.map(function(p){
-			if(!p.slice) {
-				p.slice = paper.path();
-			} 
+		points.map(function(point){
+			paper.addShape("sector",cx,cy,{
+				startAngle:point.startAngle,
+				endAngle:point.endAngle,
+				radius:point.radius,
+				innerRadius:point.innerRadius
+			}).attr("fill",point.color)
+			  .attr("stroke",borderColor)
+			  .attr("stroke-width",borderWidth)
 		});
-		this.initDataLabel();
-		virtualDOM.renderTo(this.seriesGroup.get(0));
-		return;
+		paper.switchLayer(virtualDOM);
+		var labelLayer = paper.g();
+		paper.switchLayer(labelLayer);
+		points.map(function(p,index){
+			var textPoint;
+			var hide  = false;
+			if(dataLabels.inside) {
+				textPoint = {x:cx,y:cy};
+				hide = true;
+			} else {
+				textPoint = cad.Point(cx,cy).angleMoveTo((p.startAngle+p.endAngle)/2,radius*1.3);
+			}
+			paper.text()
+				 .attr("x",textPoint.x)
+				 .attr("y",textPoint.y)
+				 .css("display",hide?"nonde":"")
+				 .attr("fill","red")
+				 .attr("text-anchor","middle")
+				 .append("1")
+
+		});
+		var group = $(virtualDOM.render());
+		seriesGroup.append(group);
+		this.group = group;
 		this.animate();
-		this.refreshAttr();
 		this.attachEvent();
-		this.componentDidMount();
 		window.pie = this;
 		return this;
 	},
 	initDataLabel(){
-		var paper = this.chart.getPaper();
-		var points = this.state.points;
-		var group = this.group;
-		paper.switchLayer(group)
-		var labelLayer = paper.g();
-		paper.switchLayer(labelLayer);
-		points.map(function(p){
-			if(!p.dataLabel) {
-				p.dataLabel = {
-					text:paper.text()
-				}
-			}
-		});
+
 	},
 	refreshAttr(){
-		var points = this.state.points;
-		var chart = this.chart;
-		var series = this.series;
-		var paper = chart.getPaper();
-		var {width,height} = chart;
-		var {center,size,dataLabels,borderColor,borderWidth} = series;
-		var cx = width*center[0];
-		var cy = height*center[1];
-		var {radius,innerRadius} =this.state;
-		points.map(function(p,index){
-			var {startAngle,endAngle,slice} = p;
-			var path = cad.getShapePath("sector",cx,cy,{
-				startAngle:p.startAngle,
-				endAngle:p.endAngle,
-				radius:p.radius,
-				innerRadius:innerRadius
-			});
-			slice.attr("d",path)
-				 .fill(p.color)
-				 .stroke(borderColor,borderWidth);
-			var textPoint;
-			var dataLabel = p.dataLabel;
-			if(!series.dataLabels.enabled) return;
-			if(dataLabels.inside) {
-				textPoint = {x:cx,y:cy};
-				p.dataLabel.text.hide();
-			} else {
-				textPoint = cad.Point(cx,cy).angleMoveTo((startAngle+endAngle)/2,radius*1.3);
-			}
-			p.dataLabel.text.text(index)
-					 .attr("x",textPoint.x)
-					 .attr("y",textPoint.y)
-					 .attr("text-anchor","middle");
-		})
 	},
 	attachEvent(){
+		return;
 		var that = this;
 		this.state.points.map(function(p,index){
-			p.slice.on("click",that.selectPoint.bind(that,index,false));
-			p.slice.on("mouseover",that.handleHover.bind(that,index,true));
-			p.slice.on("mouseout",that.handleHover.bind(that,index,false));
+			var slice = this.group.find("")
+			slice.on("click",that.selectPoint.bind(that,index,false));
+			slice.on("mouseover",that.handleHover.bind(that,index,true));
+			slice.on("mouseout",that.handleHover.bind(that,index,false));
 		})
 	},
 	handleHover(index,isHover){

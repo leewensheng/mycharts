@@ -64,13 +64,12 @@ Chart.prototype = {
 		var instance = [];
 		var seriesGroup = paper.addLayer().addClass('mychart-series');
 		var that = this;
-		paper.temporarySwitchLayer(seriesGroup,function(){
-			for(var i = 0; i <series.length;i++) {
-				var type = series.type;
-				var group =paper.g();
-				instance.push(new Pie(that,group,series[i]));
-			}
-		});
+		for(var i = 0; i <series.length;i++) {
+			paper.switchLayer(seriesGroup);
+			var type = series.type;
+			var group =paper.g();
+			instance.push(new Pie(that,seriesGroup,series[i]));
+		}
 		this.series = instance;
 	},
 	setOption(option){
