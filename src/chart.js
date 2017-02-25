@@ -21,7 +21,6 @@ Chart.prototype = {
 		var wrapper = $("<div>").addClass("mychart-container").css("position","relative");
 		width = option.width || $(el).width();
 		height = option.height || $(el).height();
-		wrapper.width(width).height(height);
 		$(el).append(wrapper);
 		paper = cad.init(wrapper.get(0),{width,height});
 		this.__paper = paper;

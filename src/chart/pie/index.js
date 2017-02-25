@@ -52,6 +52,7 @@ Pie.prototype = {
 	        var obj = {
 	        	startAngle:startAngle,
 	        	endAngle:endAngle,
+	        	midAngle:(startAngle + endAngle)/2,
 	        	selected:curData.selected,
 	        	label:data[index].name
 	        };
@@ -146,17 +147,19 @@ Pie.prototype = {
 		points.map(function(p,index){
 			var textPoint;
 			var hide  = false;
+			var midAngle  = p.midAngle;
 			if(dataLabels.inside) {
 				textPoint = {x:cx,y:cy};
 				hide = true;
 			} else {
-				textPoint = cad.Point(cx,cy).angleMoveTo((p.startAngle+p.endAngle)/2,radius*1.3);
+				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius*1.1);
 			}
 			var label = paper.text(textPoint.x,textPoint.y,p.label);
 				 label
 				 .css("display",hide?"none":"")
 				 .attr("fill","red")
-				 .attr("text-anchor","middle")
+				 .attr("text-anchor",(midAngle>-90&&midAngle<90)?"start":"end")
+				 .attr("dy",10)
 		});
 		var group = $(virtualDOM.render());
 		this.virtualDOM = virtualDOM;
@@ -226,7 +229,7 @@ Pie.prototype = {
 		var $slices = this.group.find(".points-group path");
 		var $slice = $slices.eq(index);
 		if(!point.selected) {
-			var offset = cad.Point(0,0).angleMoveTo((startAngle+endAngle)/2,sliceOffset);
+			var offset = cad.Point(0,0).angleMoveTo(point.midAngle,sliceOffset);
 			if(sliceOffset > 0) {
 				point.isAnimating = true;
 				$slices.eq(index).stopTransition(true)
