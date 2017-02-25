@@ -52,7 +52,8 @@ Pie.prototype = {
 	        var obj = {
 	        	startAngle:startAngle,
 	        	endAngle:endAngle,
-	        	selected:curData.selected
+	        	selected:curData.selected,
+	        	label:data[index].name
 	        };
 	        if(!colors && color) {
 	        	//颜色差以和平均值差对比
@@ -108,6 +109,7 @@ Pie.prototype = {
 		}
 	},
 	render(){
+		var that = this;
 		var {chart,seriesGroup,series} = this;
 		var paper  = chart.getPaper();
 		var points = this.state.points;
@@ -117,17 +119,26 @@ Pie.prototype = {
 		var virtualDOM = paper.createVirtualDOM("g");
 		this.group = virtualDOM;
 		paper.switchLayer(virtualDOM);
-		var slice = paper.g();
+		var slice = paper.g({className:"points-group"});
 		paper.switchLayer(slice);
-		points.map(function(point){
+		points.map(function(point,index){
 			paper.addShape("sector",cx,cy,{
 				startAngle:point.startAngle,
 				endAngle:point.endAngle,
 				radius:point.radius,
-				innerRadius:point.innerRadius
+				innerRadius:innerRadius
 			}).attr("fill",point.color)
 			  .attr("stroke",borderColor)
 			  .attr("stroke-width",borderWidth)
+			  .on("click",function(){
+			  	that.selectPoint(index);
+			  })
+			  .on("mouseover",function(){
+			  	that.handleHover(index,true);
+			  })
+			  .on("mouseout",function(){
+			  	that.handleHover(index,false);
+			  })
 		});
 		paper.switchLayer(virtualDOM);
 		var labelLayer = paper.g();
@@ -141,37 +152,19 @@ Pie.prototype = {
 			} else {
 				textPoint = cad.Point(cx,cy).angleMoveTo((p.startAngle+p.endAngle)/2,radius*1.3);
 			}
-			paper.text()
-				 .attr("x",textPoint.x)
-				 .attr("y",textPoint.y)
-				 .css("display",hide?"nonde":"")
+			var label = paper.text(textPoint.x,textPoint.y,p.label);
+				 label
+				 .css("display",hide?"none":"")
 				 .attr("fill","red")
 				 .attr("text-anchor","middle")
-				 .append("1")
-
 		});
 		var group = $(virtualDOM.render());
+		this.virtualDOM = virtualDOM;
 		seriesGroup.append(group);
 		this.group = group;
 		this.animate();
-		this.attachEvent();
 		window.pie = this;
-		return this;
-	},
-	initDataLabel(){
-
-	},
-	refreshAttr(){
-	},
-	attachEvent(){
-		return;
-		var that = this;
-		this.state.points.map(function(p,index){
-			var slice = this.group.find("")
-			slice.on("click",that.selectPoint.bind(that,index,false));
-			slice.on("mouseover",that.handleHover.bind(that,index,true));
-			slice.on("mouseout",that.handleHover.bind(that,index,false));
-		})
+		return virtualDOM;
 	},
 	handleHover(index,isHover){
 		var point = this.state.points[index];
@@ -181,13 +174,15 @@ Pie.prototype = {
 		var color = point.color;
 		var radius = point.radius;
 		var hoverRadius = radius + 15;
+		var $slices = this.group.find(".points-group path");
+		var $slice = $slices.eq(index);
 		if(isHover) {
-			var hoverColor = cad.brighten(color,0.12);
-			point.slice.fill(hoverColor);
+			var hoverColor = cad.brighten(color,0.1);
+			 $slice.fill(hoverColor);
 			if(!point.isAnimating) {
-				point.slice.stopTransition();
+				 $slice.stopTransition();
 			}
-			point.slice.transition({
+			$slice.transition({
 				from:radius,
 				to:hoverRadius,
 				during:400,
@@ -198,11 +193,11 @@ Pie.prototype = {
 				}
 			})
 		} else {
-			point.slice.fill(color);
+			 $slice.fill(color);
 			if(!point.isAnimating) {
-				point.slice.stopTransition();
+				 $slice.stopTransition();
 			}
-			point.slice.transition({
+			 $slice.transition({
 				from:hoverRadius,
 				to:radius,
 				during:400,
@@ -213,6 +208,7 @@ Pie.prototype = {
 				}
 			})
 		}
+		return;
 		if(this.series.dataLabels.inside) {
 			if(isHover) {
 				point.dataLabel.text.show();
@@ -221,44 +217,45 @@ Pie.prototype = {
 			}
 		} 
 	},
-	selectPoint(index,initialSelect){
+	selectPoint(index){
 		var {points,cx,cy,radius} = this.state;
 		var point = points[index];
 		var {sliceOffset,selectMode} = this.series;
 		var {startAngle,endAngle} = point;
 		var that = this;
-		if(!point.selected||initialSelect) {
+		var $slices = this.group.find(".points-group path");
+		var $slice = $slices.eq(index);
+		if(!point.selected) {
 			var offset = cad.Point(0,0).angleMoveTo((startAngle+endAngle)/2,sliceOffset);
-			point.isAnimating = true;
-			point.slice.stopTransition(true)
-					    .transition({transform:"translate("+ offset.x+","+ offset.y +")"},200,null,function(){
-					    	point.isAnimating = false;
-					    });
-			point.selected = true;
+			if(sliceOffset > 0) {
+				point.isAnimating = true;
+				$slices.eq(index).stopTransition(true)
+						    .transition({transform:"translate("+ offset.x+","+ offset.y +")"},200,null,function(){
+						    	point.isAnimating = false;
+						    });
+				point.selected = true;
+			}
 			//退回其他
 			points.map(function(p,key){
 				if(key!==index&&selectMode==='single') {
-					that.unselectPoint(p);
+					that.unselectPoint($slices.eq(key),p);
 				}
 			})		
 		} else {
-			this.unselectPoint(point);
+			this.unselectPoint($slice,point);
 		}
 
 	},
-	unselectPoint(point){
+	unselectPoint($slice,point){
 		if(point.selected) {
 			point.isAnimating = true;
-			point.slice.stopTransition(true).transition({transform:"translate(0,0)"},200,null,function(){
+			$slice.stopTransition(true).transition({transform:"translate(0,0)"},200,null,function(){
 				point.isAnimating = false;
 			});
 		} else {
-			point.slice.translate(0,0);
+			$slice.translate(0,0);
 		}
 		point.selected = false;
-	},
-	alignDataLabels(){
-
 	},
 	animate(){
 		var chart = this.chart;
@@ -298,7 +295,7 @@ Pie.prototype = {
 		var points = this.state.points;
 		for(var i = 0; i < points.length;i++) {
 			if(points[i].selected) {
-				this.selectPoint(i,true);
+				this.selectPoint(i);
 			}
 		}
 	},

@@ -13,7 +13,7 @@ chart.setOption({
 			name:'a pie chart',
 			color:'#c23531',
 			data:[
-                {value:335, name:'直接访问'},
+                {value:335, name:'直接访问',selected:true},
                 {value:310, name:'邮件营销'},
                 {value:274, name:'联盟广告'},
                 {value:235, name:'视频广告'},
@@ -22,16 +22,16 @@ chart.setOption({
 			sliceOffset:0,
 			size:0.75,
 			minSize:80,
-			innerSize:0,
+			innerSize:0.5,
 			startAngle:0,
 			selectMode:"single",
-			roseType:"radius",
+			roseType:false,
 			borderColor:"#fff",
 			borderWidth:0,
 			center:[0.5,0.5],
 			dataLabels:{
 				enabled:true,
-				inside:false,
+				inside:0,
 				style:{
 					fontSize:11
 				}
