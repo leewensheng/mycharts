@@ -11,7 +11,7 @@ chart.setOption({
 	series:[
 		{
 			name:'a pie chart',
-			color:'#c23531',
+			/*color:'#c23531',*/
 			data:[
                 {value:335, name:'直接访问',selected:true},
                 {value:310, name:'邮件营销'},
@@ -25,13 +25,13 @@ chart.setOption({
 			innerSize:0.5,
 			startAngle:0,
 			selectMode:"single",
-			roseType:"radius",//radius false area
+			roseType:false,//radius false area
 			borderColor:"#fff",
 			borderWidth:0,
 			center:[0.5,0.5],
 			dataLabels:{
 				enabled:true,
-				inside:0,
+				inside:1,
 				style:{
 					fontSize:11
 				}
@@ -43,16 +43,13 @@ var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
 $("<button>test</button>").appendTo("body")
 .on("click",function(){
+	var data = chart.option.series[0].data;
+	data.push({value:200,name:"广告来源"})
 	chart.setOption({
 		series:[
 			{	
 				color:"blue",
-				data:[
-					{
-						value:1,
-						name:"新增"
-					}
-				]
+				data:data
 			}
 		]
 	})

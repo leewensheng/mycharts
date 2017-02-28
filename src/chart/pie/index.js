@@ -151,7 +151,7 @@ Pie.prototype = {
 			  })
 		});
 		paper.switchLayer(virtualDOM);
-		var labelLayer = paper.g();
+		var labelLayer = paper.g({className:"label-layer"});
 		paper.switchLayer(labelLayer);
 		points.map(function(p,index){
 			var textPoint;
@@ -163,21 +163,27 @@ Pie.prototype = {
 			} else {
 				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius*1.2);
 			}
-			var 
-			label = paper.text(textPoint.x,textPoint.y,p.label,{
-				fontSize:12,
-				textAlign:(midAngle>-90&&midAngle<90)?"left":"right",
+			var textOption = {
+				fontSize:16,
 				textBaseLine:"middle"
-			});
+			};
+			if(dataLabels.inside) {
+				textOption.textAlign = "center";
+			} else {
+				textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
+			}
+			var 
+			label = paper.text(textPoint.x,textPoint.y,p.label,textOption);
 			label
 			.css("display",hide?"none":"")
-			.attr("fill","red")
+			.attr("fill","#fff");
 		});
 		
 		return virtualDOM;
 	},
 	handleHover(index,isHover){
-		var point = this.state.points[index];
+		var points = this.state.points;
+		var point = points[index];
 		var {cx,cy,innerRadius} = this.state;
 		var sliceOffset = this.series.sliceOffset;
 		var {startAngle,endAngle} = point;
@@ -218,22 +224,28 @@ Pie.prototype = {
 				}
 			})
 		}
-		return;
 		if(this.series.dataLabels.inside) {
+			var $labels = this.group.find(".label-layer text");
+				$labels.hide();
 			if(isHover) {
-				point.dataLabel.text.show();
+				$labels.eq(index).show();
 			} else {
-				point.dataLabel.text.hide();
+				points.map(function(p,key){
+					if(p.selected) {
+						$labels.eq(key).show();
+					}
+				})
 			}
 		} 
 	},
 	selectPoint(index){
 		var {points,cx,cy,radius} = this.state;
 		var point = points[index];
-		var {sliceOffset,selectMode} = this.series;
+		var {sliceOffset,selectMode,dataLabels} = this.series;
 		var {startAngle,endAngle} = point;
 		var that = this;
 		var $slices = this.group.find(".points-group path");
+		var $labels = this.group.find(".label-layer text");
 		var $slice = $slices.eq(index);
 		if(!point.selected) {
 			var offset = cad.Point(0,0).angleMoveTo(point.midAngle,sliceOffset);
@@ -315,6 +327,7 @@ Pie.prototype = {
 
 	},
 	update(series){
+		var oldState = this.state;
 		this.series = series;
 		this.state = this.getInitialState();
 		var virtualDOM = this.render();
@@ -322,6 +335,7 @@ Pie.prototype = {
 		this.group.remove();
 		var group = $(virtualDOM.render());
 		this.seriesGroup.append(group);
+		this.group = group;
 	},
 	destroy(){
 
