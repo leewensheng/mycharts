@@ -19,13 +19,13 @@ chart.setOption({
                 {value:235, name:'视频广告'},
                 {value:400, name:'搜索引擎'}
             ].sort(function (a, b) { return a.value-b.value}),
-			sliceOffset:0,
+			sliceOffset:20,
 			size:0.75,
 			minSize:80,
 			innerSize:0.5,
 			startAngle:0,
 			selectMode:"single",
-			roseType:false,
+			roseType:"radius",//radius false area
 			borderColor:"#fff",
 			borderWidth:0,
 			center:[0.5,0.5],
@@ -45,11 +45,12 @@ $("<button>test</button>").appendTo("body")
 .on("click",function(){
 	chart.setOption({
 		series:[
-			{
+			{	
+				color:"blue",
 				data:[
 					{
 						value:1,
-						name:"11"
+						name:"新增"
 					}
 				]
 			}

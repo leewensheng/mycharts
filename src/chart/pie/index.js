@@ -6,7 +6,13 @@ function Pie(chart,seriesGroup,series) {
 	var default_series = this.getDefaultSeries(series);
 	this.series  = $.extend(default_series,series);
 	this.state = this.getInitialState();
-	return this.render();
+	var virtualDOM = this.render();
+	var group = $(virtualDOM.render());
+	this.virtualDOM = virtualDOM;
+	seriesGroup.append(group);
+	this.group = group;
+	this.componentDidMount();
+	return this;
 };
 Pie.type = 'pie';
 Pie.dependence = [];
@@ -58,7 +64,11 @@ Pie.prototype = {
 	        };
 	        if(!colors && color) {
 	        	//颜色差以和平均值差对比
-	        	obj.color = cad.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
+	        	if(max_num - min_num > 0) {
+	        		obj.color = cad.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
+	        	} else {
+	        		obj.color = color;
+	        	}
 	        } else {
 	        	obj.color = colors[index%colors.length];
 	        }
@@ -118,7 +128,6 @@ Pie.prototype = {
 		var {center,size,dataLabels,borderColor,borderWidth} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = paper.createVirtualDOM("g");
-		this.group = virtualDOM;
 		paper.switchLayer(virtualDOM);
 		var slice = paper.g({className:"points-group"});
 		paper.switchLayer(slice);
@@ -158,15 +167,10 @@ Pie.prototype = {
 				 label
 				 .css("display",hide?"none":"")
 				 .attr("fill","red")
-				 .attr("text-anchor",(midAngle>-90&&midAngle<90)?"start":"end")
+				 .attr("text-anchor",(midAngle >= -90 && midAngle <= 90) ? "start" : "end")
 				 .attr("dy",10)
 		});
-		var group = $(virtualDOM.render());
-		this.virtualDOM = virtualDOM;
-		seriesGroup.append(group);
-		this.group = group;
-		this.animate();
-		window.pie = this;
+		
 		return virtualDOM;
 	},
 	handleHover(index,isHover){
@@ -295,6 +299,8 @@ Pie.prototype = {
 		})
 	},
 	componentDidMount(){
+		this.animate();
+		window.pie = this;
 		var points = this.state.points;
 		for(var i = 0; i < points.length;i++) {
 			if(points[i].selected) {
@@ -306,7 +312,13 @@ Pie.prototype = {
 
 	},
 	update(series){
-		
+		this.series = series;
+		this.state = this.getInitialState();
+		var virtualDOM = this.render();
+		this.virtualDOM = virtualDOM;
+		this.group.remove();
+		var group = $(virtualDOM.render());
+		this.seriesGroup.append(group);
 	},
 	destroy(){
 

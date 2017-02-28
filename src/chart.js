@@ -72,8 +72,11 @@ Chart.prototype = {
 		this.series = instance;
 	},
 	setOption(option){
-		if(this.option) {
-			this.option = cad.extend(true,this.option,option);
+		var oldOption = this.option;
+		if(oldOption) {
+			this.oldOption = cad.extend(true,{},oldOption);
+			var newOption = cad.extend(true,oldOption,option);
+			this.option = newOption;
 			this.refresh();
 		} else {
 			this.option = option;
@@ -81,7 +84,12 @@ Chart.prototype = {
 		}
 	},
 	refresh(){
-		
+		var {option,series} = this;
+		for(var i = 0 ; i < series.length; i ++) {
+			var chart = series[i];
+			var seriesData = option.series[i];
+			chart.update(seriesData);
+		}
 	},
 	destroy(){
 
