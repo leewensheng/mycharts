@@ -161,14 +161,17 @@ Pie.prototype = {
 				textPoint = {x:cx,y:cy};
 				hide = true;
 			} else {
-				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius*1.1);
+				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius*1.2);
 			}
-			var label = paper.text(textPoint.x,textPoint.y,p.label);
-				 label
-				 .css("display",hide?"none":"")
-				 .attr("fill","red")
-				 .attr("text-anchor",(midAngle >= -90 && midAngle <= 90) ? "start" : "end")
-				 .attr("dy",10)
+			var 
+			label = paper.text(textPoint.x,textPoint.y,p.label,{
+				fontSize:12,
+				textAlign:(midAngle>-90&&midAngle<90)?"left":"right",
+				textBaseLine:"middle"
+			});
+			label
+			.css("display",hide?"none":"")
+			.attr("fill","red")
 		});
 		
 		return virtualDOM;
