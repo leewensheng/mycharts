@@ -151,7 +151,7 @@ Pie.prototype = {
 			  })
 		});
 		paper.switchLayer(virtualDOM);
-		var labelLayer = paper.g({className:"label-layer"});
+		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei")
 		paper.switchLayer(labelLayer);
 		points.map(function(p,index){
 			var textPoint;
@@ -330,7 +330,10 @@ Pie.prototype = {
 		var oldState = this.state;
 		this.series = series;
 		this.state = this.getInitialState();
+		var oldTree = this.virtualDOM;
 		var virtualDOM = this.render();
+		var paper = this.chart.getPaper();
+		console.log(paper.diff(oldTree,virtualDOM));
 		this.virtualDOM = virtualDOM;
 		this.group.remove();
 		var group = $(virtualDOM.render());
