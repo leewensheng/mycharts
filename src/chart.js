@@ -18,12 +18,14 @@ Chart.prototype = {
 	},
 	initPaper(el,option){
 		var width,height,paper;
-		var wrapper = $("<div>").addClass("mychart-container").css("position","relative");
+		var wrapper = $("<div>").addClass("mychart-container").css("position","relative").css("overflow","hidden");
 		width = option.width || $(el).width();
 		height = option.height || $(el).height();
+		wrapper.height(height);
 		$(el).append(wrapper);
 		paper = cad.init(wrapper.get(0),{width,height});
 		this.__paper = paper;
+		this.container = $(el);
 		this.width = width;
 		this.height = height;
 	},
@@ -46,6 +48,7 @@ Chart.prototype = {
 		this.initLegend();
 		this.initAxis();
 		this.initSeires();
+		this.componentDidMount();
 	},
 	initTitle(){
 
@@ -84,12 +87,32 @@ Chart.prototype = {
 		}
 	},
 	refresh(){
-		var {option,series} = this;
+		var {option,series,width,height} = this;
+		var paper = this.getPaper();
+		paper.width(width);
+		paper.height(height);
 		for(var i = 0 ; i < series.length; i ++) {
 			var chart = series[i];
 			var seriesData = option.series[i];
 			chart.update(seriesData);
 		}
+	},
+	resize(width,height){
+		var that = this;
+		var oldWidth = this.width;
+		var oldHeight = this.height;
+		this.width = width;
+		this.height = height;
+		this.refresh();
+	},
+	componentDidMount(){
+		var that = this;
+		window.addEventListener("resize",function(){
+			var width = that.container.width();
+			var height = that.container.get(0).clientHeight;
+			that.resize(width,height);
+
+		})
 	},
 	destroy(){
 

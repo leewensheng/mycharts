@@ -31,7 +31,7 @@ chart.setOption({
 			center:[0.5,0.5],
 			dataLabels:{
 				enabled:true,
-				inside:1,
+				inside:false,
 				style:{
 					fontSize:11
 				}
