@@ -22,8 +22,9 @@ chart.setOption({
 			sliceOffset:20,
 			size:0.75,
 			minSize:80,
-			innerSize:0.5,
+			innerSize:0,
 			startAngle:0,
+			endAngle:null,
 			selectMode:"single",
 			roseType:false,//radius false area
 			borderColor:"#fff",
@@ -32,6 +33,7 @@ chart.setOption({
 			dataLabels:{
 				enabled:true,
 				inside:false,
+				distance:-40,
 				style:{
 					fontSize:11
 				}

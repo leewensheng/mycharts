@@ -103,7 +103,9 @@ Pie.prototype = {
 			data:[], //数据{name:'slcie1',value:1,color:'#fff',selected:true}
 			dataLabels:{
 				enabled:true,
-				inside:false
+				show:false,
+				inside:false,
+				distance:30
 			},
 			roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同
 			selectMode:"single",//多选模式
@@ -151,7 +153,7 @@ Pie.prototype = {
 			  })
 		});
 		paper.switchLayer(virtualDOM);
-		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei")
+		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif")
 		paper.switchLayer(labelLayer);
 		points.map(function(p,index){
 			var textPoint;
@@ -161,13 +163,13 @@ Pie.prototype = {
 				textPoint = {x:cx,y:cy};
 				hide = true;
 			} else {
-				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius*1.2);
+				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius + dataLabels.distance);
 			}
 			var textOption = {
-				fontSize:16,
+				fontSize:13,
 				textBaseLine:"middle"
 			};
-			if(dataLabels.inside) {
+			if(dataLabels.inside || dataLabels.distance < 0 ) {
 				textOption.textAlign = "center";
 			} else {
 				textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
@@ -177,6 +179,9 @@ Pie.prototype = {
 			label
 			.css("display",hide?"none":"")
 			.attr("fill","#fff");
+			if(dataLabels.distance < 0) {
+				label.css("pointer-events","none");
+			}
 		});
 		
 		return virtualDOM;
@@ -333,7 +338,7 @@ Pie.prototype = {
 		var oldTree = this.virtualDOM;
 		var virtualDOM = this.render();
 		var paper = this.chart.getPaper();
-		console.log(paper.diff(oldTree,virtualDOM));
+		//console.log(paper.diff(oldTree,virtualDOM));
 		this.virtualDOM = virtualDOM;
 		this.group.remove();
 		var group = $(virtualDOM.render());
