@@ -37,7 +37,7 @@ Chart.prototype = {
 		this.initChart();
 	},
 	initOption(){
-		this.option = $.extend(default_option,this.option);
+		this.option = cad.extend(true,default_option,this.option);
 	},
 	initChart(){
 		var option = this.option;
@@ -94,7 +94,11 @@ Chart.prototype = {
 		for(var i = 0 ; i < series.length; i ++) {
 			var chart = series[i];
 			var seriesData = option.series[i];
-			chart.update(seriesData);
+			if(seriesData) {
+				chart.update(seriesData);
+			} else {
+				chart.destroy();
+			}
 		}
 	},
 	resize(width,height){

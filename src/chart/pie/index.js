@@ -4,7 +4,7 @@ function Pie(chart,seriesGroup,series) {
 	this.chart = chart;
 	this.seriesGroup = seriesGroup;
 	var default_series = this.getDefaultSeries(series);
-	this.series  = $.extend(default_series,series);
+	this.series  = $.extend(true,default_series,series);
 	this.state = this.getInitialState();
 	var virtualDOM = this.render();
 	var group = $(virtualDOM.render());
@@ -47,7 +47,7 @@ Pie.prototype = {
 	    var totalAngle = endAngle - startAngle;
 	    var roseType = series.roseType;
 	    data.reduce(function(startAngle,curData,index){
-	    	var percent = curData.value/sum;
+	    	var percent = curData.value/sum
 	    	var endAngle;
 	        if(roseType !== "area") {
 	       		endAngle = startAngle + percent*totalAngle;
@@ -60,7 +60,10 @@ Pie.prototype = {
 	        	endAngle:endAngle,
 	        	midAngle:(startAngle + endAngle)/2,
 	        	selected:curData.selected,
-	        	label:data[index].name
+	        	label:data[index].name,
+	        	x:index,
+	        	y:curData.value,
+	        	percent:percent.toFixed(2)
 	        };
 	        if(!colors && color) {
 	        	//颜色差以和平均值差对比
@@ -110,7 +113,7 @@ Pie.prototype = {
 			roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同
 			selectMode:"single",//多选模式
 			size:0.75,//外径
-			minSize:80,//最小直径
+			minSize:40,//最小半径
 			innerSize:0,//内径
 			startAngle:0,//起始角度，以上向为0
 			endAngle:null,//不写则始终角差360，指定则按指定的来
@@ -333,7 +336,8 @@ Pie.prototype = {
 	},
 	update(series){
 		var oldState = this.state;
-		this.series = series;
+		var default_series  = this.getDefaultSeries();
+		this.series = cad.extend(true,default_series,series);
 		this.state = this.getInitialState();
 		var oldTree = this.virtualDOM;
 		var virtualDOM = this.render();
@@ -346,6 +350,5 @@ Pie.prototype = {
 		this.group = group;
 	},
 	destroy(){
-
 	}
 }

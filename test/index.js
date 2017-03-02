@@ -19,10 +19,10 @@ chart.setOption({
                 {value:235, name:'视频广告'},
                 {value:400, name:'搜索引擎'}
             ].sort(function (a, b) { return a.value-b.value}),
-			sliceOffset:20,
+			sliceOffset:0,
 			size:0.75,
 			minSize:80,
-			innerSize:0,
+			innerSize:0.6,
 			startAngle:0,
 			endAngle:null,
 			selectMode:"single",
@@ -33,10 +33,28 @@ chart.setOption({
 			dataLabels:{
 				enabled:true,
 				inside:false,
-				distance:-40,
+				distance:-30,
 				style:{
 					fontSize:11
 				}
+			}
+		},
+		{
+			type:"pie",
+			size:0.4,
+			innerSize:0.5,
+			data:[
+				{
+					name:"内部",
+					value:1
+				},
+				{
+					name:"外部",
+					value:2
+				}
+			],
+			dataLabels:{
+				distance:-20
 			}
 		}
 	]
