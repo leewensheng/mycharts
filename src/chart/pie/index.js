@@ -148,12 +148,8 @@ Pie.prototype = {
 			  .on("click",function(){
 			  	that.selectPoint(index);
 			  })
-			  .on("mouseover",function(){
-			  	that.handleHover(index,true);
-			  })
-			  .on("mouseout",function(){
-			  	that.handleHover(index,false);
-			  })
+			  .on("mouseover",that.handleHover.bind(that))
+			  .on("mouseout",that.handleHover.bind(that))
 		});
 		paper.switchLayer(virtualDOM);
 		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif")
@@ -189,7 +185,9 @@ Pie.prototype = {
 		
 		return virtualDOM;
 	},
-	handleHover(index,isHover){
+	handleHover(event){
+		var index = $(event.target).index();
+		var isHover = (event.type === 'mouseover');
 		var points = this.state.points;
 		var point = points[index];
 		var {cx,cy,innerRadius} = this.state;
@@ -340,14 +338,13 @@ Pie.prototype = {
 		this.series = cad.extend(true,default_series,series);
 		this.state = this.getInitialState();
 		var oldTree = this.virtualDOM;
-		var virtualDOM = this.render();
+		var newTree = this.render();
 		var paper = this.chart.getPaper();
-		//console.log(paper.diff(oldTree,virtualDOM));
-		this.virtualDOM = virtualDOM;
-		this.group.remove();
-		var group = $(virtualDOM.render());
-		this.seriesGroup.append(group);
-		this.group = group;
+		var patches = paper.diff(oldTree,newTree);
+		return;
+		oldTree.realDOM = null;
+		this.virtualDOM = newTree;
+		//newTree.patch(this.group.get(0),patches);
 	},
 	destroy(){
 	}

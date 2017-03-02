@@ -38,24 +38,6 @@ chart.setOption({
 					fontSize:11
 				}
 			}
-		},
-		{
-			type:"pie",
-			size:0.4,
-			innerSize:0.5,
-			data:[
-				{
-					name:"内部",
-					value:1
-				},
-				{
-					name:"外部",
-					value:2
-				}
-			],
-			dataLabels:{
-				distance:-20
-			}
 		}
 	]
 });
