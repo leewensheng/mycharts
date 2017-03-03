@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import default_option from './option/index'
-import Pie from './chart/pie/index'
+import Pie from './chart/pie2/index.js'
 import cad from '../../src/index'
 
 var charts = {
@@ -57,7 +57,8 @@ Chart.prototype = {
 		for(var i = 0; i <series.length;i++) {
 			paper.switchLayer(seriesGroup);
 			var type = series.type;
-			instance.push(new Pie(that,seriesGroup,series[i]));
+			var pie = new Pie({chart:this,series:series[i]}).mount(seriesGroup.get(0));
+			instance.push(pie);
 		}
 		this.series = instance;
 	},
@@ -82,7 +83,7 @@ Chart.prototype = {
 			var chart = series[i];
 			var seriesData = option.series[i];
 			if(seriesData) {
-				chart.update(seriesData);
+				chart.setProps({series:seriesData});
 			} else {
 				chart.destroy();
 			}
