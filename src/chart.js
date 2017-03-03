@@ -18,7 +18,7 @@ Chart.prototype = {
 	},
 	initPaper(el,option){
 		var width,height,paper;
-		var wrapper = $("<div>").addClass("mychart-container").css("position","relative").css("overflow","hidden");
+		var wrapper = $("<div>").addClass("mychart-container").css("position","relative").css("overflow","visible");
 		width = option.width || $(el).width();
 		height = option.height || $(el).height();
 		wrapper.height(height);
@@ -44,20 +44,8 @@ Chart.prototype = {
 		var paper = this.getPaper();
 		var background = option.chart.background;
 		paper.rect(0,0,"100%","100%").fill(background).stroke("none");
-		this.initTitle();
-		this.initLegend();
-		this.initAxis();
 		this.initSeires();
 		this.componentDidMount();
-	},
-	initTitle(){
-
-	},
-	initLegend(){
-
-	},
-	initAxis(){
-
 	},
 	initSeires(){
 		var paper = this.getPaper();
@@ -69,7 +57,6 @@ Chart.prototype = {
 		for(var i = 0; i <series.length;i++) {
 			paper.switchLayer(seriesGroup);
 			var type = series.type;
-			var group =paper.g();
 			instance.push(new Pie(that,seriesGroup,series[i]));
 		}
 		this.series = instance;

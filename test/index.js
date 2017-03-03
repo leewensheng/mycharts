@@ -49,8 +49,8 @@ $("<button>test</button>").appendTo("body")
 	data.push({value:200,name:"广告来源"})
 	chart.setOption({
 		series:[
-			{	
-				color:"blue",
+			{	color:"red",
+				sliceOffset:20,
 				data:data
 			}
 		]

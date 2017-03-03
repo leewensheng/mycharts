@@ -148,8 +148,8 @@ Pie.prototype = {
 			  .on("click",function(){
 			  	that.selectPoint(index);
 			  })
-			  .on("mouseover",that.handleHover.bind(that))
-			  .on("mouseout",that.handleHover.bind(that))
+			  .on("mouseover",that.handleHover.bind(that,index,true))
+			  .on("mouseout",that.handleHover.bind(that,index,false))
 		});
 		paper.switchLayer(virtualDOM);
 		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif")
@@ -185,9 +185,7 @@ Pie.prototype = {
 		
 		return virtualDOM;
 	},
-	handleHover(event){
-		var index = $(event.target).index();
-		var isHover = (event.type === 'mouseover');
+	handleHover(index,isHover){
 		var points = this.state.points;
 		var point = points[index];
 		var {cx,cy,innerRadius} = this.state;
@@ -341,10 +339,8 @@ Pie.prototype = {
 		var newTree = this.render();
 		var paper = this.chart.getPaper();
 		var patches = paper.diff(oldTree,newTree);
-		return;
-		oldTree.realDOM = null;
 		this.virtualDOM = newTree;
-		//newTree.patch(this.group.get(0),patches);
+		newTree.patch(this.group.get(0),patches);
 	},
 	destroy(){
 	}
