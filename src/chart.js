@@ -102,7 +102,6 @@ Chart.prototype = {
 			var width = that.container.width();
 			var height = that.container.get(0).clientHeight;
 			that.resize(width,height);
-
 		})
 	},
 	destroy(){

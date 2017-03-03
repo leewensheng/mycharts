@@ -130,19 +130,22 @@ Pie.prototype = {
 		var paper  = chart.getPaper();
 		var points = this.state.points;
 		var {width,height} = chart;
-		var {center,size,dataLabels,borderColor,borderWidth} = series;
+		var {center,size,dataLabels,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = paper.createVirtualDOM("g");
 		paper.switchLayer(virtualDOM);
-		var slice = paper.g({className:"points-group"});
-		paper.switchLayer(slice);
+		var pointLayer = paper.g({className:"points-group"});
+		paper.switchLayer(pointLayer);
 		points.map(function(point,index){
+			var slice =
 			paper.addShape("sector",cx,cy,{
 				startAngle:point.startAngle,
 				endAngle:point.endAngle,
 				radius:point.radius,
 				innerRadius:innerRadius
-			}).attr("fill",point.color)
+			});
+			slice.attr("transform","translate(0,0)");
+			slice.attr("fill",point.color)
 			  .attr("stroke",borderColor)
 			  .attr("stroke-width",borderWidth)
 			  .on("click",function(){
@@ -320,15 +323,16 @@ Pie.prototype = {
 	componentDidMount(){
 		this.animate();
 		window.pie = this;
-		var points = this.state.points;
-		for(var i = 0; i < points.length;i++) {
-			if(points[i].selected) {
-				this.selectPoint(i);
-			}
-		}
 	},
 	componentWillUnmount(){
 
+	},
+	componentDidUpdate(prevProps, prevState) {
+		
+	},
+	componentWillUpdate(nextProps,nextState){
+		//停止动画
+		this.group.find(".points-group path").stopTransition(true);
 	},
 	update(series){
 		var oldState = this.state;
@@ -340,6 +344,7 @@ Pie.prototype = {
 		var paper = this.chart.getPaper();
 		var patches = paper.diff(oldTree,newTree);
 		this.virtualDOM = newTree;
+		this.componentWillUpdate();
 		newTree.patch(this.group.get(0),patches);
 	},
 	destroy(){

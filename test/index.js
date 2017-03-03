@@ -13,13 +13,13 @@ chart.setOption({
 			name:'a pie chart',
 			/*color:'#c23531',*/
 			data:[
-                {value:335, name:'直接访问',selected:true},
+                {value:335, name:'直接访问'},
                 {value:310, name:'邮件营销'},
                 {value:274, name:'联盟广告'},
                 {value:235, name:'视频广告'},
                 {value:400, name:'搜索引擎'}
             ].sort(function (a, b) { return a.value-b.value}),
-			sliceOffset:0,
+			sliceOffset:20,
 			size:0.75,
 			minSize:80,
 			innerSize:0.6,
