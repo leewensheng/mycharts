@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import React from '../../../../src/virtual-dom/react.js'
+import Slice from './slice'
 module.exports = React.createClass({
 	getDefaultProps(){
 		return {
@@ -118,22 +119,22 @@ module.exports = React.createClass({
 		var pointLayer = paper.g({className:"points-group"});
 		paper.switchLayer(pointLayer);
 		points.map(function(point,index){
-			var slice =
-			paper.addShape("sector",cx,cy,{
+			paper.append(Slice,{
+				cx:cx,
+				cy:cy,
 				startAngle:point.startAngle,
 				endAngle:point.endAngle,
 				radius:point.radius,
-				innerRadius:innerRadius
-			});
-			slice.attr("transform","translate(0,0)");
-			slice.attr("fill",point.color)
-			  .attr("stroke",borderColor)
-			  .attr("stroke-width",borderWidth)
-			  .on("click",function(){
-			  	that.selectPoint(index);
-			  })
-			  .on("mouseover",that.handleHover.bind(that,index,true))
-			  .on("mouseout",that.handleHover.bind(that,index,false))
+				innerRadius:innerRadius,
+				selected:point.selected,
+				midAngle:point.midAngle,
+				borderWidth:borderWidth,
+				borderColor:borderColor,
+				color:point.color,
+				paper:paper,
+				index:index,
+				onSlice:that.onSlice.bind(that)
+			})
 		});
 		paper.switchLayer(virtualDOM);
 		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif")
@@ -168,103 +169,21 @@ module.exports = React.createClass({
 		});
 		return virtualDOM;
 	},
-	handleHover(index,isHover){
+	onSlice(index,sliced){
 		var points = this.state.points;
-		var point = points[index];
-		var {cx,cy,innerRadius} = this.state;
-		var sliceOffset = this.props.series.sliceOffset;
-		var {startAngle,endAngle} = point;
-		var color = point.color;
-		var radius = point.radius;
-		var hoverRadius = radius + 15;
-		var $slices = $(this.findDOMNode()).find(".points-group path");
-		var $slice = $slices.eq(index);
-		if(isHover) {
-			var hoverColor = cad.brighten(color,0.1);
-			 $slice.fill(hoverColor);
-			if(!point.isAnimating) {
-				 $slice.stopTransition();
-			}
-			$slice.transition({
-				from:radius,
-				to:hoverRadius,
-				during:400,
-				ease:'elasticOut',
-				onUpdate(val){
-					var path = cad.getShapePath("sector",cx,cy,{startAngle:startAngle,endAngle:endAngle,radius:val,innerRadius:innerRadius})
-					$(this).attr("d",path);
-				}
-			})
-		} else {
-			 $slice.fill(color);
-			if(!point.isAnimating) {
-				 $slice.stopTransition();
-			}
-			 $slice.transition({
-				from:hoverRadius,
-				to:radius,
-				during:400,
-				ease:'elasticOut',
-				onUpdate(val){
-					var path = cad.getShapePath("sector",cx,cy,{startAngle:startAngle,endAngle:endAngle,radius:val,innerRadius:innerRadius})
-					$(this).attr("d",path);
-				}
-			})
-		}
-		if(this.props.series.dataLabels.inside) {
-			var $labels = $(this.findDOMNode()).find(".label-layer text");
-				$labels.hide();
-			if(isHover) {
-				$labels.eq(index).show();
+		var selectMode = this.props.series.selectMode;
+		points.map(function(point,key){
+			if(key === index) {
+				point.selected = sliced;
 			} else {
-				points.map(function(p,key){
-					if(p.selected) {
-						$labels.eq(key).show();
+				if(sliced) {
+					if(selectMode === "single") {
+						point.selected = false;
 					}
-				})
-			}
-		} 
-	},
-	selectPoint(index){
-		var {points,cx,cy,radius} = this.state;
-		var point = points[index];
-		var {sliceOffset,selectMode,dataLabels} = this.props.series;
-		var {startAngle,endAngle} = point;
-		var that = this;
-		var $slices = $(this.findDOMNode()).find(".points-group path");
-		var $labels = $(this.findDOMNode()).find(".label-layer text");
-		var $slice = $slices.eq(index);
-		if(!point.selected) {
-			var offset = cad.Point(0,0).angleMoveTo(point.midAngle,sliceOffset);
-			if(sliceOffset > 0) {
-				point.isAnimating = true;
-				$slices.eq(index).stopTransition(true)
-						    .transition({transform:"translate("+ offset.x+","+ offset.y +")"},200,null,function(){
-						    	point.isAnimating = false;
-						    });
-				point.selected = true;
-			}
-			//退回其他
-			points.map(function(p,key){
-				if(key!==index&&selectMode==='single') {
-					that.unselectPoint($slices.eq(key),p);
 				}
-			})		
-		} else {
-			this.unselectPoint($slice,point);
-		}
-
-	},
-	unselectPoint($slice,point){
-		if(point.selected) {
-			point.isAnimating = true;
-			$slice.stopTransition(true).transition({transform:"translate(0,0)"},200,null,function(){
-				point.isAnimating = false;
-			});
-		} else {
-			$slice.translate(0,0);
-		}
-		point.selected = false;
+			}
+		})
+		this.setState({points:points});
 	},
 	animate(){
 		var chart = this.props.chart;
@@ -301,6 +220,7 @@ module.exports = React.createClass({
 		})
 	},
 	componentDidMount(){
+		window.pie = this;
 		this.animate();
 	},
 	componentWillReceiveProps(nextProps){
@@ -308,7 +228,5 @@ module.exports = React.createClass({
 	},
 	componentWillUpdate(){
 		//停止动画
-		var group = $(this.findDOMNode());
-		group.find(".points-group path").stopTransition();
 	}
 })

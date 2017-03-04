@@ -22,7 +22,7 @@ chart.setOption({
 			sliceOffset:20,
 			size:0.75,
 			minSize:80,
-			innerSize:0.6,
+			innerSize:0,
 			startAngle:0,
 			endAngle:null,
 			selectMode:"single",
@@ -51,7 +51,12 @@ $("<button>test</button>").appendTo("body")
 		series:[
 			{	color:"red",
 				sliceOffset:20,
-				data:data
+				data:data,
+				innerSize:0.5,
+				selectMode:"mutiple",
+				dataLabels:{
+					inside:0
+				}
 			}
 		]
 	})
