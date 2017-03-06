@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import {h,Component,VNode,findDOMNode} from 'preact'
+import {Component,VNode,findDOMNode} from 'preact'
 import Slice from './slice'
 class  Pie extends Component{
 	getDefaultProps(){
