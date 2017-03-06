@@ -1,7 +1,7 @@
 import $ from 'jquery'
-import React from '../../../../src/virtual-dom/react.js'
+import {h,Component,findDOMNode} from 'preact'
 import Slice from './slice'
-module.exports = React.createClass({
+class  Pie extends Component{
 	getDefaultProps(){
 		return {
 			series: {
@@ -31,9 +31,9 @@ module.exports = React.createClass({
 				}
 			}
 		}
-	},
-	getInitialState(nextProps){
-		var {series,chart} = nextProps || this.props;
+	}
+	getInitialState(){
+		var {series,chart} =this.props;
 		var {data,color,colors} = series;
 		if(chart.option.colors) {
 			colors = chart.option.colors;
@@ -105,7 +105,7 @@ module.exports = React.createClass({
 	    	endAngle:endAngle,
 	    	innerRadius:radius*innerSize
 	    }
-	},
+	}
 	render(){
 		var that = this;
 		var {chart,series} = this.props;
@@ -114,7 +114,7 @@ module.exports = React.createClass({
 		var {width,height} = chart;
 		var {center,size,dataLabels,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
-		var virtualDOM = React.createElement("g");
+		var virtualDOM = h("g");
 		paper.switchLayer(virtualDOM);
 		var pointLayer = paper.g({className:"points-group"});
 		paper.switchLayer(pointLayer);
@@ -133,7 +133,7 @@ module.exports = React.createClass({
 				color:point.color,
 				paper:paper,
 				index:index,
-				onSlice:that.onSlice.bind(that)
+				onSlice:that.onSlice.bind(that,index)
 			})
 		});
 		paper.switchLayer(virtualDOM);
@@ -168,10 +168,11 @@ module.exports = React.createClass({
 			}
 		});
 		return virtualDOM;
-	},
-	onSlice(index,sliced){
+	}
+	onSlice(index){
 		var points = this.state.points;
 		var selectMode = this.props.series.selectMode;
+		var sliced = !points[index].selected;
 		points.map(function(point,key){
 			if(key === index) {
 				point.selected = sliced;
@@ -184,13 +185,13 @@ module.exports = React.createClass({
 			}
 		})
 		this.setState({points:points});
-	},
+	}
 	animate(){
 		var chart = this.props.chart;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		radius = Math.min(chart.width,chart.height);
 		var paper = chart.getPaper();
-		var group = $(this.findDOMNode());
+		var group = $(findDOMNode(this));
 		var clip = paper.clipPath(function(){
 			paper.addShape("sector",cx,cy,{
 											radius:radius,
@@ -218,15 +219,16 @@ module.exports = React.createClass({
 				}));
 			}
 		})
-	},
+	}
 	componentDidMount(){
 		window.pie = this;
 		this.animate();
-	},
+	}
 	componentWillReceiveProps(nextProps){
 		this.setState(this.getInitialState(nextProps));
-	},
+	}
 	componentWillUpdate(){
 		//停止动画
 	}
-})
+}
+module.exports = Pie;

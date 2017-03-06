@@ -1,7 +1,6 @@
 import $ from 'jquery'
-import React from '../../../../src/virtual-dom/react.js'
-//import cad
-var Slice = React.createClass({
+import {h,Component,findDOMNode} from 'preact'
+class  Slice extends Component{
 	getDefaultProps(){
 		return {
 			paper:null,
@@ -16,21 +15,19 @@ var Slice = React.createClass({
 			sliceOffset:20,
 			borderColor:null,
 			borderWidth:null,
-			index:null
+			index:null,
 		}
-	}, 
+	}
 	getInitialState(){
-		var selected = this.props.selected;
 		return {
-			selected:selected||false,
 			isAnimating:false,
 			isHover:false
 		}
-	},
+	}
 	render(){
-		var {cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
-		var {selected,isHover} = this.state;
-		var path = React.createElement("path");
+		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
+		var {isHover} = this.state;
+		var path =	h("path");
 		var that = this;
 		if(isHover) {
 			radius += 15;
@@ -45,19 +42,19 @@ var Slice = React.createClass({
 			.attr("fill",color)
 			.attr("stroke",borderColor)
 			.attr("stroke-width",borderWidth)
-			.on("click",this.handleClick.bind(this))
+			.on("click",this.props.onSlice)
 			.on("mouseover",this.handleMouseOver.bind(this))
 			.on("mouseout",this.handleMouseOut.bind(this));
 			var offset = cad.Point(0,0).angleMoveTo(midAngle,sliceOffset);
 		return path;
-	},
+	}
 	handleClick(){
 		var selected = this.state.selected;
 		var index = this.props.index;
 		if(typeof this.props.onSlice === 'function') {
 			this.props.onSlice(index,!selected);
 		}
-	},
+	}
 	offset(moveOut){
 		var {cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
 		var offset = cad.Point(0,0).angleMoveTo(midAngle,sliceOffset);
@@ -76,7 +73,7 @@ var Slice = React.createClass({
 			    });
 		}
 
-	},
+	}
 	handleHover(isHover){
 		var {cx,cy,startAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
 		var isAnimating = this.state.isAnimating;
@@ -111,39 +108,42 @@ var Slice = React.createClass({
 				$(el).attr("d",path);
 			}
 		})
-	},
+	}
 	handleMouseOver(){
 		this.handleHover(true);
-	},
+	}
 	handleMouseOut(){
 		this.handleHover(false);
-	},
+	}
 	componentWillReceiveProps(nextProps){
 		this.setState({
 			update:true,
 			selected:nextProps.selected
 		})
-	},
+	}
 	shouldComponentUpdate(nextProps,nextState){
 		if(nextState.update) {
 			return true;
 		} else {
 			return false;
 		}
-	},
+	}
+	componentWillUpdate(){
+		$(this.findDOMNode()).stopTransition(true);
+	}
 	componentDidUpdate(prevProps,prevState){
 		this.setState({
 			update:false
 		})
-		if(this.state.selected !== prevState.selected) {
-			this.offset(this.state.selected);
+		if(this.props.selected !== prevProps.selected) {
+			this.offset(this.props.selected);
 		} else {
-			if(this.state.selected) {
+			if(this.props.selected) {
 				this.offset(true);
 			} else {
 				this.offset(false)
 			}
 		}
 	}
-})
+}
 module.exports = Slice;

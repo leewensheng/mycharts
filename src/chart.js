@@ -2,10 +2,10 @@ import $ from 'jquery'
 import default_option from './option/index'
 import Pie from './chart/pie2/index.js'
 import cad from '../../src/index'
-
-var charts = {
-	pie:Pie
-}
+import {render,h} from 'preact'
+cad.Paper.prototype.createVirtualDOM = function(tagName,attributes){
+	return h(tagName,attributes);
+};
 module.exports = Chart;
 function Chart(el,option){
 	return this.init(el,option);
@@ -57,8 +57,12 @@ Chart.prototype = {
 		for(var i = 0; i <series.length;i++) {
 			paper.switchLayer(seriesGroup);
 			var type = series.type;
-			var pie = new Pie({chart:this,series:series[i]}).mount(seriesGroup.get(0));
+			var pie = h(Pie,{
+				chart:this,
+				series:series[i]
+			});
 			instance.push(pie);
+			render(pie,seriesGroup.get(0));
 		}
 		this.series = instance;
 	},
