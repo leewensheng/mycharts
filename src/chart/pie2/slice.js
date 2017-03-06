@@ -1,4 +1,5 @@
 import $ from 'jquery'
+import cad from 'cad'
 import {h,Component,findDOMNode} from 'preact'
 class  Slice extends Component{
 	getDefaultProps(){

@@ -32,11 +32,11 @@ class  Pie extends Component{
 			}
 		}
 	}
-	getInitialState(){
-		var {series,chart} =this.props;
+	getRenderData(props,oldState){
+		var {series,width,height,option} = props;
 		var {data,color,colors} = series;
-		if(chart.option.colors) {
-			colors = chart.option.colors;
+		if(option.colors) {
+			colors = option.colors;
 		}
 		var arr_value = data.map(function(val){
 			return val.value;
@@ -45,11 +45,11 @@ class  Pie extends Component{
 		var max_num = cad.max(arr_value);
 		var min_num = cad.min(arr_value);
 		var mean_num = cad.mean(arr_value);
-	    var cx = series.center[0]*chart.width;
-	    var cy = series.center[1]*chart.height;
+	    var cx = series.center[0]*width;
+	    var cy = series.center[1]*height;
 	    var innerSize = series.innerSize;
 	    var size = series.size;
-	    var radius = Math.min(chart.width,chart.height)*size/2;
+	    var radius = Math.min(width,height)*size/2;
 	    radius = Math.max(radius,series.minSize);
 	    var startAngle = series.startAngle - 90;
 	    var points = [];
@@ -92,7 +92,15 @@ class  Pie extends Component{
 	        points.push(obj);
 	        return endAngle;
 	    },startAngle);
-
+	    //保留已选中的状态
+	    if(oldState) {
+	    	oldState.points.map(function(p,index){
+	    		var pnew = points[index] 
+	    		if(pnew) {
+	    			pnew.selected = p.selected;
+	    		}
+	    	})
+	    }
 	    if(roseType === "radius" || roseType === "area")  {
 	     	innerSize = 0;
 	    }
@@ -106,12 +114,14 @@ class  Pie extends Component{
 	    	innerRadius:radius*innerSize
 	    }
 	}
+	getInitialState(){
+		return this.getRenderData(this.props);
+	}
 	render(){
 		var that = this;
-		var {chart,series} = this.props;
-		var paper  = chart.getPaper();
+		var {width,height,series} = this.props;
+		var paper  =new cad.Paper();
 		var points = this.state.points;
-		var {width,height} = chart;
 		var {center,size,dataLabels,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = new VNode("g");
@@ -133,6 +143,7 @@ class  Pie extends Component{
 				color:point.color,
 				paper:paper,
 				index:index,
+				selected:point.selected,
 				sliceOffset:sliceOffset,
 				onSlice:that.onSlice.bind(that,index)
 			})
@@ -188,17 +199,19 @@ class  Pie extends Component{
 		this.setState({points:points});
 	}
 	animate(){
-		var chart = this.props.chart;
+		var {width,height,option} = this.props;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
-		radius = Math.min(chart.width,chart.height);
-		var paper = chart.getPaper();
+		radius = Math.min(width,height);
+		var el = findDOMNode(this);
+		var svg = $(el).closest("svg").get(0);
+		var paper = new cad.Paper(svg);
 		var group = $(findDOMNode(this));
 		var clip = paper.clipPath(function(){
 			paper.addShape("sector",cx,cy,{
-											radius:radius,
-											startAngle:startAngle,
-											endAngle:startAngle + 1e-6
-										});
+							radius:radius,
+							startAngle:startAngle,
+							endAngle:startAngle + 1e-6
+						});
 		});
 		clip.attr("id","clip");
 		group.attr("clip-path","url(#clip)");
@@ -220,16 +233,14 @@ class  Pie extends Component{
 				}));
 			}
 		})
+		paper.destroy();
 	}
 	componentDidMount(){
 		window.pie = this;
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){
-		this.setState(this.getInitialState(nextProps));
-	}
-	componentWillUpdate(){
-		//停止动画
+		this.setState(this.getRenderData(nextProps,this.state));
 	}
 }
 module.exports = Pie;

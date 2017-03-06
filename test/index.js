@@ -1,9 +1,9 @@
-import mychart from '../src/index.js'
-import cad from '../../src/index'
+import vchart from '../src/index.js'
+import cad from 'cad'
 import $ from 'jquery'
 var el = document.getElementById("root");
 var t1 = Date.now();
-var chart = mychart.init(el,{height:400});
+var chart = vchart.init(el,{height:400});
 chart.setOption({
 	chart:{
 		background:'#2A3139',

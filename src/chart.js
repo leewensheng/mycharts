@@ -1,11 +1,8 @@
 import $ from 'jquery'
 import default_option from './option/index'
-import Pie from './chart/pie2/index.js'
+import Core from './chart/index'
 import cad from '../../src/index'
-import {render,h,VNode} from 'preact'
-cad.Paper.prototype.createVirtualDOM = function(tagName,attributes){
-	return new VNode(tagName,attributes);
-};
+import {render,VNode} from 'preact'
 module.exports = Chart;
 function Chart(el,option){
 	return this.init(el,option);
@@ -16,55 +13,23 @@ Chart.prototype = {
 		this.container = el;
 		this.initPaper(el,option);
 	},
-	initPaper(el,option){
+	initPaper(el,option = {}){
 		var width,height,paper;
-		var wrapper = $("<div>").addClass("mychart-container").css("position","relative").css("overflow","visible");
 		width = option.width || $(el).width();
 		height = option.height || $(el).height();
-		wrapper.height(height);
-		$(el).append(wrapper);
-		paper = cad.init(wrapper.get(0),{width,height});
-		this.__paper = paper;
-		this.container = $(el);
+		this.container = $(el).get(0);
 		this.width = width;
 		this.height = height;
 	},
-	getPaper(){
-		return this.__paper;
-	},
 	render(){
-		this.initOption();
-		this.initChart();
-	},
-	initOption(){
-		this.option = cad.extend(true,default_option,this.option);
-	},
-	initChart(){
-		var option = this.option;
-		var paper = this.getPaper();
-		var background = option.chart.background;
-		paper.rect(0,0,"100%","100%").fill(background).stroke("none");
-		this.initSeires();
+		var option = cad.extend(true,default_option,this.option);
+		this.option = option;
+		var container = this.container;
+		var width = this.width;
+		var height = this.height;
+		var vchart = new VNode(Core,{chart:this,option,width,height});
+		render(vchart,container);
 		this.componentDidMount();
-	},
-	initSeires(){
-		var paper = this.getPaper();
-		var option = this.option;
-		var series = option.series;
-		var instance = [];
-		var seriesGroup = paper.addLayer().addClass('mychart-series');
-		var that = this;
-		for(var i = 0; i <series.length;i++) {
-			paper.switchLayer(seriesGroup);
-			var type = series.type;
-			var pie = new VNode(Pie,{
-				chart:this,
-				series:series[i]
-			},[]);
-			instance.push(pie);
-			render(pie,seriesGroup.get(0));
-		}
-		this.series = instance;
 	},
 	setOption(option){
 		var oldOption = this.option;
@@ -72,26 +37,17 @@ Chart.prototype = {
 			this.oldOption = cad.extend(true,{},oldOption);
 			var newOption = cad.extend(true,oldOption,option);
 			this.option = newOption;
-			this.refresh();
+			var a = this.refresh();
 		} else {
 			this.option = option;
 			this.render();
 		}
 	},
 	refresh(){
-		var {option,series,width,height} = this;
-		var paper = this.getPaper();
-		paper.width(width);
-		paper.height(height);
-		for(var i = 0 ; i < series.length; i ++) {
-			var chart = series[i];
-			var seriesData = option.series[i];
-			if(seriesData) {
-				chart.setProps({series:seriesData});
-			} else {
-				chart.destroy();
-			}
-		}
+		var option = this.option;
+		var width = this.width;
+		var height = this.height;
+		this.vchart.setState({option,width,height});
 	},
 	resize(width,height){
 		var that = this;
@@ -101,11 +57,18 @@ Chart.prototype = {
 		this.height = height;
 		this.refresh();
 	},
+	downloadImage(){
+	},
 	componentDidMount(){
 		var that = this;
+		var svg = $(this.container).find("svg");
+		var paper = new cad.Paper();
+		paper.svg = svg;
+		this.__paper = paper;
+		window.chart = this;
 		window.addEventListener("resize",function(){
-			var width = that.container.width();
-			var height = that.container.get(0).clientHeight;
+			var width = $(that.container).width();
+			var height = that.container.clientHeight;
 			that.resize(width,height);
 		})
 	},
