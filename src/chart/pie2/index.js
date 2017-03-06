@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import {h,Component,findDOMNode} from 'preact'
+import {h,Component,VNode,findDOMNode} from 'preact'
 import Slice from './slice'
 class  Pie extends Component{
 	getDefaultProps(){
@@ -114,7 +114,7 @@ class  Pie extends Component{
 		var {width,height} = chart;
 		var {center,size,dataLabels,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
-		var virtualDOM = h("g");
+		var virtualDOM = new VNode("g");
 		paper.switchLayer(virtualDOM);
 		var pointLayer = paper.g({className:"points-group"});
 		paper.switchLayer(pointLayer);
@@ -133,6 +133,7 @@ class  Pie extends Component{
 				color:point.color,
 				paper:paper,
 				index:index,
+				sliceOffset:sliceOffset,
 				onSlice:that.onSlice.bind(that,index)
 			})
 		});

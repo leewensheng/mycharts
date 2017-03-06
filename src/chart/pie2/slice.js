@@ -49,16 +49,15 @@ class  Slice extends Component{
 		return path;
 	}
 	handleClick(){
-		var selected = this.state.selected;
 		var index = this.props.index;
 		if(typeof this.props.onSlice === 'function') {
-			this.props.onSlice(index,!selected);
+			this.props.onSlice(index);
 		}
 	}
 	offset(moveOut){
 		var {cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
 		var offset = cad.Point(0,0).angleMoveTo(midAngle,sliceOffset);
-		var el = this.findDOMNode();
+		var el = findDOMNode(this)
 		var that = this;
 		var offsetX = moveOut?offset.x:0;
 		var offsetY = moveOut?offset.y:0;
@@ -78,7 +77,7 @@ class  Slice extends Component{
 		var {cx,cy,startAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
 		var isAnimating = this.state.isAnimating;
 		var selected = this.state.selected;
-		var el = this.findDOMNode();
+		var el = findDOMNode(this);
 		var hoverColor = cad.brighten(color,0.1);
 		var hoverRadius = radius + 15;
 		this.setState({isHover:isHover})
@@ -117,8 +116,7 @@ class  Slice extends Component{
 	}
 	componentWillReceiveProps(nextProps){
 		this.setState({
-			update:true,
-			selected:nextProps.selected
+			update:true
 		})
 	}
 	shouldComponentUpdate(nextProps,nextState){
@@ -129,7 +127,7 @@ class  Slice extends Component{
 		}
 	}
 	componentWillUpdate(){
-		$(this.findDOMNode()).stopTransition(true);
+		$(findDOMNode(this)).stopTransition(true);
 	}
 	componentDidUpdate(prevProps,prevState){
 		this.setState({
