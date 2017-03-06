@@ -48,6 +48,9 @@ $("<button>test</button>").appendTo("body")
 	var data = chart.option.series[0].data;
 	data.push({value:200,name:"广告来源"})
 	chart.setOption({
+		chart:{
+
+		},
 		series:[
 			{	color:"red",
 				sliceOffset:20,
