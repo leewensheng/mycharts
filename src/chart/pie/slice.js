@@ -118,23 +118,23 @@ class  Slice extends Component{
 		this.handleHover(false);
 	}
 	AngleAnimate(prevProps,props){
-		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
 		var el = findDOMNode(this);
-		if(props.isAdded) {
-			prevProps = {
-				startAngle:endAngle,
-				endAngle:endAngle
-			}
+		if(!prevProps) {
+			prevProps = cad.extend(true,{},props);
+			prevProps.startAngle = props.endAngle;
 		}
+		var isHover = this.state.isHover;
+		var interpolate = cad.interpolate(prevProps,props);
 		$(el).transition({
 			from:0,
 			to:1,
-			ease:"linear",
-			onUpdate(val){
+			onUpdate(tick){
+				var val = interpolate(tick);
+				var {cx,cy,startAngle,endAngle,radius,innerRadius,sliceOffset} = val;
 				var path = cad.getShapePath("sector",cx,cy,{
-					startAngle:val*props.startAngle+(1-val)*prevProps.startAngle,
-					endAngle:val*props.endAngle+(1-val)*prevProps.endAngle,
-					radius:radius,
+					startAngle:startAngle,
+					endAngle:endAngle,
+					radius:isHover?radius+15:radius,
 					innerRadius:innerRadius
 				});
 				$(el).attr("d",path);
@@ -171,10 +171,7 @@ class  Slice extends Component{
 				this.offset(false)
 			}
 		}
-		//角度动画
-		if((prevProps.startAngle!== this.props.startAngle)||(prevProps.endAngle!== this.props.endAngle)) {
-			this.AngleAnimate(prevProps,this.props);
-		}
+		this.AngleAnimate(prevProps,this.props);
 		this.setState({
 			update:false,
 			option:this.props
