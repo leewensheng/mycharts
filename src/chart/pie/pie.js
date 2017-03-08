@@ -149,7 +149,8 @@ class  Pie extends Component{
 				index:index,
 				selected:point.selected,
 				sliceOffset:sliceOffset,
-				onSlice:that.onSlice.bind(that,index)
+				onSlice:that.onSlice.bind(that,index),
+				isAdded:point.isAdded
 			})
 		});
 		paper.switchLayer(virtualDOM);

@@ -23,11 +23,12 @@ class  Slice extends Component{
 	getInitialState(){
 		return {
 			isAnimating:false,
-			isHover:false
+			isHover:false,
+			option:this.props
 		}
 	}
 	render(){
-		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
+		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.state.option;
 		var {isHover} = this.state;
 		var path =	h("path");
 		var that = this;
@@ -119,6 +120,26 @@ class  Slice extends Component{
 	AngleAnimate(prevProps,props){
 		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
 		var el = findDOMNode(this);
+		if(props.isAdded) {
+			prevProps = {
+				startAngle:endAngle,
+				endAngle:endAngle
+			}
+		}
+		$(el).transition({
+			from:0,
+			to:1,
+			ease:"linear",
+			onUpdate(val){
+				var path = cad.getShapePath("sector",cx,cy,{
+					startAngle:val*props.startAngle+(1-val)*prevProps.startAngle,
+					endAngle:val*props.endAngle+(1-val)*prevProps.endAngle,
+					radius:radius,
+					innerRadius:innerRadius
+				});
+				$(el).attr("d",path);
+			}
+		})
 	}
 	componentDidMount() {
 		if(this.props.isAdded) {
@@ -141,9 +162,6 @@ class  Slice extends Component{
 		$(findDOMNode(this)).stopTransition(true);
 	}
 	componentDidUpdate(prevProps,prevState){
-		this.setState({
-			update:false
-		})
 		if(this.props.selected !== prevProps.selected) {
 			this.offset(this.props.selected);
 		} else {
@@ -157,6 +175,10 @@ class  Slice extends Component{
 		if((prevProps.startAngle!== this.props.startAngle)||(prevProps.endAngle!== this.props.endAngle)) {
 			this.AngleAnimate(prevProps,this.props);
 		}
+		this.setState({
+			update:false,
+			option:this.props
+		})
 	}
 }
 module.exports = Slice;
