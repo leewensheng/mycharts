@@ -1,6 +1,6 @@
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
-import Pie from './pie2/index'
+import Pie from './pie/pie.js'
 import $ from 'jquery'
 class Core extends Component {
     getInitialState(){

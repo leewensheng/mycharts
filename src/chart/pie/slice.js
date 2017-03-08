@@ -17,6 +17,7 @@ class  Slice extends Component{
 			borderColor:null,
 			borderWidth:null,
 			index:null,
+			isAdded:false //是新增过来的，需要动画
 		}
 	}
 	getInitialState(){
@@ -115,6 +116,15 @@ class  Slice extends Component{
 	handleMouseOut(){
 		this.handleHover(false);
 	}
+	AngleAnimate(prevProps,props){
+		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
+		var el = findDOMNode(this);
+	}
+	componentDidMount() {
+		if(this.props.isAdded) {
+			this.AngleAnimate(null,this.props);
+		}
+	}
 	componentWillReceiveProps(nextProps){
 		this.setState({
 			update:true
@@ -142,6 +152,10 @@ class  Slice extends Component{
 			} else {
 				this.offset(false)
 			}
+		}
+		//角度动画
+		if((prevProps.startAngle!== this.props.startAngle)||(prevProps.endAngle!== this.props.endAngle)) {
+			this.AngleAnimate(prevProps,this.props);
 		}
 	}
 }

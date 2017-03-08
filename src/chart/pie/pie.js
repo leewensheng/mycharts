@@ -94,10 +94,14 @@ class  Pie extends Component{
 	    },startAngle);
 	    //保留已选中的状态
 	    if(oldState) {
-	    	oldState.points.map(function(p,index){
-	    		var pnew = points[index] 
-	    		if(pnew) {
-	    			pnew.selected = p.selected;
+	    	points.map(function(p,index){
+	    		var oldP = oldState.points[index];
+	    		if(oldP) {
+	    			p.selected = oldP.selected;
+	    			p.isAdded = false;
+	    		} else {
+	    			//新增的节点
+	    			p.isAdded = true;
 	    		}
 	    	})
 	    }

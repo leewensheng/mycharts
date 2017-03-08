@@ -5,6 +5,12 @@ import cad from '../../src/index'
 import {render,VNode} from 'preact'
 module.exports = Chart;
 function Chart(el,option){
+	this.container = null;
+	this.width = null;
+	this.height = null;
+	this.option = null;
+	this.__paper = null;
+	this.vchart = null;
 	return this.init(el,option);
 }
 Chart.prototype = {
