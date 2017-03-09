@@ -8,7 +8,6 @@ class Core extends Component {
         return this.props;
     }
     getDefaultProps(){
-        console.log("runtime props")
         return  {
             width:600,
             height:400,
@@ -34,6 +33,7 @@ class Core extends Component {
         }
     }
     render(){
+        //return ''
         var {width,height,option} = this.state;
         var {chart,colors,series} = option;
         var wrap = new VNode("div",{className:"vcharts-container"});
