@@ -19,7 +19,11 @@ class  Slice extends Component{
 			borderColor:null,
 			borderWidth:null,
 			index:null,
-			isAdded:false //是新增过来的，需要动画
+			isAdded:false, //是新增过来的，需要动画
+			prevOption:{
+				radius:0,
+				innerRadius:0
+			}
 		}
 	}
 	getInitialState(){
@@ -73,7 +77,7 @@ class  Slice extends Component{
 			$(el).stopTransition(true)
 				 .transition({
 				 		transform:"translate("+ offsetX+","+ offsetY +")"
-				 },200,null,function(){
+				 },100,null,function(){
 				 	that.setState({isAnimating:false});
 			    });
 		}
@@ -124,8 +128,7 @@ class  Slice extends Component{
 		var el = findDOMNode(this);
 		if(!prevProps) {
 			prevProps = cad.extend(true,{},props);
-			prevProps.startAngle = props.endAngle;
-			prevProps.innerRadius = props.prevInnerRadius;
+			prevProps = cad.extend(prevProps,props.prevOption);
 		}
 		var isHover = this.state.isHover;
 		var interpolate = cad.interpolate(prevProps,props);

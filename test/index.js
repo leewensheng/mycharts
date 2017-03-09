@@ -57,10 +57,12 @@ $("<button>test</button>").appendTo("body")
 				data:data,
 				borderWidth:5,
 				borderColor:"#fff",
-				innerSize:0.5*+1*Math.random(),
+				size:Math.random()+0.2,
+				innerSize:Math.random(),
+				center:[Math.random(),Math.random()],
 				selectMode:"mutiple",
 				dataLabels:{
-					inside:0
+					distance:Math.random()*20
 				}
 			}
 		]

@@ -102,7 +102,12 @@ class  Pie extends Component{
 	    		} else {
 	    			//新增的节点
 	    			p.isAdded = true;
-	    			p.prevInnerRadius = oldState.innerRadius;
+	    			p.prevOption = {
+	    				cx:oldState.cx,
+	    				cy:oldState.cy,
+	    				radius:oldState.radius,
+	    				innerRadius:oldState.innerRadius
+	    			}
 	    		}
 	    	})
 	    }
@@ -152,7 +157,7 @@ class  Pie extends Component{
 				sliceOffset:sliceOffset,
 				onSlice:that.onSlice.bind(that,index),
 				isAdded:point.isAdded,
-				prevInnerRadius:point.prevInnerRadius
+				prevOption:point.prevOption
 			})
 		});
 		paper.switchLayer(virtualDOM);
