@@ -1,6 +1,8 @@
 import $ from 'jquery'
 import cad from 'cad'
 import {h,Component,findDOMNode} from 'preact'
+//the radius will be more when mouserover
+var HOVER_RADIUS_ADD = 10;
 class  Slice extends Component{
 	getDefaultProps(){
 		return {
@@ -28,12 +30,13 @@ class  Slice extends Component{
 		}
 	}
 	render(){
-		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.state.option;
+		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset} = this.state.option;
+		var {color,borderColor,borderWidth} = this.props;
 		var {isHover} = this.state;
 		var path =	h("path");
 		var that = this;
 		if(isHover) {
-			radius += 15;
+			radius += HOVER_RADIUS_ADD;
 		}
 		var d = cad.getShapePath("sector",cx,cy,{
 				startAngle:startAngle,
@@ -82,7 +85,7 @@ class  Slice extends Component{
 		var selected = this.state.selected;
 		var el = findDOMNode(this);
 		var hoverColor = cad.brighten(color,0.1);
-		var hoverRadius = radius + 15;
+		var hoverRadius = radius + HOVER_RADIUS_ADD;
 		this.setState({isHover:isHover})
 		if(isHover) {
 			$(el).fill(hoverColor);
@@ -122,6 +125,7 @@ class  Slice extends Component{
 		if(!prevProps) {
 			prevProps = cad.extend(true,{},props);
 			prevProps.startAngle = props.endAngle;
+			prevProps.innerRadius = props.prevInnerRadius;
 		}
 		var isHover = this.state.isHover;
 		var interpolate = cad.interpolate(prevProps,props);
@@ -134,7 +138,7 @@ class  Slice extends Component{
 				var path = cad.getShapePath("sector",cx,cy,{
 					startAngle:startAngle,
 					endAngle:endAngle,
-					radius:isHover?radius+15:radius,
+					radius:isHover?radius+ HOVER_RADIUS_ADD:radius,
 					innerRadius:innerRadius
 				});
 				$(el).attr("d",path);

@@ -55,8 +55,10 @@ $("<button>test</button>").appendTo("body")
 			{	color:"red",
 				sliceOffset:20,
 				data:data,
-/*				innerSize:0.5*+1*Math.random(),
-*/				selectMode:"mutiple",
+				borderWidth:5,
+				borderColor:"#fff",
+				innerSize:0.5*+1*Math.random(),
+				selectMode:"mutiple",
 				dataLabels:{
 					inside:0
 				}
