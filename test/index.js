@@ -29,7 +29,7 @@ chart.setOption({
 			roseType:false,//radius false area
 			borderColor:"#fff",
 			borderWidth:0,
-			center:[0.5,0.5],
+			center:[0.2,0.5],
 			dataLabels:{
 				enabled:true,
 				inside:false,
@@ -38,6 +38,14 @@ chart.setOption({
 					fontSize:11
 				}
 			}
+		},{
+			type:"pie",
+			data:[
+				{value:335, name:'直接访问'},
+                {value:310, name:'邮件营销'},
+                {value:274, name:'联盟广告'}
+            ],
+            center:[0.7,0.5]
 		}
 	]
 });

@@ -1,5 +1,6 @@
 import $ from 'jquery'
 import {Component,VNode,findDOMNode} from 'preact'
+import cad from 'cad'
 import Slice from './slice'
 class  Pie extends Component{
 	getDefaultProps(){
@@ -212,8 +213,8 @@ class  Pie extends Component{
 	}
 	animate(){
 		var {width,height,option} = this.props;
+		var serieIndex = this.props.series.index;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
-		radius = Math.min(width,height);
 		var el = findDOMNode(this);
 		var svg = $(el).closest("svg").get(0);
 		var paper = new cad.Paper(svg);
@@ -225,8 +226,8 @@ class  Pie extends Component{
 							endAngle:startAngle + 1e-6
 						});
 		});
-		clip.attr("id","clip");
-		group.attr("clip-path","url(#clip)");
+		clip.attr("id","pie-clip"+serieIndex);
+		group.attr("clip-path","url(#pie-clip"+ serieIndex +")");
 		var path = clip.find("path");
 		path.transition({
 			from:startAngle,

@@ -8,6 +8,7 @@ class Core extends Component {
         return this.props;
     }
     getDefaultProps(){
+        console.log("runtime props")
         return  {
             width:600,
             height:400,
@@ -52,6 +53,7 @@ class Core extends Component {
         series.map(function(chartOption,index){
             //是否该在此处切换图层？
             var type = chartOption.type;
+            chartOption.index = index;
             paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
         })
         return wrap;

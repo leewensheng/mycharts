@@ -132,6 +132,8 @@ class  Slice extends Component{
 		}
 		var isHover = this.state.isHover;
 		var interpolate = cad.interpolate(prevProps,props);
+		this.setState({isAnimating:true})
+		var that = this;
 		$(el).transition({
 			from:0,
 			to:1,
@@ -145,6 +147,9 @@ class  Slice extends Component{
 					innerRadius:innerRadius
 				});
 				$(el).attr("d",path);
+			},
+			callback(){
+				that.setState({isAnimating:false});
 			}
 		})
 	}
