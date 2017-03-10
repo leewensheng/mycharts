@@ -9,7 +9,7 @@ class  DataLabel extends Component{
             text:'',
             style:{
                 color:"#333",
-                fontSize:12,
+                fontSize:13,
                 fontFamily:"Microsoft Yahei",
                 fontWeight:"normal",
                 textAlign:"center",
@@ -46,7 +46,7 @@ class  DataLabel extends Component{
              .attr("text-anchor",anchor[style.textAlign])
              .attr("dy",dy)
              .css("font-family",style.fontFamily)
-             .css("font-size",style.fontSize)  
+             .attr("font-size",style.fontSize)  
              .css("font-weight",style.fontWeight)
         ;
         return label; 

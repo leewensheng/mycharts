@@ -190,19 +190,13 @@ class  Pie extends Component{
 				y:textPoint.y,
 				text:p.label,
 				style:{
-					"color":"#fff",
-					"display":hide?"none":"",
-					"pointer-events":"none"
+					color:"#fff",
+					display:hide?"none":"",
+					pointerEvents:"none",
+					textAlign:textOption.textAlign,
+					textBaseLine:"middle"
 				}
 			})
-/*			var 
-			label = paper.text(textPoint.x,textPoint.y,p.label,textOption);
-			label
-			.css("display",hide?"none":"")
-			.attr("fill","#fff");
-			if(dataLabels.distance < 0) {
-				label.css("pointer-events","none");
-			}*/
 		});
 		return virtualDOM;
 	}
