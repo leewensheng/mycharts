@@ -19,9 +19,11 @@ class  Slice extends Component{
 			sliceOffset:20,
 			borderColor:null,
 			borderWidth:null,
-			index:null,
+			index:null,//饼块的顺序
+			onSlice:null,
 			isAdded:false, //是新增过来的，需要动画
-			prevOption:{
+			updateType:"newProps", // newprops or select
+			prevOption:{ //上一次的状态
 				radius:0,
 				innerRadius:0
 			}
@@ -30,12 +32,11 @@ class  Slice extends Component{
 	getInitialState(){
 		return {
 			isAnimating:false,
-			isHover:false,
-			option:this.props
+			isHover:false
 		}
 	}
 	render(){
-		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset} = this.state.option;
+		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset} = this.props;
 		var {color,borderColor,borderWidth} = this.props;
 		var {isHover} = this.state;
 		var path =	new VNode("path");
@@ -56,7 +57,6 @@ class  Slice extends Component{
 			.on("click",this.props.onSlice)
 			.on("mouseover",this.handleMouseOver.bind(this))
 			.on("mouseout",this.handleMouseOut.bind(this));
-			var offset = cad.Point(0,0).angleMoveTo(midAngle,sliceOffset);
 		return path;
 	}
 	handleClick(){
@@ -125,19 +125,38 @@ class  Slice extends Component{
 	handleMouseOut(){
 		this.handleHover(false);
 	}
-	AngleAnimate(prevProps,props){
+	animate(prevProps,props){
+		if(props.updateType === "select") {
+			this.offset(props.selected);
+			return;
+		}
 		var el = findDOMNode(this);
 		if(!prevProps) {
+			//新增成员的动画
 			prevProps = cad.extend(true,{},props);
-			prevProps = cad.extend(prevProps,props.prevOption);
+			prevProps.startAngle = prevProps.endAngle;
+			prevProps.cx = props.prevOption.cx;
+			prevProps.cy = props.prevOption.cy;
+			prevProps.radius = props.radius;
 		}
 		var isHover = this.state.isHover;
 		var interpolate = cad.interpolate(prevProps,props);
-		this.setState({isAnimating:true})
+		var {midAngle,color,borderWidth,borderColor,sliceOffset} = props;
+		$(el).attr('fill',color).attr("stroke",borderColor).attr("stroke-width",borderWidth);
 		var that = this;
+		var x = 0, y = 0;
+		if(props.selected) {
+			x = cad.cos(midAngle) * sliceOffset;
+			y = cad.sin(midAngle) * sliceOffset;
+		}
+		var transform = "translate(" + x + "," + y +")";
+		$(el).attr("transform",transform);
+		this.setState({isAnimating:true});
 		$(el).transition({
 			from:0,
 			to:1,
+			ease:"easeout",
+			during:400,
 			onUpdate(tick){
 				var val = interpolate(tick);
 				var {cx,cy,startAngle,endAngle,radius,innerRadius,sliceOffset} = val;
@@ -156,36 +175,18 @@ class  Slice extends Component{
 	}
 	componentDidMount() {
 		if(this.props.isAdded) {
-			this.AngleAnimate(null,this.props);
+			this.animate(null,this.props);
+		}
+		if(this.props.selected){
+			this.offset(true);
 		}
 	}
 	componentWillReceiveProps(nextProps){
-		this.setState({
-			update:true
-		})
+		//this.offset(nextProps.selected);
+		this.animate(this.props,nextProps);
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return nextState.update?true:false;
-	}
-	componentWillUpdate(){
-		
-		//$(findDOMNode(this)).stopTransition(true);
-	}
-	componentDidUpdate(prevProps,prevState){
-		if(this.props.selected !== prevProps.selected) {
-			this.offset(this.props.selected);
-		} else {
-			if(this.props.selected) {
-				this.offset(true);
-			} else {
-				this.offset(false)
-			}
-		}
-		this.AngleAnimate(prevProps,this.props);
-		this.setState({
-			update:false,
-			option:this.props
-		})
+		return false;
 	}
 }
 module.exports = Slice;

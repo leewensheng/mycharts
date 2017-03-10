@@ -54,20 +54,20 @@ console.log('total-time:'+ (t2-t1)+'ms');
 $("<button>test</button>").appendTo("body")
 .on("click",function(){
 	var data = chart.option.series[0].data;
-	data.push({value:200,name:"广告来源"})
+	data.push({value:200*Math.random()+100,name:"广告来源"})
 	chart.setOption({
 		chart:{
 
 		},
 		series:[
-			{	color:"red",
+			{	
+				color:cad.hsl(360*Math.random(),0.5,0.5),
 				sliceOffset:20,
 				data:data,
-				borderWidth:5,
+				borderWidth:1,
 				borderColor:"#fff",
 				size:Math.random()+0.2,
 				innerSize:Math.random(),
-				center:[Math.random(),Math.random()],
 				selectMode:"mutiple",
 				dataLabels:{
 					distance:Math.random()*20

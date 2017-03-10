@@ -159,6 +159,7 @@ class  Pie extends Component{
 				sliceOffset:sliceOffset,
 				onSlice:that.onSlice.bind(that,index),
 				isAdded:point.isAdded,
+				updateType:point.updateType || "newProps",
 				prevOption:point.prevOption
 			})
 		});
@@ -214,12 +215,14 @@ class  Pie extends Component{
 					}
 				}
 			}
+			point.updateType = "select";
 		})
 		this.setState({points:points});
 	}
 	animate(){
-		var {width,height,option} = this.props;
-		var serieIndex = this.props.series.index;
+		var {width,height,option,series} = this.props;
+		var serieIndex = series.index;
+		var sliceOffset = series.sliceOffset;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		var el = findDOMNode(this);
 		var svg = $(el).closest("svg").get(0);
@@ -227,7 +230,7 @@ class  Pie extends Component{
 		var group = $(findDOMNode(this));
 		var clip = paper.clipPath(function(){
 			paper.addShape("sector",cx,cy,{
-							radius:radius,
+							radius:radius + sliceOffset,
 							startAngle:startAngle,
 							endAngle:startAngle + 1e-6
 						});
@@ -248,7 +251,7 @@ class  Pie extends Component{
 				path.attr("d",cad.getShapePath("sector",cx,cy,{
 					startAngle:startAngle,
 					endAngle:val,
-					radius:radius
+					radius:radius + sliceOffset
 				}));
 			}
 		})
