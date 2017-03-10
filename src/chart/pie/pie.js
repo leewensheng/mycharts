@@ -2,6 +2,7 @@ import $ from 'jquery'
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Slice from './slice'
+import DataLabel from '../../widget/dataLabel'
 class  Pie extends Component{
 	getDefaultProps(){
 		return {
@@ -35,9 +36,10 @@ class  Pie extends Component{
 	}
 	getRenderData(props,oldState){
 		var {series,width,height,option} = props;
-		var {data,color,colors} = series;
-		if(option.colors) {
-			colors = option.colors;
+		var colors = option.colors;
+		var {data,color} = series;
+		if(series.colors) {
+			colors = series.colors;
 		}
 		var arr_value = data.map(function(val){
 			return val.value;
@@ -76,7 +78,7 @@ class  Pie extends Component{
 	        	y:curData.value,
 	        	percent:percent.toFixed(2)
 	        };
-	        if(!colors && color) {
+	        if(color) {
 	        	//颜色差以和平均值差对比
 	        	if(max_num - min_num > 0) {
 	        		obj.color = cad.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
@@ -183,14 +185,24 @@ class  Pie extends Component{
 			} else {
 				textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
 			}
-			var 
+			paper.append(DataLabel,{
+				x:textPoint.x,
+				y:textPoint.y,
+				text:p.label,
+				style:{
+					"color":"#fff",
+					"display":hide?"none":"",
+					"pointer-events":"none"
+				}
+			})
+/*			var 
 			label = paper.text(textPoint.x,textPoint.y,p.label,textOption);
 			label
 			.css("display",hide?"none":"")
 			.attr("fill","#fff");
 			if(dataLabels.distance < 0) {
 				label.css("pointer-events","none");
-			}
+			}*/
 		});
 		return virtualDOM;
 	}

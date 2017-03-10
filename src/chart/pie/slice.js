@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import cad from 'cad'
-import {h,Component,findDOMNode} from 'preact'
+import {VNode,Component,findDOMNode} from 'preact'
 //the radius will be more when mouserover
 var HOVER_RADIUS_ADD = 10;
 class  Slice extends Component{
@@ -37,7 +37,7 @@ class  Slice extends Component{
 		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset} = this.state.option;
 		var {color,borderColor,borderWidth} = this.props;
 		var {isHover} = this.state;
-		var path =	h("path");
+		var path =	new VNode("path");
 		var that = this;
 		if(isHover) {
 			radius += HOVER_RADIUS_ADD;
@@ -164,11 +164,7 @@ class  Slice extends Component{
 		})
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		if(nextState.update) {
-			return true;
-		} else {
-			return false;
-		}
+		return nextState.update?true:false;
 	}
 	componentWillUpdate(){
 		$(findDOMNode(this)).stopTransition(true);

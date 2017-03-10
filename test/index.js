@@ -9,7 +9,7 @@ chart.setOption({
 		background:'#2A3139',
 	},
 	series:[
-		{
+		{	color:"blue",
 			name:'a pie chart',
 			/*color:'#c23531',*/
 			data:[
@@ -26,14 +26,14 @@ chart.setOption({
 			startAngle:0,
 			endAngle:null,
 			selectMode:"single",
-			roseType:false,//radius false area
+			roseType:'radius',//radius false area
 			borderColor:"#fff",
 			borderWidth:0,
 			center:[0.2,0.5],
 			dataLabels:{
 				enabled:true,
 				inside:false,
-				distance:-30,
+				distance:30,
 				style:{
 					fontSize:11
 				}
