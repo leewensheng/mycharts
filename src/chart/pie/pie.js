@@ -154,7 +154,6 @@ class  Pie extends Component{
 				borderWidth:borderWidth,
 				borderColor:borderColor,
 				color:point.color,
-				paper:paper,
 				index:index,
 				selected:point.selected,
 				sliceOffset:sliceOffset,
@@ -198,6 +197,7 @@ class  Pie extends Component{
 				}
 			})
 		});
+		paper.destroy();
 		return virtualDOM;
 	}
 	onSlice(index){
@@ -259,6 +259,8 @@ class  Pie extends Component{
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){
+		var el = $(findDOMNode(this)).find(".points-group,.label-layer");
+		el.stopChildrenTransition(true);
 		this.setState(this.getRenderData(nextProps,this.state));
 	}
 }

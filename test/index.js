@@ -41,7 +41,7 @@ chart.setOption({
 		},{
 			type:"pie",
 			data:[
-				{value:335, name:'直接访问'},
+				{value:335, name:'直接访问',selected:1},
                 {value:310, name:'邮件营销'},
                 {value:274, name:'联盟广告'}
             ],

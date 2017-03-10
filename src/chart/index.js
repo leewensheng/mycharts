@@ -56,6 +56,7 @@ class Core extends Component {
             chartOption.index = index;
             paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
         })
+        paper.destroy();
         return wrap;
     }
     updateHeight(){

@@ -3,6 +3,7 @@ import cad from 'cad'
 import {VNode,Component,findDOMNode} from 'preact'
 //the radius will be more when mouserover
 var HOVER_RADIUS_ADD = 10;
+
 class  Slice extends Component{
 	getDefaultProps(){
 		return {
@@ -167,7 +168,8 @@ class  Slice extends Component{
 		return nextState.update?true:false;
 	}
 	componentWillUpdate(){
-		$(findDOMNode(this)).stopTransition(true);
+		
+		//$(findDOMNode(this)).stopTransition(true);
 	}
 	componentDidUpdate(prevProps,prevState){
 		if(this.props.selected !== prevProps.selected) {
