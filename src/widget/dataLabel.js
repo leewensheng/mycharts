@@ -55,7 +55,7 @@ class  DataLabel extends Component{
         var {x,y} = this.props;
         var {oldX,oldY} = this.state;
         var el = findDOMNode(this);
-        $(el).transition({x:x,y:y},400);
+        $(el).transition({x:x,y:y},400,'easeout');
     }
     componentWillReceiveProps(){
         this.setState({update:true})
