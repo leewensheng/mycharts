@@ -1,6 +1,6 @@
 import {Component,VNode,findDOMNode} from 'preact'
 import $ from 'jquery'
-
+//todo 多行支持tspan
 class  DataLabel extends Component{
     getDefaultProps(){
         return {
