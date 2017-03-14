@@ -7,7 +7,6 @@ cad.defineShape("pie_connect_line",function(options){
     if(textAlign === "right") {
         length2 *= -1;
     }
-    console.log(textAlign)
     path.M(cx,cy).angleMoveTo(midAngle,radius).LineTo(x - length2,y).LineTo(x,y);
     return path;
 })
