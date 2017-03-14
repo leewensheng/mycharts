@@ -45,6 +45,9 @@ chart.setOption({
                 {value:310, name:'邮件营销'},
                 {value:274, name:'联盟广告'}
             ],
+            dataLabels:{
+            	distance:40
+            },
             center:[0.7,0.5]
 		}
 	]

@@ -3,6 +3,7 @@ import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Slice from './slice'
 import DataLabel from '../../widget/dataLabel'
+import ConnectLine from './connect-line'
 class  Pie extends Component{
 	getDefaultProps(){
 		return {
@@ -139,7 +140,9 @@ class  Pie extends Component{
 		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = new VNode("g");
 		paper.switchLayer(virtualDOM);
+		var connectLayer = paper.g({className:"connect-line-layer"}).attr("fill","none");
 		var pointLayer = paper.g({className:"points-group"});
+		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif");
 		paper.switchLayer(pointLayer);
 		points.map(function(point,index){
 			paper.append(Slice,{
@@ -163,9 +166,6 @@ class  Pie extends Component{
 				prevOption:point.prevOption
 			})
 		});
-		paper.switchLayer(virtualDOM);
-		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif")
-		paper.switchLayer(labelLayer);
 		points.map(function(p,index){
 			var textPoint;
 			var hide  = false;
@@ -185,8 +185,16 @@ class  Pie extends Component{
 			} else {
 				textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
 			}
+			paper.switchLayer(labelLayer);
+			//略微偏移
+			var dx = 0;
+			if(textOption.textAlign === "left") {
+				dx = 5;
+			} else if(textOption.textAlign === "right") {
+				dx = -5;
+			}
 			paper.append(DataLabel,{
-				x:textPoint.x,
+				x:textPoint.x + dx,
 				y:textPoint.y,
 				text:p.label,
 				style:{
@@ -195,6 +203,21 @@ class  Pie extends Component{
 					pointerEvents:"none",
 					textAlign:textOption.textAlign,
 					textBaseLine:"middle"
+				}
+			})
+			paper.switchLayer(connectLayer);
+			paper.append(ConnectLine,{
+				cx:cx,
+				cy:cy,
+				radius:p.radius,
+				midAngle:p.midAngle,
+				x:textPoint.x,
+				y:textPoint.y,
+				textAlign:textOption.textAlign,
+				lineStyle:{
+					color:"#fff",
+					width:1,
+					dash:0
 				}
 			})
 		});
