@@ -186,13 +186,25 @@ class  Pie extends Component{
 				textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
 			}
 			paper.switchLayer(labelLayer);
-			//略微偏移
+			//文本略微偏移
 			var dx = 0;
 			if(textOption.textAlign === "left") {
-				dx = 5;
+				dx = 3;
 			} else if(textOption.textAlign === "right") {
-				dx = -5;
+				dx = -3;
 			}
+			var length2 = 20;//水平引线长度,需要考虑超出最大长度
+			//三角形正弦定理 2*sin(A)/a = 1/R;其中A为角,a为对边长,R为外接圆半径;
+			/*var maxLength2 = 3
+			var startPoint = cad.Point(cx,cy).angleMoveTo(midAngle,p.radius);
+			var hline = new cad.Line(startPoint.x,startPoint.y,startPoint.x+5,startPoint.y);
+			var crossPoints = hline.getPointWithCircle(cx,cy,p.radius);*/
+			var rotate = cad.asin(cad.sin(midAngle)*length2/(radius + dataLabels.distance));
+			if(textOption.textAlign === "left") {
+				rotate*= -1;
+			}
+			textPoint.rotate(rotate,cx,cy);
+
 			paper.append(DataLabel,{
 				x:textPoint.x + dx,
 				y:textPoint.y,
