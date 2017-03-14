@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="../lib/echarts.common.min.js"></script>
+<style>
+	#root {
+		height: 400px;
+	}
+</style>
+</head>
+<body>
+	<div id="root">
+	</div>
+	<button class="btn-test" onclick="refresh()">refresh</button>
+<script>
+var 
+option = {
+	backgroundColor:"gray",
+    title : {
+        text: '',
+        subtext: '',
+        x:''
+    },
+    legend: {
+    	show:false,
+    },
+    series : [
+        {
+            name: '访问来源',
+            type: 'pie',
+            radius : '55%',
+            center: ['50%', '60%'],
+            data:[
+                {value:335, name:'直接访问'},
+                {value:310, name:'邮件营销'},
+                {value:234, name:'联盟广告'},
+                {value:135, name:'视频广告'},
+                {value:1548, name:'搜索引擎'}
+            ],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+var chart = echarts.init(document.querySelector("#root"));
+chart.setOption(option);
+function refresh(){
+	option.series[0].data.push({value:335,name:'test'});
+	chart.setOption(option)
+}
+</script>
+</body>
+</html>

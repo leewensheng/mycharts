@@ -140,9 +140,9 @@ class  Pie extends Component{
 		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = new VNode("g");
 		paper.switchLayer(virtualDOM);
-		var connectLayer = paper.g({className:"connect-line-layer"}).attr("fill","none");
+		var connectLayer = paper.g({className:"connect-line-layer"}).attr("fill","none").css("display","none")
 		var pointLayer = paper.g({className:"points-group"});
-		var labelLayer = paper.g({className:"label-layer"}).css("font-family","Microsoft Yahei, sans-serif");
+		var labelLayer = paper.g({className:"label-layer"}).css("display","none")
 		paper.switchLayer(pointLayer);
 		points.map(function(point,index){
 			paper.append(Slice,{
@@ -226,6 +226,7 @@ class  Pie extends Component{
 				x:textPoint.x,
 				y:textPoint.y,
 				textAlign:textOption.textAlign,
+				updateType:p.updateType,
 				lineStyle:{
 					color:"#fff",
 					width:1,
@@ -281,6 +282,7 @@ class  Pie extends Component{
 			callback(){
 				clip.remove();
 				group.removeAttr("clip-path");
+				$(".connect-line-layer,.label-layer").css("display","");
 			},
 			onUpdate:function(val){
 				path.attr("d",cad.getShapePath("sector",cx,cy,{
@@ -297,7 +299,7 @@ class  Pie extends Component{
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){
-		var el = $(findDOMNode(this)).find(".points-group,.label-layer");
+		var el = $(findDOMNode(this)).find(".points-group,.label-layer,.connect-line-layer");
 		el.stopChildrenTransition(true);
 		this.setState(this.getRenderData(nextProps,this.state));
 	}
