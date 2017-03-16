@@ -16,9 +16,19 @@ class  Pie extends Component{
 				data:[], //数据{name:'slcie1',value:1,color:'#fff',selected:true}
 				dataLabels:{
 					enabled:true,
+					color:"",
 					show:false,
 					inside:false,
-					distance:30
+					distance:30,
+				},
+				connectLine:{
+					enabled:true,
+					length2:20,
+					lineStyle:{
+						color:"",
+						width:1,
+						dash:0
+					}
 				},
 				roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同
 				selectMode:"single",//多选模式
@@ -136,7 +146,7 @@ class  Pie extends Component{
 		var {width,height,series} = this.props;
 		var paper  =new cad.Paper();
 		var points = this.state.points;
-		var {center,size,dataLabels,borderColor,borderWidth,sliceOffset} = series;
+		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
 		var virtualDOM = new VNode("g");
 		paper.switchLayer(virtualDOM);
@@ -166,6 +176,8 @@ class  Pie extends Component{
 				prevOption:point.prevOption
 			})
 		});
+		dataLabels.enabled
+		&&
 		points.map(function(p,index){
 			var textPoint;
 			var hide  = false;
@@ -193,7 +205,7 @@ class  Pie extends Component{
 			} else if(textOption.textAlign === "right") {
 				dx = -3;
 			}
-			var length2 = 20;//水平引线长度,需要考虑超出最大长度
+			var length2 = connectLine.length2;//水平引线长度,需要考虑超出最大长度
 			//三角形正弦定理 2*sin(A)/a = 1/R;其中A为角,a为对边长,R为外接圆半径;
 			/*var maxLength2 = 3
 			var startPoint = cad.Point(cx,cy).angleMoveTo(midAngle,p.radius);
@@ -210,29 +222,33 @@ class  Pie extends Component{
 				y:textPoint.y,
 				text:p.label,
 				style:{
-					color:"#fff",
+					color:dataLabels.color||p.color,
 					display:hide?"none":"",
 					pointerEvents:"none",
 					textAlign:textOption.textAlign,
 					textBaseLine:"middle"
 				}
 			})
-			paper.switchLayer(connectLayer);
-			paper.append(ConnectLine,{
-				cx:cx,
-				cy:cy,
-				radius:p.radius,
-				midAngle:p.midAngle,
-				x:textPoint.x,
-				y:textPoint.y,
-				textAlign:textOption.textAlign,
-				updateType:p.updateType,
-				lineStyle:{
-					color:"#fff",
-					width:1,
-					dash:0
-				}
-			})
+			if(connectLine.enabled) {
+				paper.switchLayer(connectLayer);
+				paper.append(ConnectLine,{
+					width:width,
+					cx:cx,
+					cy:cy,
+					radius:p.radius,
+					midAngle:p.midAngle,
+					x:textPoint.x,
+					y:textPoint.y,
+					textAlign:textOption.textAlign,
+					updateType:p.updateType,
+					length2:connectLine.length2,
+					lineStyle:{
+						color:connectLine.lineStyle.color||p.color,
+						width:connectLine.lineStyle.width,
+						dash:connectLine.lineStyle.dash
+					}
+				})
+			}
 		});
 		paper.destroy();
 		return virtualDOM;

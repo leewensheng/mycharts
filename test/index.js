@@ -32,13 +32,21 @@ chart.setOption({
 			center:[0.2,0.5],
 			dataLabels:{
 				enabled:true,
+                color:"#fff",
 				inside:false,
-				distance:40,
+				distance:30,
 				style:{
 					fontSize:11
 				}
-			}
-		},{
+			},
+            connectLine:{
+                enabled:true,
+                lineStyle:{
+                    color:"#fff"
+                }
+            }
+		},
+        {
 			type:"pie",
 			data:[
                 {value:335, name:'直接访问'},
@@ -48,7 +56,14 @@ chart.setOption({
                 {value:1548, name:'搜索引擎'}
             ],
             dataLabels:{
-            	distance:40
+                enabled:1,
+            	distance:50,
+            },
+            connectLine:{
+                enabled:true,
+                length2:30,
+                lineStyle:{
+                }
             },
             center:[0.7,0.5]
 		}
@@ -56,6 +71,7 @@ chart.setOption({
 });
 var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
+document.title = t2 - t1 ;
 $("<button>test</button>").appendTo("body")
 .on("click",function(){
 	var data = chart.option.series[0].data;
@@ -74,9 +90,6 @@ $("<button>test</button>").appendTo("body")
 				size:Math.random()+0.2,
 				innerSize:Math.random(),
 				selectMode:"mutiple",
-				dataLabels:{
-					distance:Math.random()*20
-				}
 			}
 		]
 	})
