@@ -211,12 +211,13 @@ class  Pie extends Component{
 			var startPoint = cad.Point(cx,cy).angleMoveTo(midAngle,p.radius);
 			var hline = new cad.Line(startPoint.x,startPoint.y,startPoint.x+5,startPoint.y);
 			var crossPoints = hline.getPointWithCircle(cx,cy,p.radius);*/
-			var rotate = cad.asin(cad.sin(midAngle)*length2/(radius + dataLabels.distance));
-			if(textOption.textAlign === "left") {
-				rotate*= -1;
+			if(!(dataLabels.inside || dataLabels.distance < 0 )) {
+				var rotate = cad.asin(cad.sin(midAngle)*length2/(radius + dataLabels.distance));
+				if(textOption.textAlign === "left") {
+					rotate*= -1;
+				}
+				textPoint.rotate(rotate,cx,cy);
 			}
-			textPoint.rotate(rotate,cx,cy);
-
 			paper.append(DataLabel,{
 				x:textPoint.x + dx,
 				y:textPoint.y,
@@ -229,7 +230,7 @@ class  Pie extends Component{
 					textBaseLine:"middle"
 				}
 			})
-			if(connectLine.enabled) {
+			if(connectLine.enabled && !dataLabels.inside && dataLabels.distance>0) {
 				paper.switchLayer(connectLayer);
 				paper.append(ConnectLine,{
 					width:width,

@@ -43,11 +43,19 @@ Chart.prototype = {
 			this.oldOption = cad.extend(true,{},oldOption);
 			var newOption = cad.extend(true,oldOption,option);
 			this.option = newOption;
-			var a = this.refresh();
+			this.debounceUpdate();
 		} else {
 			this.option = option;
 			this.render();
 		}
+	},
+	debounceUpdate(){
+		var timer = this.__lastRefreshTimer;
+		clearTimeout(timer);
+		var that = this;
+		this.__lastRefreshTimer =  setTimeout(function(){
+			that.refresh.call(that);
+		},20);
 	},
 	refresh(){
 		var option = this.option;
@@ -61,7 +69,7 @@ Chart.prototype = {
 		var oldHeight = this.height;
 		this.width = width;
 		this.height = height;
-		this.refresh();
+		this.debounceUpdate();
 	},
 	downloadImage(){
 	},

@@ -4,6 +4,13 @@ import $ from 'jquery'
 var el = document.getElementById("root");
 var t1 = Date.now();
 var chart = vchart.init(el,{height:400});
+var data = [];
+for(var i = 0; i <3; i++) {
+    data.push({
+        value:300*Math.random(),
+        name:"series"+i
+    })
+};
 chart.setOption({
 	chart:{
 		background:'#2A3139',
@@ -48,16 +55,13 @@ chart.setOption({
 		},
         {
 			type:"pie",
-			data:[
-                {value:335, name:'直接访问'},
-                {value:310, name:'邮件营销'},
-                {value:234, name:'联盟广告'},
-                {value:135, name:'视频广告'},
-                {value:1548, name:'搜索引擎'}
-            ],
+			data:data,
+            innerSize:0.5,
             dataLabels:{
+                color:"#fff",
                 enabled:1,
-            	distance:50,
+            	distance:-40,
+                inside:false
             },
             connectLine:{
                 enabled:true,

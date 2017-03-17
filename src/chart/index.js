@@ -38,7 +38,7 @@ class Core extends Component {
         var {chart,colors,series} = option;
         var wrap = new VNode("div",{className:"vcharts-container"});
         //todo 修复连续css
-        wrap.attr("style","position:relative;overflow:visible");
+        wrap.attr("style","width:0;position:relative;overflow:visible");
         var paper = new cad.Paper();
         paper.switchLayer(wrap);
         var svg = paper.append("svg",{width,height});

@@ -48,6 +48,7 @@ class  DataLabel extends Component{
              .css("font-family",style.fontFamily)
              .attr("font-size",style.fontSize)  
              .css("font-weight",style.fontWeight)
+             .css("pointer-events","none");
         ;
         return label; 
     }
