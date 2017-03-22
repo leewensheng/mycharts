@@ -1,14 +1,14 @@
 import $ from 'jquery'
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
-import DataLabel from '../../widget/dataLabel'
+import DataLabel from '../widget/dataLabel'
 class  Axis extends Component {
     getDefaultProps(){
         return {
-            width:width,//图表宽度
-            height:height,//图表高度
-            grid:null,
+            width:null,//图表宽度
+            height:null,//图表高度
             isXAxis:true,
+            grid:null,//网格
             option:{
                 gridIndex:0,//所属网格区域
                 position:'',//上下左右，多轴时有用
@@ -28,6 +28,14 @@ class  Axis extends Component {
                     },
                     text:"",
                 },
+                axisLine:{
+                    show:true,
+                    lineStyle:{
+                        color:"#333",
+                        width:1,
+                        type:"solid"
+                    }
+                },
                 axisTick:{
                     show:true,
                     interval:"auto",
@@ -45,9 +53,13 @@ class  Axis extends Component {
                     inside:false,
                     rotate:0,
                     margin:8,
+                    textWidth:null,//强制宽度
                     formatter:null,
                     style:{
-                        color:''
+                        color:'',
+                        fontSize:12,
+                        textAlign:"center",
+                        textBaseLine:"bottom"
                     }
                 }
             }
@@ -62,36 +74,61 @@ class  Axis extends Component {
     render(){
         var {width,height,isXAxis,grid,option} = this.props;
         var left,top,right,bottom;
+        var type = option.type;
         //需要根据网格来计算出坐标轴的边界
-        left = top =0 ;
+        left = top = 40 ;//应该先绘制Y轴，确定文本宽度
         right = width;
-        bottom = height;
-        var axisGroup = new VNode("g");
-        var paper = new cad.paper();
+        bottom = height - 10;
+        if(!type) {
+            if(isXAxis) {
+                type = 'category';
+            } else {
+                type = 'value';
+            }
+        };
+        var axisGroup = new VNode("g",{className:"vcharts-axis"});
+        var paper = new cad.Paper();
+        var {axisLine,axisLabel,axisTick,categories} = option;
         paper.switchLayer(axisGroup);
+        if(axisLine.show) {
+            var lineBottom = bottom;
+            if(axisLabel.show) {
+                lineBottom -= axisLabel.style.fontSize;
+                lineBottom -= axisLabel.margin;
+            }
+            paper.line(0,lineBottom,width,lineBottom)
+                 .attr("stroke","#fff"||axisLine.lineStyle.color)
+                 .attr("stroke-width",axisLine.lineStyle.width)
+        }
         var axisLabel = option.axisLabel;
         if(axisLabel.show) {
-            var labelGroup = paper.g();
-            var categories = option.categories;
+            var labelGroup = paper.g({className:"axis-label"});
+            var categories = option.categories || ['test','test','test'];
             categories.map(function(label,index){
                 //计算文本位置，和网格宽高有关
                 var x,y,text,rotation;
+                var splitNumber = categories.length;
                 if(isXAxis) {
-                    x = left + index*20;
-                    y = 0;
+                    x = left + index/(splitNumber-1)*width;
+                    y = bottom;
                 } else {
                     x = 0;
-                    y =  bottom + index*20;
+                    y =  bottom - index*20;
                 }
+                text = 'label' + index;
                 paper.switchLayer(labelGroup);
                 paper.append(DataLabel,{
                     x:x,
-                    y:y
-                })
+                    y:y,
+                    text:text,
+                    style:axisLabel.style
+                });
             })
         }
+        return axisGroup;
     }
     animate(){
 
     }
 }
+module.exports = Axis;

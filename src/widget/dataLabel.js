@@ -62,7 +62,7 @@ class  DataLabel extends Component{
         this.setState({update:true})
     }
     componentWillUpdate(){
-        //$(findDOMNode(this)).stopTransition(true);
+        $(findDOMNode(this)).stopTransition(true);
     }
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;

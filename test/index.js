@@ -11,7 +11,7 @@ for(var i = 0; i <3; i++) {
         name:"series"+i
     })
 };
-chart.setOption({
+var option = {
 	chart:{
 		background:'#2A3139',
 	},
@@ -72,7 +72,9 @@ chart.setOption({
             center:[0.7,0.5]
 		}
 	]
-});
+};
+option.series = [];
+chart.setOption(option);
 var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
 document.title = t2 - t1 ;
