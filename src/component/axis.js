@@ -68,7 +68,8 @@ class  Axis extends Component {
     getInitialState(){
         return {
             min:null,
-            max:null
+            max:null,
+            labelWidth:null
         }
     }
     render(){
