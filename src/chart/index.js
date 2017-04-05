@@ -50,7 +50,7 @@ class Core extends Component {
         paper.rect(0,0,"100%","100%").attr("fill",chart.background);
         //所有的图表g
         var group = paper.g();
-        var dependencies = ['axis'];
+        /*var dependencies = ['axis'];
         dependencies.map(function(type,index){
             paper.switchLayer(group);
             paper.append(Axis,{
@@ -66,7 +66,7 @@ class Core extends Component {
                     }
                 }
             })
-        })
+        })*/
         series.map(function(chartOption,index){
             paper.switchLayer(group);
             var type = chartOption.type;

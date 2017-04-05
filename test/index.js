@@ -73,7 +73,6 @@ var option = {
 		}
 	]
 };
-option.series = [];
 chart.setOption(option);
 var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
