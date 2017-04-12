@@ -316,8 +316,6 @@ class  Pie extends Component{
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){
-		var el = $(findDOMNode(this)).find(".points-group,.connect-line-layer");
-		el.stopChildrenTransition(true);
 		this.setState(this.getRenderData(nextProps,this.state));
 	}
 }

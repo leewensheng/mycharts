@@ -131,6 +131,7 @@ class  Slice extends Component{
 			return;
 		}
 		var el = findDOMNode(this);
+		$(el).stopTransition();
 		if(!prevProps) {
 			//新增成员的动画
 			prevProps = cad.extend(true,{},props);

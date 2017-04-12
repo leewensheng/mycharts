@@ -45,6 +45,7 @@ class  ConnectLine extends Component{
         var {lineStyle,textAlign} = nextProps;
         var interpolate = cad.interpolate(this.props,nextProps);
         var el = findDOMNode(this);
+        $(el).stopTransition();
         var that = this;
         $(el).attr("stroke",lineStyle.color)
              .attr("stroke-width",lineStyle.width)
