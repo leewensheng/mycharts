@@ -52,10 +52,9 @@ Chart.prototype = {
 	debounceUpdate(){
 		var timer = this.__lastRefreshTimer;
 		clearTimeout(timer);
-		var that = this;
-		this.__lastRefreshTimer =  setTimeout(function(){
-			that.refresh.call(that);
-		},20);
+		this.__lastRefreshTimer =  setTimeout((function(){
+			this.refresh();
+		}).bind(this),20);
 	},
 	refresh(){
 		var option = this.option;
