@@ -54,7 +54,7 @@ Chart.prototype = {
 		clearTimeout(timer);
 		this.__lastRefreshTimer =  setTimeout((function(){
 			this.refresh();
-		}).bind(this),20);
+		}).bind(this),80);
 	},
 	refresh(){
 		var option = this.option;
@@ -78,7 +78,6 @@ Chart.prototype = {
 		var paper = new cad.Paper();
 		paper.svg = svg;
 		this.__paper = paper;
-		window.chart = this;
 		window.addEventListener("resize",function(){
 			var width = $(that.container).width();
 			var height = that.container.clientHeight;

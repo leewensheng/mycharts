@@ -5,7 +5,6 @@ import Axis from '../component/axis.js'
 import $ from 'jquery'
 class Core extends Component {
     getInitialState(){
-        this.props.chart.vchart = this;
         return this.props;
     }
     getDefaultProps(){
@@ -50,27 +49,14 @@ class Core extends Component {
         paper.rect(0,0,"100%","100%").attr("fill",chart.background);
         //所有的图表g
         var group = paper.g();
-        /*var dependencies = ['axis'];
-        dependencies.map(function(type,index){
-            paper.switchLayer(group);
-            paper.append(Axis,{
-                width:width,
-                height:height,
-                isXAxis:true,
-                grid:option.grid,
-                option:{
-                    axisLabel:{
-                        style:{
-                            color:"#fff"
-                        }
-                    }
-                }
-            })
-        })*/
+
+
         series.map(function(chartOption,index){
             paper.switchLayer(group);
             var type = chartOption.type;
             chartOption.index = index;
+            var defaultOption = Pie.defaultOption;
+            chartOption = $.extend(true,{},defaultOption,chartOption);
             paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
         })
         paper.destroy();
@@ -83,6 +69,7 @@ class Core extends Component {
         $(el).addSVGNamespace();
     }
     componentDidMount(){
+        this.props.chart.vchart = this;
         var el = findDOMNode(this);
         $(el).find("svg").addSVGNamespace();
     }
@@ -92,6 +79,7 @@ class Core extends Component {
     }
     componentDidUpdate(){
         this.updateHeight();
+        this.props.vchart = this;
     }
 }
 module.exports = Core;

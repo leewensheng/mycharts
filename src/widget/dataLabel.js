@@ -26,6 +26,8 @@ class  DataLabel extends Component{
     }
     render(){
         var {text,style} = this.props;
+        style.fontSize = style.fontSize||13;
+        var {color,fontSize,fontFamily,fontWeight,textAlign,textBaseLine} = style;
         var {x,y} = this.state;
         var label = new VNode("text");
         var anchor = {
@@ -34,20 +36,20 @@ class  DataLabel extends Component{
             center:'middle',
         };
         var dy = 0;
-        if(style.textBaseLine === 'middle') {
-            dy = style.fontSize/2;
-        } else if(style.textBaseLine === "top") {
-            dy = style.fontSize;
+        if(textBaseLine === 'middle') {
+            dy = fontSize/2;
+        } else if(textBaseLine === "top") {
+            dy = fontSize;
         }
         label.attr("x",x)
              .attr("y",y)
              .text(text)
-             .attr("fill",style.color)
-             .attr("text-anchor",anchor[style.textAlign])
+             .attr("fill",color)
+             .attr("text-anchor",anchor[textAlign])
              .attr("dy",dy)
-             .css("font-family",style.fontFamily)
-             .attr("font-size",style.fontSize)  
-             .css("font-weight",style.fontWeight)
+             .css("font-family",fontFamily)
+             .attr("font-size",fontSize)  
+             .css("font-weight",fontWeight)
              .css("pointer-events","none");
         ;
         return label; 

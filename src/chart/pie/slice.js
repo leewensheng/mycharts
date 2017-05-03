@@ -127,6 +127,9 @@ class  Slice extends Component{
 	}
 	animate(prevProps,props){
 		if(props.updateType === "select") {
+			if(prevProps.selected == props.selected) {
+				return;
+			}
 			this.offset(props.selected);
 			return;
 		}
