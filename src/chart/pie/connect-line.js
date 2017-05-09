@@ -13,6 +13,7 @@ cad.defineShape("pie_connect_line",function(options){
 class  ConnectLine extends Component{
     getDefaultProps(){
         return {
+            animation:false,
             cx:null,
             cy:null,
             radius:null,
@@ -45,23 +46,28 @@ class  ConnectLine extends Component{
         var {lineStyle,textAlign} = nextProps;
         var interpolate = cad.interpolate(this.props,nextProps);
         var el = findDOMNode(this);
-        $(el).stopTransition();
         var that = this;
         $(el).attr("stroke",lineStyle.color)
              .attr("stroke-width",lineStyle.width)
              .attr("stroke-dasharray",lineStyle.dash);
+        if(!nextProps.animation) {
+            onUpdate.call(el,1);
+            return;
+        }
+        $(el).stopTransition();
         $(el).transition({
             from:0,
             to:1,
             ease:"easeout",
             during:400,
-            onUpdate(k){
-                var val = interpolate(k);
-                var {cx,cy,radius,midAngle,x,y,length2} = val;
-                var path = cad.getShapePath("pie_connect_line",{cx,cy,radius,midAngle,x,y,length2,textAlign});
-                $(el).attr("d",path);
-            }
-        })
+            onUpdate:onUpdate
+        });
+        function onUpdate(k){
+            var val = interpolate(k);
+            var {cx,cy,radius,midAngle,x,y,length2} = val;
+            var path = cad.getShapePath("pie_connect_line",{cx,cy,radius,midAngle,x,y,length2,textAlign});
+            $(el).attr("d",path);
+        }
     }
     shouldComponentUpdate(){
         return false;

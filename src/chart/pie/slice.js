@@ -7,6 +7,7 @@ var HOVER_RADIUS_ADD = 10;
 class  Slice extends Component{
 	getDefaultProps(){
 		return {
+			animation:false,
 			paper:null,
 			startAngle:null,
 			endAngle:null,
@@ -58,12 +59,6 @@ class  Slice extends Component{
 			.on("mouseover",this.handleMouseOver.bind(this))
 			.on("mouseout",this.handleMouseOut.bind(this));
 		return path;
-	}
-	handleClick(){
-		var index = this.props.index;
-		if(typeof this.props.onSlice === 'function') {
-			this.props.onSlice(index);
-		}
 	}
 	offset(moveOut){
 		var {cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,color,borderColor,borderWidth,sliceOffset} = this.props;
@@ -134,7 +129,6 @@ class  Slice extends Component{
 			return;
 		}
 		var el = findDOMNode(this);
-		$(el).stopTransition();
 		if(!prevProps) {
 			//新增成员的动画
 			prevProps = cad.extend(true,{},props);
@@ -145,7 +139,7 @@ class  Slice extends Component{
 		}
 		var isHover = this.state.isHover;
 		var interpolate = cad.interpolate(prevProps,props);
-		var {midAngle,color,borderWidth,borderColor,sliceOffset} = props;
+		var {animation,midAngle,color,borderWidth,borderColor,sliceOffset} = props;
 		$(el).attr('fill',color).attr("stroke",borderColor).attr("stroke-width",borderWidth);
 		var that = this;
 		var x = 0, y = 0;
@@ -155,27 +149,33 @@ class  Slice extends Component{
 		}
 		var transform = "translate(" + x + "," + y +")";
 		$(el).attr("transform",transform);
+		$(el).stopTransition(true);
+		if(!animation) {
+			onUpdate.call(el,1);
+			return;
+		}
 		this.setState({isAnimating:true});
 		$(el).transition({
 			from:0,
 			to:1,
 			ease:"easeout",
 			during:400,
-			onUpdate(tick){
-				var val = interpolate(tick);
-				var {cx,cy,startAngle,endAngle,radius,innerRadius,sliceOffset} = val;
-				var path = cad.getShapePath("sector",cx,cy,{
-					startAngle:startAngle,
-					endAngle:endAngle,
-					radius:isHover?radius+ HOVER_RADIUS_ADD:radius,
-					innerRadius:innerRadius
-				});
-				$(el).attr("d",path);
-			},
+			onUpdate:onUpdate,
 			callback(){
 				that.setState({isAnimating:false});
 			}
-		})
+		});
+		function onUpdate(tick){
+			var val = interpolate(tick);
+			var {cx,cy,startAngle,endAngle,radius,innerRadius,sliceOffset} = val;
+			var path = cad.getShapePath("sector",cx,cy,{
+				startAngle:startAngle,
+				endAngle:endAngle,
+				radius:isHover?radius+ HOVER_RADIUS_ADD:radius,
+				innerRadius:innerRadius
+			});
+			$(el).attr("d",path);
+		}
 	}
 	componentDidMount() {
 		if(this.props.isAdded) {

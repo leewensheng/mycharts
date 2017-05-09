@@ -104,7 +104,7 @@ class  Pie extends Component{
 	}
 	render(){
 		var that = this;
-		var {width,height,series} = this.props;
+		var {width,height,series,option} = this.props;
 		var paper  =new cad.Paper();
 		var points = this.state.points;
 		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
@@ -115,8 +115,10 @@ class  Pie extends Component{
 		var pointLayer = paper.g({className:"points-group"});
 		var labelLayer = paper.g({className:"label-layer"}).css("display","none")
 		paper.switchLayer(pointLayer);
+		var onSlice = this.onSlice.bind(this);
 		points.map(function(point,index){
 			paper.append(Slice,{
+				animation:option.chart.animation,
 				cx:cx,
 				cy:cy,
 				startAngle:point.startAngle,
@@ -131,7 +133,7 @@ class  Pie extends Component{
 				index:index,
 				selected:point.selected,
 				sliceOffset:sliceOffset,
-				onSlice:that.onSlice.bind(that,index),
+				onSlice:onSlice,
 				isAdded:point.isAdded,
 				updateType:point.updateType || "newProps",
 				prevOption:point.prevOption
@@ -180,6 +182,7 @@ class  Pie extends Component{
 				textPoint.rotate(rotate,cx,cy);
 			}
 			paper.append(DataLabel,{
+				animation:option.chart.animation,
 				x:textPoint.x + dx,
 				y:textPoint.y,
 				text:p.label,
@@ -194,6 +197,7 @@ class  Pie extends Component{
 			if(connectLine.enabled && !dataLabels.inside && dataLabels.distance>0) {
 				paper.switchLayer(connectLayer);
 				paper.append(ConnectLine,{
+					animation:option.chart.animation,
 					width:width,
 					cx:cx,
 					cy:cy,
@@ -215,7 +219,8 @@ class  Pie extends Component{
 		paper.destroy();
 		return virtualDOM;
 	}
-	onSlice(index){
+	onSlice(e){
+		var index = $(e.target).index();
 		var points = this.state.points;
 		var selectMode = this.props.series.selectMode;
 		var sliced = !points[index].selected;
@@ -273,7 +278,6 @@ class  Pie extends Component{
 		paper.destroy();
 	}
 	componentDidMount(){
-		window.pie = this;
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){

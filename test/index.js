@@ -5,7 +5,7 @@ var el = document.getElementById("root");
 var t1 = Date.now();
 var chart = vchart.init(el,{height:400});
 var data = [];
-for(var i = 0; i <3; i++) {
+for(var i = 0; i <300; i++) {
     data.push({
         value:300*Math.random(),
         name:"series"+i
@@ -14,18 +14,13 @@ for(var i = 0; i <3; i++) {
 var option = {
 	chart:{
 		background:'#2A3139',
+        animation:false,
 	},
 	series:[
 		{	color:"blue",
 			name:'a pie chart',
 			/*color:'#c23531',*/
-			data:[
-                {value:335, name:'直接访问'},
-                {value:310, name:'邮件营销'},
-                {value:274, name:'联盟广告'},
-                {value:235, name:'视频广告'},
-                {value:400, name:'搜索引擎'}
-            ].sort(function (a, b) { return a.value-b.value}),
+			data:data,
 			sliceOffset:20,
 			size:0.75,
 			minSize:80,
@@ -77,13 +72,13 @@ chart.setOption(option);
 var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
 document.title = t2 - t1 ;
-$("<button>test</button>").appendTo("body")
+$("<button id='btn'>test</button>").appendTo("body")
 .on("click",function(){
 	var data = chart.option.series[0].data;
-	data.push({value:200*Math.random()+100,name:"广告来源"})
+        data.push({value:200*Math.random()+100,name:"广告来源"})
 	chart.setOption({
 		chart:{
-
+            animation:true
 		},
 		series:[
 			{	
@@ -95,6 +90,9 @@ $("<button>test</button>").appendTo("body")
 				size:Math.random()+0.2,
 				innerSize:Math.random(),
 				selectMode:"mutiple",
+                dataLabels:{
+                    enabled:false
+                }
 			}
 		]
 	})

@@ -4,6 +4,7 @@ import $ from 'jquery'
 class  DataLabel extends Component{
     getDefaultProps(){
         return {
+            animation:false,
             x:0,
             y:0,
             text:'',
@@ -55,16 +56,17 @@ class  DataLabel extends Component{
         return label; 
     }
     animate(){
-        var {x,y} = this.props;
+        var {x,y,animation} = this.props;
         var {oldX,oldY} = this.state;
         var el = findDOMNode(this);
-        $(el).transition({x:x,y:y},400,'easeout');
+        if(!animation) {
+            $(el).attr('x',x).attr('y',y);
+            return;
+        }
+        $(el).stopTransition(true).transition({x:x,y:y},400,'easeout');
     }
     componentWillReceiveProps(){
         this.setState({update:true})
-    }
-    componentWillUpdate(){
-        $(findDOMNode(this)).stopTransition(true);
     }
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;

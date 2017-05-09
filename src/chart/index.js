@@ -4,37 +4,16 @@ import Pie from './pie/pie.js'
 import Axis from '../component/axis.js'
 import $ from 'jquery'
 class Core extends Component {
-    getInitialState(){
-        return this.props;
-    }
     getDefaultProps(){
         return  {
             width:600,
             height:400,
-            option: {
-                chart:{
-                    background:"transparent"
-                },
-                colors:[
-                    "#c23531",
-                    "#2f4554",
-                    "#61a0a8",
-                    "#d48265",
-                    "#91c7ae",
-                    "#749f83",
-                    "#ca8622",
-                    "#bda29a",
-                    "#6e7074",
-                    "#546570",
-                    "#c4ccd3"
-                ],
-                series:[]
-            }        
+            option:null       
         }
     }
     render(){
         //return ''
-        var {width,height,option} = this.state;
+        var {width,height,option} = this.props;
         var {chart,colors,series} = option;
         var wrap = new VNode("div",{className:"vcharts-container"});
         //todo 修复连续css
@@ -57,7 +36,7 @@ class Core extends Component {
             chartOption.index = index;
             var defaultOption = Pie.defaultOption;
             chartOption = $.extend(true,{},defaultOption,chartOption);
-            paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
+            paper.append(Pie,{kye:'series'+index,option :option , width:width,height:height,series : chartOption });
         })
         paper.destroy();
         return wrap;
@@ -70,6 +49,7 @@ class Core extends Component {
     }
     componentDidMount(){
         this.props.chart.vchart = this;
+        delete this.props.chart;
         var el = findDOMNode(this);
         $(el).find("svg").addSVGNamespace();
     }
@@ -79,7 +59,6 @@ class Core extends Component {
     }
     componentDidUpdate(){
         this.updateHeight();
-        this.props.vchart = this;
     }
 }
 module.exports = Core;

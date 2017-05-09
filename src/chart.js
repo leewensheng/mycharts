@@ -40,7 +40,6 @@ Chart.prototype = {
 	setOption(option){
 		var oldOption = this.option;
 		if(oldOption) {
-			this.oldOption = cad.extend(true,{},oldOption);
 			var newOption = cad.extend(true,oldOption,option);
 			this.option = newOption;
 			this.debounceUpdate();
@@ -60,7 +59,8 @@ Chart.prototype = {
 		var option = this.option;
 		var width = this.width;
 		var height = this.height;
-		this.vchart.setState({option,width,height});
+		this.vchart.props = {option,width,height};
+		this.vchart.forceUpdate();
 	},
 	resize(width,height){
 		var that = this;
