@@ -36,7 +36,7 @@ class Core extends Component {
             chartOption.index = index;
             var defaultOption = Pie.defaultOption;
             chartOption = $.extend(true,{},defaultOption,chartOption);
-            paper.append(Pie,{kye:'series'+index,option :option , width:width,height:height,series : chartOption });
+            paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
         })
         paper.destroy();
         return wrap;
