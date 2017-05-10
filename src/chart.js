@@ -33,8 +33,10 @@ Chart.prototype = {
 		var container = this.container;
 		var width = this.width;
 		var height = this.height;
+		var innerContainer = $("<div class='vcharts-container'></div>").attr("style","width:0;position:relative;overflow:visible");
+		$(container).append(innerContainer);
 		var vchart = new VNode(Core,{chart:this,option,width,height});
-		render(vchart,container);
+		render(vchart,innerContainer[0]);
 		this.componentDidMount();
 	},
 	setOption(option){
@@ -71,6 +73,7 @@ Chart.prototype = {
 		this.debounceUpdate();
 	},
 	downloadImage(){
+
 	},
 	componentDidMount(){
 		var that = this;

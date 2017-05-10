@@ -1,7 +1,6 @@
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Pie from './pie/pie.js'
-import Axis from '../component/axis.js'
 import $ from 'jquery'
 class Core extends Component {
     getDefaultProps(){
@@ -15,12 +14,8 @@ class Core extends Component {
         //return ''
         var {width,height,option} = this.props;
         var {chart,colors,series} = option;
-        var wrap = new VNode("div",{className:"vcharts-container"});
-        //todo 修复连续css
-        wrap.attr("style","width:0;position:relative;overflow:visible");
         var paper = new cad.Paper();
-        paper.switchLayer(wrap);
-        var svg = paper.append("svg",{width,height});
+        var svg = new VNode("svg",{width,height});
         paper.switchLayer(svg);
         //defs层
         paper.append("defs");
@@ -38,14 +33,7 @@ class Core extends Component {
             chartOption = $.extend(true,{},defaultOption,chartOption);
             paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
         })
-        paper.destroy();
-        return wrap;
-    }
-    updateHeight(){
-        var el = findDOMNode(this);
-        var height = this.props.height;
-        $(el).css("height",height);
-        $(el).addSVGNamespace();
+        return svg;
     }
     componentDidMount(){
         this.props.chart.vchart = this;
@@ -56,9 +44,6 @@ class Core extends Component {
     componentWillUnmount(){
         this.props.chart.vchart = null;
         this.props.chart = null;
-    }
-    componentDidUpdate(){
-        this.updateHeight();
     }
 }
 module.exports = Core;

@@ -13,6 +13,7 @@ for(var i = 0; i <3; i++) {
 };
 var option = {
 	chart:{
+		animation:true,
 		background:'#2A3139',
 	},
 	series:[
