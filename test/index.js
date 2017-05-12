@@ -78,7 +78,7 @@ chart.setOption(option);
 var t2 = Date.now();
 console.log('total-time:'+ (t2-t1)+'ms');
 document.title = t2 - t1 ;
-$("<button>test</button>").appendTo("body")
+var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
 	var data = chart.option.series[0].data;
 	data.push({value:200*Math.random()+100,name:"广告来源"})

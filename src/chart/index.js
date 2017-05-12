@@ -15,7 +15,9 @@ class Core extends Component {
         var {width,height,option} = this.props;
         var {chart,colors,series} = option;
         var paper = new cad.Paper();
-        var svg = new VNode("svg",{width,height});
+        var svg = new VNode("svg",{width,height})
+                    .attr("xmlns",cad.namespace.svg)
+                    .attr("xmlns:xlink",cad.namespace.xlink)
         paper.switchLayer(svg);
         //defs层
         paper.append("defs");

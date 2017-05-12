@@ -72,15 +72,16 @@ Chart.prototype = {
 		this.height = height;
 		this.debounceUpdate();
 	},
-	downloadImage(){
-
+	downloadImage(name){
+		this.$$paper.downloadImage(name);
 	},
 	componentDidMount(){
 		var that = this;
 		var svg = $(this.container).find("svg");
 		var paper = new cad.Paper();
 		paper.svg = svg;
-		this.__paper = paper;
+		window.chart = this;
+		this.$$paper = paper;
 		window.addEventListener("resize",function(){
 			var width = $(that.container).width();
 			var height = that.container.clientHeight;
