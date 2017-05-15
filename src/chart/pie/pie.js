@@ -112,7 +112,7 @@ class  Pie extends Component{
 		var virtualDOM = new VNode("g");
 		paper.switchLayer(virtualDOM);
 		var connectLayer = paper.g({className:"connect-line-layer"}).attr("fill","none").css("display","none")
-		var pointLayer = paper.g({className:"points-group"});
+		var pointLayer = paper.g({className:"point-layer"});
 		var labelLayer = paper.g({className:"label-layer"}).css("display","none")
 		paper.switchLayer(pointLayer);
 		var onSlice = this.onSlice.bind(this);
