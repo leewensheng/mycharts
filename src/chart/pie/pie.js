@@ -285,4 +285,5 @@ class  Pie extends Component{
 	}
 }
 Pie.defaultOption = defaultOption;
+Pie.dependencies = ['grid'];
 module.exports = Pie;

@@ -1,7 +1,8 @@
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
-import Pie from './pie/pie.js'
+import Pie from './pie/pie'
 import $ from 'jquery'
+import Grid from '../components/grid'
 class Core extends Component {
     getDefaultProps(){
         return  {
@@ -24,17 +25,28 @@ class Core extends Component {
         //设置background
         paper.rect(0,0,"100%","100%").attr("fill",chart.background);
         //所有的图表g
-        var group = paper.g();
-
-
+        var group = paper.g({className:'vcharts-series'});
+        var dependencies = {};
         series.map(function(chartOption,index){
+            var chartDependencies = Pie.dependencies||[];
+            for(var i = 0; i < chartDependencies.length;i++) {
+                dependencies[chartDependencies[i]] = true;
+            }
+            return;
             paper.switchLayer(group);
             var type = chartOption.type;
             chartOption.index = index;
             var defaultOption = Pie.defaultOption;
             chartOption = $.extend(true,{},defaultOption,chartOption);
             paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
-        })
+        });
+        for(var dependence in dependencies) {
+            paper.append(Grid,{
+                chartOption:option,
+                chartWidth:width,
+                chartHeight:height
+            });
+        };
         return svg;
     }
     componentDidMount(){

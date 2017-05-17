@@ -15,14 +15,5 @@ module.exports = {
             "#546570",
             "#c4ccd3"
     ],
-    grid:{
-        show:false,
-        left:'auto',
-        top:60,
-        right:'10%',
-        bottom:60,
-        width:'auto',
-        background:'transparent'
-    },
    	series:[]
 }
