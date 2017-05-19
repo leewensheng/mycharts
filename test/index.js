@@ -71,8 +71,12 @@ var option = {
                 }
             },
             center:[0.7,0.5]
-		}
-	]
+		},
+        {
+            type:'line',
+            data:[1,3,4,5,6,7,8,9,10]
+        }
+	],
 };
 chart.setOption(option);
 var t2 = Date.now();

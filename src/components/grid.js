@@ -2,13 +2,15 @@ import $ from 'jquery'
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Axis from './axis'
+import seriesService from '../service/seriesService'
+
 var defaultOption = {
     grid:{
-        left:10,
-        top:10,
+        left:30,
+        top:30,
         width:100,
         height:100,
-        background:'pink'
+        background:'transparent'
     },
     xAxis:{
         gridIndex:0,
@@ -27,12 +29,19 @@ class  Grid extends Component {
             chartHeight:null,//图表高度
         }
     }
+    getInitialState(){
+        return {
+            labelWidth:0,
+            labelHeight:0
+        }
+    }
     render(){
         var gridLayer = new VNode('g',{className:'vcharts-grid'});
         var props = this.props;
         var {chartWidth,chartHeight,chartOption} = props;
         chartOption = $.extend({},defaultOption,chartOption);
         var {grid,xAxis,yAxis,series} = chartOption;
+        var {labelWidth,labelHeight}  = this.state;
         var grids = [];
         if(!grid.length) {
             grids = [{grid:grid,xAxis:[],yAxis:[]}];
@@ -72,33 +81,71 @@ class  Grid extends Component {
         grids.map(function(val){
             var {grid,xAxis,yAxis} = val;
             var {top,left,width,height,background} = grid;
-            width = chartWidth- 20;
-            height = chartHeight  - 20;
+            width = chartWidth- 50;
+            height = chartHeight  - 50;
             paper.switchLayer(gridLayer);
-            paper.rect(top,left,width,height).attr('fill',background);
-            xAxis.map(function(axis){
+            paper.rect(top,left,width,height).attr('fill',background).attr('className','vcharts-grid-background');
+            xAxis.map(function(axis,index){
+                var range = {};
+                if(axis.type === 'value') {
+                    var axisSeries = series.filter(function(val){
+                        var axisIndex = val.xAxisIndex||0;
+                        return index == xAxisIndex;
+                    });
+                    range = seriesService.getValueRange(axisSeries);
+                }
                 paper.append(Axis,{
                     top:top,
                     left:left,
                     width:width,
                     height:height,
-                    axis:'x'
+                    labelWidth:labelWidth,
+                    labelHeight:labelHeight,
+                    min:range.min,
+                    max:range.max,
+                    axis:'x',
                 })
             });
-            yAxis.map(function(axis){
+            yAxis.map(function(axis,index){
+                var range = {};
+                if(axis.type === 'value') {
+                    var axisSeries = series.filter(function(val){
+                        var axisIndex = val.yAxisIndex||0;
+                        return index == axisIndex;
+                    });
+                    range = seriesService.getValueRange(axisSeries);
+                }
                 paper.append(Axis,{
                     top:top,
                     left:left,
                     width:width,
                     height:height,
+                    labelWidth:labelWidth,
+                    labelHeight:labelHeight,
+                    min:range.min,
+                    max:range.max,
                     axis:'y'
                 })
             });
         });
         return gridLayer;
     }
+    updateLabelSize(){
+        var el = findDOMNode(this);
+        var labelWidth =0,labelHeight = 0;
+        $(el).find('.vcharts-grid-axis .axis-label text').each(function(){
+            var width = this.getComputedTextLength();
+            labelWidth = Math.max(labelWidth,width);
+        })
+        this.setState({
+            labelWidth:labelWidth
+        })
+    }
     componentDidMount(){
-
+        this.updateLabelSize();
+    }
+    componentDidUpdate(){
+        
     }
 }
 module.exports = Grid;

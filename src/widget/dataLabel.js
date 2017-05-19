@@ -44,7 +44,7 @@ class  DataLabel extends Component{
         }
         label.attr("x",x)
              .attr("y",y)
-             .text(text)
+             .text(text.toString())
              .attr("fill",color)
              .attr("text-anchor",anchor[textAlign])
              .attr("dy",dy)

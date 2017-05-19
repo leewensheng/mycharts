@@ -28,7 +28,7 @@ Chart.prototype = {
 		this.height = height;
 	},
 	render(){
-		var option = cad.extend(true,default_option,this.option);
+		var option = cad.extend(true,{},default_option,this.option);
 		this.option = option;
 		var container = this.container;
 		var width = this.width;
