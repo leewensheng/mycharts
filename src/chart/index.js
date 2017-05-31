@@ -2,7 +2,7 @@ import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Pie from './pie/pie'
 import $ from 'jquery'
-import Grid from '../components/grid'
+import Grids from '../components/grid/index'
 class Core extends Component {
     getDefaultProps(){
         return  {
@@ -38,10 +38,10 @@ class Core extends Component {
             chartOption.index = index;
             var defaultOption = Pie.defaultOption;
             chartOption = $.extend(true,{},defaultOption,chartOption);
-            paper.append(Pie,{option :option , width:width,height:height,series : chartOption });
+            paper.append(Pie,{option :option , width:width,height:height,series : chartOption,serieIndex:index});
         });
         for(var dependence in dependencies) {
-            paper.append(Grid,{
+            paper.append(Grids,{
                 chartOption:option,
                 chartWidth:width,
                 chartHeight:height

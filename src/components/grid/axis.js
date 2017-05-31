@@ -1,12 +1,14 @@
 import $ from 'jquery'
-import {Component,VNode,findDOMNode} from 'preact'
+import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
-import DataLabel from '../widget/dataLabel'
+import DataLabel from '../../widget/dataLabel'
 class  Axis extends Component {
     getDefaultProps(){
         return {
             top:null,
             left:null,
+            right:null,
+            bottom:null,
             width:null,
             height:null,
             axis:'x',
@@ -79,57 +81,7 @@ class  Axis extends Component {
         }
     }
     render(){
-        var props = this.props;
-        var {top,left,width,height,labelWidth,labelHeight,min,max,axis,option,updateType} = props;
-        var {min,max,position,data,splitNumber,title,axisLine,axisLabel,axisTick} = option||{};
-        var paper = new cad.Paper();
-        var bottom = top+height,right = left+width;
-        var axisLeft = left+labelWidth;
-        var axisLayer = new VNode('g',{className:'vcharts-grid-axis xaxis'});
-        //先画轴线
-        paper.switchLayer(axisLayer);
-
-        var lineLayer = paper.g({className:'axis-line'});
-        var labelLaler = paper.g({className:'axis-label'});
-        var tickLayer = paper.g({className:'axis-tick'});
-        if(axis === 'x') {
-            paper.line(axisLeft,bottom,right,bottom).attr('stroke','red').attr('stroke-width',1).attr('stroke-dash','');
-            data = [1,2,3,4,5];
-            splitNumber = data.length-1;
-            data.map(function(text,index){
-                paper.switchLayer(labelLaler);
-                paper.append(DataLabel,{
-                    animation:updateType!='adjust',
-                    x:axisLeft+width/(splitNumber)*index,
-                    y:bottom,
-                    text:text,
-                    style:{
-                        color:'red',
-                        textAlign:'center',
-                        textBaseLine:'bottom'
-                    }
-                })
-            })
-        } else {
-            paper.line(axisLeft,bottom,axisLeft,top).attr('stroke','red').attr('stroke-width',1).attr('stroke-dash','');
-            var data = [1,2,3,4000000000,5];
-            var splitNumber = data.length-1;
-            data.map(function(text,index){
-                paper.switchLayer(labelLaler);
-                paper.append(DataLabel,{
-                    animation:false,
-                    x:axisLeft - 8,
-                    y:bottom - height/splitNumber*index,
-                    text:text,
-                    style:{
-                        color:'red',
-                        textAlign:'right',
-                        textBaseLine:'middle'
-                    }
-                });
-            })
-        }
-        return axisLayer;
+        return <g className="vcharts-grid-axis"></g>
     }
 }
 module.exports = Axis;
