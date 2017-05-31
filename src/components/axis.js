@@ -80,7 +80,7 @@ class  Axis extends Component {
     }
     render(){
         var props = this.props;
-        var {top,left,width,height,labelWidth,labelHeight,min,max,axis,option} = props;
+        var {top,left,width,height,labelWidth,labelHeight,min,max,axis,option,updateType} = props;
         var {min,max,position,data,splitNumber,title,axisLine,axisLabel,axisTick} = option||{};
         var paper = new cad.Paper();
         var bottom = top+height,right = left+width;
@@ -93,14 +93,14 @@ class  Axis extends Component {
         var labelLaler = paper.g({className:'axis-label'});
         var tickLayer = paper.g({className:'axis-tick'});
         if(axis === 'x') {
-            paper.line(left,bottom,right,bottom).attr('stroke','red').attr('stroke-width',3).attr('stroke-dash','');
+            paper.line(axisLeft,bottom,right,bottom).attr('stroke','red').attr('stroke-width',1).attr('stroke-dash','');
             data = [1,2,3,4,5];
             splitNumber = data.length-1;
             data.map(function(text,index){
                 paper.switchLayer(labelLaler);
                 paper.append(DataLabel,{
-                    animation:true,
-                    x:left+width/(splitNumber)*index,
+                    animation:updateType!='adjust',
+                    x:axisLeft+width/(splitNumber)*index,
                     y:bottom,
                     text:text,
                     style:{
@@ -111,7 +111,7 @@ class  Axis extends Component {
                 })
             })
         } else {
-            paper.line(axisLeft,bottom,axisLeft,top).attr('stroke','red').attr('stroke-width',3).attr('stroke-dash','');
+            paper.line(axisLeft,bottom,axisLeft,top).attr('stroke','red').attr('stroke-width',1).attr('stroke-dash','');
             var data = [1,2,3,4000000000,5];
             var splitNumber = data.length-1;
             data.map(function(text,index){
@@ -126,7 +126,7 @@ class  Axis extends Component {
                         textAlign:'right',
                         textBaseLine:'middle'
                     }
-                })
+                });
             })
         }
         return axisLayer;

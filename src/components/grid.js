@@ -1,5 +1,5 @@
 import $ from 'jquery'
-import {Component,VNode,findDOMNode} from 'preact'
+import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Axis from './axis'
 import seriesService from '../service/seriesService'
@@ -29,11 +29,12 @@ class  Grid extends Component {
             chartHeight:null,//图表高度
         }
     }
+    getRenderData(props){
+
+    }
     getInitialState(){
-        return {
-            labelWidth:0,
-            labelHeight:0
-        }
+        var props = this.props;
+        return this.getRenderData(props);
     }
     render(){
         var gridLayer = new VNode('g',{className:'vcharts-grid'});
@@ -41,7 +42,7 @@ class  Grid extends Component {
         var {chartWidth,chartHeight,chartOption} = props;
         chartOption = $.extend({},defaultOption,chartOption);
         var {grid,xAxis,yAxis,series} = chartOption;
-        var {labelWidth,labelHeight}  = this.state;
+        var {labelWidth,labelHeight,updateType}  = this.state;
         var grids = [];
         if(!grid.length) {
             grids = [{grid:grid,xAxis:[],yAxis:[]}];
@@ -104,6 +105,7 @@ class  Grid extends Component {
                     min:range.min,
                     max:range.max,
                     axis:'x',
+                    updateType:updateType
                 })
             });
             yAxis.map(function(axis,index){
@@ -124,7 +126,8 @@ class  Grid extends Component {
                     labelHeight:labelHeight,
                     min:range.min,
                     max:range.max,
-                    axis:'y'
+                    axis:'y',
+                    updateType:updateType
                 })
             });
         });
@@ -136,16 +139,19 @@ class  Grid extends Component {
         $(el).find('.vcharts-grid-axis .axis-label text').each(function(){
             var width = this.getComputedTextLength();
             labelWidth = Math.max(labelWidth,width);
-        })
+        });
         this.setState({
-            labelWidth:labelWidth
+            labelWidth:labelWidth,
+            updateType:'adjust'
         })
     }
     componentDidMount(){
         this.updateLabelSize();
     }
-    componentDidUpdate(){
-        
+    componentWillReceiveProps(){
+        this.setState({
+            updateType:'newprops'
+        })
     }
 }
 module.exports = Grid;
