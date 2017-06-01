@@ -7,14 +7,16 @@ class Grid extends Component {
 	getDefaultProps(){
 		return {
 			left:null,
-			right:null,
-			bottom:null,
 			top:null,
+			bottom:null,
+			right:null,
 			width:null,
 			height:null,
-			fill:'transparent',
+			background:'transparent',
 			xAxis:[],
-			yAxis:[]
+			yAxis:[],
+			includeSeries:[],
+			onDependceReady:null
 		}
 	}
 	getInitialState(){
@@ -28,22 +30,51 @@ class Grid extends Component {
 	}
 	render(){
 		var props = this.props;
-		var {top,left,right,bottom,background,width,height,xAxis,yAxis} = props;
+		var {top,left,right,bottom,width,height,background,xAxis,yAxis} = props;
 		var {leftLabelWidth,rightLabelWidth,bottomLabelHeight,topLabelHeight} = this.state;
-		var axis = xAxis.concat(yAxis);
+		var axisLeft = left - leftLabelWidth,
+			axisTop = top +  topLabelHeight,
+			axisRight = right - rightLabelWidth,
+			axisBottom = bottom  - bottomLabelHeight,
+			axisWidth = axisRight - axisLeft,
+			axisHeight = axisBottom - axisTop;
 		return (
 			<g className="vcharts-grid">
-				<rect  className="vcharts-grid-backgrould" x="0" y="0" width={width} height={height} fill={background}/>
+				<rect  className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
 				{
-					axis.map(function(val){
-						return <Axis />
+					xAxis.map(function(axis){
+						return <Axis 	
+									left={axisLeft} 
+									right={axisRight} 
+									bottom={axisBottom}
+									top={axisTop}
+									width={axisWidth}
+									height={axisHeight}
+									option={axis}
+									axis="x"/>
+					})
+				}{
+					yAxis.map(function(axis){
+						return <Axis 	
+									left={axisLeft} 
+									right={axisRight} 
+									bottom={axisBottom}
+									top={axisTop}
+									width={axisWidth}
+									height={axisHeight}
+									option={axis}
+									axis="y"/>
 					})
 				}
 			</g>
 		)
 	}
+	computeTextWidth(){
+		var {onDependceReady,includeSeries} = this.props;
+		onDependceReady(includeSeries,{data:'test'});
+	}
 	componentDidMount(){
-
+		this.computeTextWidth();
 	}
 	componentWillReceiveProps(){
 

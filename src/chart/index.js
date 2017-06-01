@@ -11,10 +11,16 @@ class Core extends Component {
             option:null       
         }
     }
+    getInitialState(){
+        return {
+            dependencies:{}
+        }
+    }
     render(){
         //return ''
         var {width,height,option} = this.props;
         var {chart,colors,series} = option;
+        var onDependceReady = this.onDependceReady.bind(this);
         var paper = new cad.Paper();
         var svg = new VNode("svg",{width,height})
                     .attr("xmlns",cad.namespace.svg)
@@ -44,10 +50,17 @@ class Core extends Component {
             paper.append(Grids,{
                 chartOption:option,
                 chartWidth:width,
-                chartHeight:height
+                chartHeight:height,
+                onDependceReady:onDependceReady
             });
         };
         return svg;
+    }
+    onDependceReady(serieIndex,data){
+        console.log(data)
+        var dependencies = this.state.dependencies;
+        dependencies[serieIndex] = data;
+        this.setState({dependencies:dependencies});
     }
     componentDidMount(){
         this.props.chart.vchart = this;

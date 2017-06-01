@@ -15,7 +15,6 @@ class  DataLabel extends Component{
                 fontWeight:"normal",
                 textAlign:"center",
                 textBaseLine:"bottom",
-                display:""
             }
         }
     }

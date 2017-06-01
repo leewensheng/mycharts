@@ -7,8 +7,8 @@ var defaultOption = {
     grid:{
         left:30,
         top:30,
-        width:100,
-        height:100,
+        width:400,
+        height:300,
         background:'transparent'
     },
     xAxis:{
@@ -26,6 +26,7 @@ class  Grids extends Component {
             chartOption:null,
             chartWidth:null,//图表宽度
             chartHeight:null,//图表高度
+            onDependceReady:null
         }
     }
     getRenderData(props){
@@ -43,11 +44,11 @@ class  Grids extends Component {
             yAxis = defaultOption.yAxis;
         };
         if(!grid.length) {
-            grids = [{grid:grid,xAxis:[],yAxis:[]}];
+            grids = [{option:grid,xAxis:[],yAxis:[]}];
         } else {
             grids = grid.map(function(val){
                 return {
-                    grid:val,
+                    option:val,
                     xAxis:[],
                     yAxis:[]
                 }
@@ -57,6 +58,7 @@ class  Grids extends Component {
             xAxis = [xAxis]
         } 
         xAxis.map(function(val){
+            val = $.extend(true,{},defaultOption.xAxis,val);
             var gridIndex = val.gridIndex;
             grids[gridIndex].xAxis.push(val);
         })
@@ -64,9 +66,13 @@ class  Grids extends Component {
             yAxis = [yAxis];
         }
         yAxis.map(function(val){
+            val = $.extend(true,{},defaultOption.yAxis,val);
             var gridIndex = val.gridIndex;
             grids[gridIndex].yAxis.push(val);
         });
+        grids.map(function(grid){
+            grid.option = $.extend({},defaultOption.grid,grid.option);
+        })
         return {
             grids:grids
         }
@@ -77,44 +83,31 @@ class  Grids extends Component {
     }
     render(){
         var props = this.props;
-        var {chartWidth,chartHeight,chartOption} = props;
+        var {chartWidth,chartHeight,chartOption,onDependceReady} = props;
         var {grids} = this.state;
         return (
         	<g className='vcharts-grids'>
 	        {
 	        	grids.map(function(grid){
-	        	var {top,left,right,bottom,xAxis,yAxis,background} = grid;
+	        	var {xAxis,yAxis,option} = grid;
+                var {top,left,width,height,background} = option;
+                var right = left +width;
+                var bottom = top + height;
 		        return <Grid 
 		        			background={background}
 		        			top={top}
 		        			left={left}
-		        			right={right}
-		        			bottom={bottom}
+                            right={right}
+                            bottom={bottom}
+		        			width={width}
+		        			height={height}
 		        			xAxis={xAxis}
-		        			yAxis={yAxis}/>
+		        			yAxis={yAxis}
+                            onDependceReady={onDependceReady}
+                            />
 	        	})
 	        }
         	</g>);
-    }
-    updateLabelSize(){
-        var el = findDOMNode(this);
-        var labelWidth =0,labelHeight = 0;
-        $(el).find('.vcharts-grid-axis .axis-label text').each(function(){
-            var width = this.getComputedTextLength();
-            labelWidth = Math.max(labelWidth,width);
-        });
-        this.setState({
-            labelWidth:labelWidth,
-            updateType:'adjust'
-        })
-    }
-    componentDidMount(){
-        this.updateLabelSize();
-    }
-    componentWillReceiveProps(){
-        this.setState({
-            updateType:'newprops'
-        })
     }
 }
 module.exports = Grids;
