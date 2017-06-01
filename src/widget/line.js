@@ -21,8 +21,9 @@ class  Line extends Component{
     }
     render(){
         var style = this.props.style||{color:"#333",width:1,type:'solid'};
+        var className = this.props.className;
         var {x1,y1,x2,y2} = this.state;
-        return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} stroke-width={style.width} /> 
+        return <line className={className} x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} stroke-width={style.width} /> 
     }
     animate(nextProps){
         var el = findDOMNode(this);

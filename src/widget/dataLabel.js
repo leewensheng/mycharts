@@ -1,6 +1,14 @@
 import {Component,VNode,findDOMNode} from 'preact'
 import $ from 'jquery'
 //todo 多行支持tspan
+var defaultStyle = {
+    color:"#333",
+    fontSize:13,
+    fontFamily:"Microsoft Yahei",
+    fontWeight:"normal",
+    textAlign:"center",
+    textBaseLine:"bottom",
+}
 class  DataLabel extends Component{
     getDefaultProps(){
         return {
@@ -8,14 +16,7 @@ class  DataLabel extends Component{
             x:0,
             y:0,
             text:'',
-            style:{
-                color:"#333",
-                fontSize:13,
-                fontFamily:"Microsoft Yahei",
-                fontWeight:"normal",
-                textAlign:"center",
-                textBaseLine:"bottom",
-            }
+            style:null
         }
     }
     getInitialState(){
@@ -26,7 +27,7 @@ class  DataLabel extends Component{
     }
     render(){
         var {text,style} = this.props;
-        style.fontSize = style.fontSize||13;
+        style = $.extend({},defaultStyle,style);
         var {color,fontSize,fontFamily,fontWeight,textAlign,textBaseLine} = style;
         var {x,y} = this.state;
         var label = new VNode("text");
@@ -50,7 +51,8 @@ class  DataLabel extends Component{
              .css("font-family",fontFamily)
              .attr("font-size",fontSize)  
              .css("font-weight",fontWeight)
-             .css("pointer-events","none");
+             .css("pointer-events","none")
+             .css("stroke","none");
         ;
         return label; 
     }
