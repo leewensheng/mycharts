@@ -71,7 +71,7 @@ class Grid extends Component {
 	}
 	computeTextWidth(){
 		var {onDependceReady,includeSeries} = this.props;
-		onDependceReady(includeSeries,{data:'test'});
+		onDependceReady(includeSeries,{});
 	}
 	componentDidMount(){
 		this.computeTextWidth();

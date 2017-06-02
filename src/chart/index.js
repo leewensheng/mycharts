@@ -57,9 +57,18 @@ class Core extends Component {
         return svg;
     }
     onDependceReady(serieIndex,data){
-        console.log(data)
         var dependencies = this.state.dependencies;
-        dependencies[serieIndex] = data;
+        if(Array.isArray(serieIndex)) {
+            serieIndex.map(function(index){
+                dependencies[index] = {
+                    data:data
+                }
+            });
+        } else {
+            dependencies[serieIndex] = {
+                data:data
+            }        
+        }
         this.setState({dependencies:dependencies});
     }
     componentDidMount(){

@@ -78,7 +78,7 @@ var option = {
         }
 	],
     grid:{
-        background:'red'
+        background:'gray'
     },
     xAxis:{
         axisLine:{

@@ -57,22 +57,35 @@ class  Grids extends Component {
         if(!xAxis.length) {
             xAxis = [xAxis]
         } 
-        xAxis.map(function(val){
+        xAxis = xAxis.map(function(val){
             val = $.extend(true,{},defaultOption.xAxis,val);
             var gridIndex = val.gridIndex;
             grids[gridIndex].xAxis.push(val);
+            return val;
         })
         if(!yAxis.length) {
             yAxis = [yAxis];
         }
-        yAxis.map(function(val){
+        yAxis = yAxis.map(function(val){
             val = $.extend(true,{},defaultOption.yAxis,val);
             var gridIndex = val.gridIndex;
             grids[gridIndex].yAxis.push(val);
+            return val;
         });
         grids.map(function(grid){
             grid.option = $.extend({},defaultOption.grid,grid.option);
-        })
+        });
+        series.map(function(serie,index){
+            var type  = serie.type;
+            if(type == 'line') {
+                var xAxisIndex = serie.xAxisIndex || 0;
+                var gridIndex = xAxis[xAxisIndex].gridIndex;
+                if(!grids[gridIndex].includeSeries) {
+                    grids[gridIndex].includeSeries = [];
+                }
+                grids[gridIndex].includeSeries.push(index);
+            }
+        });
         return {
             grids:grids
         }
@@ -89,7 +102,7 @@ class  Grids extends Component {
         	<g className='vcharts-grids'>
 	        {
 	        	grids.map(function(grid){
-	        	var {xAxis,yAxis,option} = grid;
+	        	var {xAxis,yAxis,option,includeSeries} = grid;
                 var {top,left,width,height,background} = option;
                 var right = left +width;
                 var bottom = top + height;
@@ -104,6 +117,7 @@ class  Grids extends Component {
 		        			xAxis={xAxis}
 		        			yAxis={yAxis}
                             onDependceReady={onDependceReady}
+                            includeSeries={includeSeries}
                             />
 	        	})
 	        }
