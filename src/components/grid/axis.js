@@ -11,7 +11,7 @@ const defaultOption = {
     max:null,//对于分类轴来说仍然是有意义的
     minRange:null,
     splitNumber:5,//分割段数
-    data:null,//分类轴用到
+    data:[],//分类轴用到
     inverse:false,//数值反转
     title:{
         show:true,
@@ -76,19 +76,38 @@ class  Axis extends Component {
     getRenderData(props){
         var {top,left,right,bottom,width,height,axis,min,max,option} = props;
         option = $.extend(true,{},defaultOption,option);
-        var {position,type,min,max,minRange,splitNumber,data,inverse,title,axisLabel,axisLabel,axisTick} = option;
+        var {position,type,min,max,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
         var line = {};
         var labels = [];
         var ticks = [];
         var title = {};
-        var splitLine = []
+        var splitLine = [];
+        var base;
         if(axis === 'x') {
             line.x1 = left;
             line.x2 = right;
             if(position === 'top') {
-                line.y1 = line.y2 = top;
+                base = top;
             } else {
-                line.y1 = line.y2 = bottom;
+               base = bottom;
+            }
+            line.y1 = line.y2 = base;
+            if(type === 'category') {
+                data.map(function(text,index){
+                    var x = left + index*width/(data.length-1);
+                    var y = base + axisLabel.margin;
+                    labels.push({
+                        x:x,
+                        y:y,
+                        text:text,
+                        style:{
+                            color:'#fff',
+                            textAlign:'center',
+                            textBaseLine:'top',
+                            fontSize:13
+                        }
+                    });
+                })
             }
         } else {
             line.y1 =bottom;
@@ -111,7 +130,14 @@ class  Axis extends Component {
         var {line,labels,ticks} = data;
         return (
             <g className="vcharts-grid-axis">
-                <Line x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} style={line.style} />
+                <Line className="vcharts-axis-line" x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} style={line.style} />
+                <g class="vcharts-axis-labels">
+                {
+                    labels.map(function(label){
+                        return <DataLabel x={label.x} y={label.y} text={label.text} style={label.style}/>
+                    })
+                }
+                </g>
             </g>
         )
     }

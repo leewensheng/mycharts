@@ -81,6 +81,7 @@ var option = {
         background:'gray'
     },
     xAxis:{
+    	data:['一','二','三','四'],
         axisLine:{
             style:{
                 color:'blue'
