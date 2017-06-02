@@ -7,8 +7,8 @@ var defaultOption = {
     grid:{
         left:30,
         top:30,
-        width:400,
-        height:300,
+        bottom:80,
+        right:80,
         background:'transparent'
     },
     xAxis:{
@@ -103,15 +103,15 @@ class  Grids extends Component {
 	        {
 	        	grids.map(function(grid){
 	        	var {xAxis,yAxis,option,includeSeries} = grid;
-                var {top,left,width,height,background} = option;
-                var right = left +width;
-                var bottom = top + height;
+                var {top,left,bottom,right,background} = option;
+                var width = chartWidth - right - left;
+                var height = chartHeight - bottom - top;
 		        return <Grid 
 		        			background={background}
 		        			top={top}
 		        			left={left}
-                            right={right}
-                            bottom={bottom}
+                            right={left + width}
+                            bottom={top + height}
 		        			width={width}
 		        			height={height}
 		        			xAxis={xAxis}

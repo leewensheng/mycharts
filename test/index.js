@@ -14,7 +14,7 @@ for(var i = 0; i <3; i++) {
 var option = {
 	chart:{
 		animation:true,
-		background:'#2A3139',
+		background:'#fff',
 	},
 	series:[
 		{	color:"blue",
@@ -74,11 +74,11 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,3,4,5,6,7,8,9,10]
+            data:[33,5,22,0]
         }
 	],
     grid:{
-        background:'gray'
+        background:'#eee'
     },
     xAxis:{
     	data:['一','二','三','四'],

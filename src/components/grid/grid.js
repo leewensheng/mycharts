@@ -2,7 +2,6 @@ import $ from 'jquery'
 import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Axis from './axis'
-
 class Grid extends Component {
 	getDefaultProps(){
 		return {
@@ -71,13 +70,21 @@ class Grid extends Component {
 	}
 	computeTextWidth(){
 		var {onDependceReady,includeSeries} = this.props;
-		onDependceReady(includeSeries,{});
+		var {top,left,right,bottom,width,height,background,xAxis,yAxis} =this.props;
+		onDependceReady(includeSeries,{
+			top:top,
+			left:left,
+			right:right,
+			bottom:bottom,
+			width:width,
+			height:height,
+			xAxis:[],
+			yAxis:[]
+		});
+		this.setState({ready:true})
 	}
 	componentDidMount(){
 		this.computeTextWidth();
-	}
-	componentWillReceiveProps(){
-
 	}
 }
 

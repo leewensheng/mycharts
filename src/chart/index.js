@@ -1,6 +1,6 @@
 import {Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
-import Pie from './pie/pie'
+import charts from './charts'
 import $ from 'jquery'
 import Grids from '../components/grid/index'
 class Core extends Component {
@@ -18,7 +18,9 @@ class Core extends Component {
     }
     render(){
         //return ''
-        var {width,height,option} = this.props;
+        var state = this.state;
+        var props = this.props;
+        var {width,height,option} = props;
         var {chart,colors,series} = option;
         var onDependceReady = this.onDependceReady.bind(this);
         var paper = new cad.Paper();
@@ -31,20 +33,15 @@ class Core extends Component {
         //设置background
         paper.rect(0,0,"100%","100%").attr("fill",chart.background);
         //所有的图表g
-        var group = paper.g({className:'vcharts-series'});
         var dependencies = {};
         series.map(function(chartOption,index){
-            var chartDependencies = Pie.dependencies||[];
+            var type = chartOption.type;
+            var Chart = charts[type];
+            if(!Chart) {return;}
+            var chartDependencies = Chart.dependencies||[];
             for(var i = 0; i < chartDependencies.length;i++) {
                 dependencies[chartDependencies[i]] = true;
             }
-            return;
-            paper.switchLayer(group);
-            var type = chartOption.type;
-            chartOption.index = index;
-            var defaultOption = Pie.defaultOption;
-            chartOption = $.extend(true,{},defaultOption,chartOption);
-            paper.append(Pie,{option :option , width:width,height:height,series : chartOption,serieIndex:index});
         });
         for(var dependence in dependencies) {
             paper.append(Grids,{
@@ -54,20 +51,36 @@ class Core extends Component {
                 onDependceReady:onDependceReady
             });
         };
+        var group = paper.g({className:'vcharts-series'});
+        series.map(function(chartOption,index){
+            var type = chartOption.type;
+            if(!type) {return;}
+            var Chart = charts[type];
+            var chartDependencies = Chart.dependencies||[];
+            var dependciesData = state.dependencies[index]
+            if(chartDependencies.length&&!dependciesData) return;
+            paper.switchLayer(group);
+            var defaultOption = Chart.defaultOption;
+            chartOption = $.extend(true,{},defaultOption,chartOption);
+            paper.append(Chart,{
+                option :option , 
+                width:width,
+                height:height,
+                series : chartOption,
+                serieIndex:index,
+                dependciesData:dependciesData
+            });
+        });
         return svg;
     }
     onDependceReady(serieIndex,data){
         var dependencies = this.state.dependencies;
         if(Array.isArray(serieIndex)) {
             serieIndex.map(function(index){
-                dependencies[index] = {
-                    data:data
-                }
+                dependencies[index] = data
             });
         } else {
-            dependencies[serieIndex] = {
-                data:data
-            }        
+            dependencies[serieIndex] = data;       
         }
         this.setState({dependencies:dependencies});
     }
@@ -80,6 +93,9 @@ class Core extends Component {
     componentWillUnmount(){
         this.props.chart.vchart = null;
         this.props.chart = null;
+    }
+    componentWillReceiveProps(){
+        console.log('33')
     }
 }
 module.exports = Core;

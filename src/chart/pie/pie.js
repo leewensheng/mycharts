@@ -109,7 +109,7 @@ class  Pie extends Component{
 		var points = this.state.points;
 		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
-		var virtualDOM = new VNode("g");
+		var virtualDOM = new VNode("g",{className:"vcharts-series pie"});
 		paper.switchLayer(virtualDOM);
 		var connectLayer = paper.g({className:"connect-line-layer"}).attr("fill","none").css("display","none")
 		var pointLayer = paper.g({className:"point-layer"});
@@ -285,5 +285,4 @@ class  Pie extends Component{
 	}
 }
 Pie.defaultOption = defaultOption;
-Pie.dependencies = ['grid'];
 module.exports = Pie;

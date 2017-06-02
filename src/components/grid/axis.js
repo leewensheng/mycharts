@@ -101,7 +101,7 @@ class  Axis extends Component {
                         y:y,
                         text:text,
                         style:{
-                            color:'#fff',
+                            color:'#333',
                             textAlign:'center',
                             textBaseLine:'top',
                             fontSize:13
@@ -116,6 +116,8 @@ class  Axis extends Component {
                 line.x1 = line.x2 = right;
             } else {
                 line.x1 = line.x2 = left;
+            }
+            if(type === 'value') {
             }
         }
         return {
