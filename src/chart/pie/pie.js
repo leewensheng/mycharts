@@ -236,7 +236,7 @@ class  Pie extends Component{
 			}
 			point.updateType = "select";
 		})
-		this.setState({points:points});
+		this.setState({points:points,updateType:'select'});
 	}
 	animate(){
 		var {width,height,option,series} = this.props;
@@ -281,7 +281,12 @@ class  Pie extends Component{
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){
-		this.setState(this.getRenderData(nextProps,this.state));
+		var nextState = this.getRenderData(nextProps,this.state);
+		nextState.updateType = 'newProps';
+		this.setState(nextState);
+	}
+	shouldComponentUpdate(nextProps,nextState){
+		return nextProps.updateType != 'dependceChange'||nextState.updateType==='select';
 	}
 }
 Pie.defaultOption = defaultOption;

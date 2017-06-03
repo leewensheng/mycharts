@@ -26,7 +26,8 @@ class  Grids extends Component {
             chartOption:null,
             chartWidth:null,//图表宽度
             chartHeight:null,//图表高度
-            onDependceReady:null
+            onDependceReady:null,
+            isReady:false
         }
     }
     getRenderData(props){
@@ -122,6 +123,9 @@ class  Grids extends Component {
 	        	})
 	        }
         	</g>);
+    }
+    shouldComponentUpdate(nextProps){
+        return !nextProps.isReady;
     }
 }
 module.exports = Grids;

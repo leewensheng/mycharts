@@ -20,7 +20,6 @@ class Grid extends Component {
 	}
 	getInitialState(){
 		return {
-			ready:false,
 			leftLabelWidth:0,
 			rightLabelWidth:0,
 			bottomLabelHeight:0,
@@ -71,7 +70,7 @@ class Grid extends Component {
 	computeTextWidth(){
 		var {onDependceReady,includeSeries} = this.props;
 		var {top,left,right,bottom,width,height,background,xAxis,yAxis} =this.props;
-		onDependceReady(includeSeries,{
+		onDependceReady('grid',includeSeries,{
 			top:top,
 			left:left,
 			right:right,
@@ -81,9 +80,11 @@ class Grid extends Component {
 			xAxis:[],
 			yAxis:[]
 		});
-		this.setState({ready:true})
 	}
 	componentDidMount(){
+		this.computeTextWidth();
+	}
+	componentDidUpdate(){
 		this.computeTextWidth();
 	}
 }

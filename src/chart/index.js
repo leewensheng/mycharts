@@ -11,9 +11,30 @@ class Core extends Component {
             option:null       
         }
     }
+    getDependcies(props){
+        var {option} = props;
+        var {series} = option;
+        var dependencies = {};
+        series.map(function(chartOption,index){
+            var type = chartOption.type;
+            var Chart = charts[type];
+            if(!Chart) {
+                return;
+            }
+            var chartDependencies = Chart.dependencies||[];
+            for(var i = 0; i < chartDependencies.length;i++) {
+                dependencies[chartDependencies[i]] = false;
+            }
+        });
+        return dependencies;
+    }
     getInitialState(){
+        var props = this.props;
         return {
-            dependencies:{}
+            dependencies:this.getDependcies(props),
+            dependenceData:{
+
+            }
         }
     }
     render(){
@@ -33,22 +54,15 @@ class Core extends Component {
         //设置background
         paper.rect(0,0,"100%","100%").attr("fill",chart.background);
         //所有的图表g
-        var dependencies = {};
-        series.map(function(chartOption,index){
-            var type = chartOption.type;
-            var Chart = charts[type];
-            if(!Chart) {return;}
-            var chartDependencies = Chart.dependencies||[];
-            for(var i = 0; i < chartDependencies.length;i++) {
-                dependencies[chartDependencies[i]] = true;
-            }
-        });
+        var {dependencies,dependenceData,updateType} = this.state;
         for(var dependence in dependencies) {
             paper.append(Grids,{
                 chartOption:option,
                 chartWidth:width,
                 chartHeight:height,
-                onDependceReady:onDependceReady
+                onDependceReady:onDependceReady,
+                isReady:dependencies[dependence],
+                updateType:updateType
             });
         };
         var group = paper.g({className:'vcharts-series'});
@@ -57,8 +71,14 @@ class Core extends Component {
             if(!type) {return;}
             var Chart = charts[type];
             var chartDependencies = Chart.dependencies||[];
-            var dependciesData = state.dependencies[index]
-            if(chartDependencies.length&&!dependciesData) return;
+            var dependeData = dependenceData[index]
+            if(chartDependencies.length&&!dependeData) return;
+            var isDependReady = true;
+            for(var i = 0; i < chartDependencies.length;i++) {
+                if(!dependencies[chartDependencies[i]]) {
+                    isDependReady = false;
+                }
+            };
             paper.switchLayer(group);
             var defaultOption = Chart.defaultOption;
             chartOption = $.extend(true,{},defaultOption,chartOption);
@@ -68,21 +88,27 @@ class Core extends Component {
                 height:height,
                 series : chartOption,
                 serieIndex:index,
-                dependciesData:dependciesData
+                dependciesData:dependeData,
+                updateType:updateType,
+                isDependReady:isDependReady
             });
         });
         return svg;
     }
-    onDependceReady(serieIndex,data){
-        var dependencies = this.state.dependencies;
+    onDependceReady(name,serieIndex,data){
+        var {dependencies,dependenceData} = this.state;
+        dependencies[name]  = true;
         if(Array.isArray(serieIndex)) {
             serieIndex.map(function(index){
-                dependencies[index] = data
-            });
+                dependenceData[index] = data;
+            })
         } else {
-            dependencies[serieIndex] = data;       
+            dependenceData[serieIndex] = data;
         }
-        this.setState({dependencies:dependencies});
+        this.setState({
+            dependencies,dependenceData,
+            updateType:'dependceChange'
+        });
     }
     componentDidMount(){
         this.props.chart.vchart = this;
@@ -94,8 +120,12 @@ class Core extends Component {
         this.props.chart.vchart = null;
         this.props.chart = null;
     }
-    componentWillReceiveProps(){
-        console.log('33')
+    setOption(nextProps){
+        var dependencies = this.getDependcies(nextProps);
+        this.setState({
+            dependencies:dependencies,
+            updateType:'newProps'
+        })
     }
 }
 module.exports = Core;

@@ -61,8 +61,9 @@ Chart.prototype = {
 		var option = this.option;
 		var width = this.width;
 		var height = this.height;
-		this.vchart.props = {option,width,height};
-		this.vchart.forceUpdate();
+		var nextProps = {option,width,height};
+		this.vchart.props = nextProps;
+		this.vchart.setOption(nextProps);
 	},
 	resize(width,height){
 		var that = this;
