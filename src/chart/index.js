@@ -81,7 +81,7 @@ class Core extends Component {
             };
             paper.switchLayer(group);
             var defaultOption = Chart.defaultOption;
-            chartOption = $.extend(true,{},defaultOption,chartOption);
+            chartOption = $.extend(true,defaultOption,option.plotOptions.series,optio.plotOptions[type],chartOption);
             paper.append(Chart,{
                 option :option , 
                 width:width,
