@@ -2,24 +2,9 @@ import $ from 'jquery'
 import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Grid from './grid'
-
-var defaultOption = {
-    grid:{
-        left:30,
-        top:30,
-        bottom:80,
-        right:80,
-        background:'transparent'
-    },
-    xAxis:{
-        gridIndex:0,
-        type:'category'
-    },
-    yAxis:{
-        gridIndex:0,
-        type:'value'
-    }
-}
+import defaultOption  from './option'
+import charts from '../../chart/charts'
+import gridService from './gridService'
 class  Grids extends Component {
     getDefaultProps(){
         return {
@@ -39,10 +24,10 @@ class  Grids extends Component {
             grid = defaultOption.grid;
         }
         if(!xAxis) {
-            xAxis = defaultOption.xAxis;
+            xAxis = defaultOption.axis;
         }
         if(!yAxis) {
-            yAxis = defaultOption.yAxis;
+            yAxis = defaultOption.axis;
         };
         if(!grid.length) {
             grids = [{option:grid,xAxis:[],yAxis:[]}];
@@ -51,42 +36,81 @@ class  Grids extends Component {
                 return {
                     option:val,
                     xAxis:[],
-                    yAxis:[]
+                    yAxis:[],
+                    includeSeries:[]
                 }
             })
         };
         if(!xAxis.length) {
             xAxis = [xAxis]
         } 
-        xAxis = xAxis.map(function(val){
-            val = $.extend(true,{},defaultOption.xAxis,val);
+        xAxis = xAxis.map(function(val,index){
+            val = $.extend(true,{},defaultOption.axis,val);
             var gridIndex = val.gridIndex;
+            val.index = index;
             grids[gridIndex].xAxis.push(val);
             return val;
         })
         if(!yAxis.length) {
             yAxis = [yAxis];
         }
-        yAxis = yAxis.map(function(val){
-            val = $.extend(true,{},defaultOption.yAxis,val);
+        yAxis = yAxis.map(function(val,index){
+            val = $.extend(true,{},defaultOption.axis,val);
             var gridIndex = val.gridIndex;
+            val.index = index;
             grids[gridIndex].yAxis.push(val);
             return val;
         });
-        grids.map(function(grid){
-            grid.option = $.extend({},defaultOption.grid,grid.option);
-        });
-        series.map(function(serie,index){
-            var type  = serie.type;
-            if(type == 'line') {
-                var xAxisIndex = serie.xAxisIndex || 0;
-                var gridIndex = xAxis[xAxisIndex].gridIndex;
-                if(!grids[gridIndex].includeSeries) {
-                    grids[gridIndex].includeSeries = [];
-                }
-                grids[gridIndex].includeSeries.push(index);
+        grids.forEach(function(grid){
+            var {xAxis,yAxis,option} = grid;
+            grid.option = $.extend({},defaultOption.grid,option);
+            var isValueType = grid.xAxis.some(function(axis){return axis.type === 'value'});
+            grid.yAxis.forEach(function(axis){
+                axis.type = isValueType ? 'category' :'value';
+            });
+            grid.xAxis.forEach(function(axis){
+                axis.type = isValueType ?'value':'category';
+            });
+            grid.valueAxis = isValueType?'x':'y';
+            if(xAxis.length === 2) {
+                xAxis[1].opposite  =  !xAxis[0].opposite;
+            }
+            if(yAxis.length === 2) {
+                yAxis[1].opposite = !xAxis[0].opposite;
             }
         });
+        setAxisDataRange(xAxis,'xAxis');
+        setAxisDataRange(yAxis,'yAxis');
+        function setAxisDataRange(someAxis,key){
+            someAxis.map(function(axis){
+                var type = axis.type;
+                var axisIndex = axis.index;
+                var gridIndex = axis.gridIndex;
+                var grid = grids[gridIndex];
+                var arr = [];
+                var includeSeries = series.filter(function(serie,index){
+                    var type = serie.type;
+                    var chart = charts[type];
+                    if(!type) {
+                        return;
+                    }
+                    var dependencies = chart.dependencies||[];
+                    if(dependencies.indexOf('grid') === -1) {
+                        return;
+                    }
+                    var isInclude = (serie[key]||0) === axisIndex;
+                    if(isInclude) {
+                        arr.push(index);
+                        return isInclude;
+                    }
+                });
+                if(type === 'value') {
+                    var dataRange = gridService.getValueRange(includeSeries);
+                    axis.dataRange = dataRange;
+                }
+                grid.includeSeries = arr;
+            });
+        }
         return {
             grids:grids
         }

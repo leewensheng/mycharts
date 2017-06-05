@@ -11,5 +11,8 @@ module.exports = {
             min:cad.min(mins),
             max:cad.max(maxs)
         };
+    },
+    getSplitArray:function(min,max,splitNumber) {
+        var rmin,rmax;
     }
 }

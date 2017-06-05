@@ -1,63 +1,9 @@
 import $ from 'jquery'
 import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
+import gridService from './gridService'
 import DataLabel from '../../widget/dataLabel'
 import Line from '../../widget/line'
-const defaultOption = {
-    gridIndex:0,//所属网格区域
-    position:'',//上下左右，多轴时有用
-    type:'',//category value time
-    min:null,
-    max:null,//对于分类轴来说仍然是有意义的
-    minRange:null,
-    splitNumber:5,//分割段数
-    data:[],//分类轴用到
-    inverse:false,//数值反转
-    title:{
-        show:true,
-        align:"start",//start middle end
-        margin:0,
-        rotation:0,
-        style:{
-            color:"#666"
-        },
-        text:"",
-    },
-    axisLine:{
-        show:true,
-        lineStyle:{
-            color:"#333",
-            width:1,
-            type:"solid"
-        }
-    },
-    axisTick:{
-        show:true,
-        interval:"auto",
-        inside:false,
-        length:5,
-        lineStyle:{
-            color:"",
-            width:1,
-            type:"solid",
-        }
-    },
-    axisLabel:{
-        show:true,
-        interval:'auto',
-        inside:false,
-        rotate:0,
-        margin:8,
-        textWidth:null,//强制宽度
-        formatter:null,
-        style:{
-            color:'',
-            fontSize:12,
-            textAlign:"center",
-            textBaseLine:"bottom"
-        }
-    }
-}
 class  Axis extends Component {
     getDefaultProps(){
         return {
@@ -75,8 +21,20 @@ class  Axis extends Component {
     }
     getRenderData(props){
         var {top,left,right,bottom,width,height,axis,min,max,option} = props;
-        option = $.extend(true,{},defaultOption,option);
-        var {position,type,min,max,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
+        var {opposite,type,min,max,dataRange,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
+        var start,end,other;
+        if(axis === 'x') {
+            start = left;
+            end = right;
+            other = opposite?top:bottom;
+        } else if(axis === 'y') {
+            start = bottom;
+            end = top;
+            other = opposite?right:left;
+        }
+        if(type === 'value') {
+            data = gridService.getSplitArray(min||dataRange.min,max||dataRange.max,splitNumber);
+        }
         var line = {};
         var labels = [];
         var ticks = [];
@@ -86,7 +44,7 @@ class  Axis extends Component {
         if(axis === 'x') {
             line.x1 = left;
             line.x2 = right;
-            if(position === 'top') {
+            if(opposite) {
                 base = top;
             } else {
                base = bottom;
@@ -112,7 +70,7 @@ class  Axis extends Component {
         } else {
             line.y1 =bottom;
             line.y2 = top;
-            if(position === 'right') {
+            if(opposite) {
                 line.x1 = line.x2 = right;
             } else {
                 line.x1 = line.x2 = left;
