@@ -12,7 +12,7 @@ var defaultStyle = {
 class  DataLabel extends Component{
     getDefaultProps(){
         return {
-            animation:false,
+            animation:true,
             x:0,
             y:0,
             text:'',

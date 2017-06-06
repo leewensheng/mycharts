@@ -12,7 +12,7 @@ module.exports = {
             max:cad.max(maxs)
         };
     },
-    getSplitArray:function(min,max,splitNumber) {
-        var rmin,rmax;
+    getSplitArray:function(min,max,dataRange,splitNumber) {
+        return [1,2,3,4];
     }
 }

@@ -78,7 +78,8 @@ var option = {
         }
 	],
     grid:{
-        background:'#eee'
+        background:'#eee',
+        left:50
     },
     xAxis:{
     	data:['一','二','三','四'],
@@ -95,23 +96,11 @@ console.log('total-time:'+ (t2-t1)+'ms');
 document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
-	var data = chart.option.series[0].data;
-	data.push({value:200*Math.random()+100,name:"广告来源"})
 	chart.setOption({
-		chart:{
-
-		},
-		series:[
-			{	
-				color:cad.hsl(360*Math.random(),0.5,0.5),
-				sliceOffset:20,
-				data:data,
-				borderWidth:1,
-				borderColor:"#fff",
-				size:Math.random()+0.2,
-				innerSize:Math.random(),
-				selectMode:"mutiple",
-			}
-		]
+		grid:{
+			left:150*Math.random(),
+			bottom:200*Math.random()
+		}
 	})
+
 })

@@ -18,9 +18,8 @@ class  Rect extends Component{
         return {x,y,width,height}
     }
     render(){
-        var {style} = this.props;
         var {x,y,width,height} = this.state;
-        return <rect x={x} y={y} width={width} height={height} />
+        return <rect {...this.props} x={x} y={y} width={width} height={height} />
     }
     animate(nextProps){
         var el = findDOMNode(this);

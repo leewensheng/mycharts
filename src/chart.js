@@ -3,7 +3,6 @@ import default_option from './option/index'
 import Core from './chart/index'
 import cad from '../../src/index'
 import {render,VNode} from 'preact'
-module.exports = Chart;
 function Chart(el,option){
 	this.container = null;
 	this.width = null;
@@ -93,3 +92,4 @@ Chart.prototype = {
 
 	}
 }
+module.exports = Chart;

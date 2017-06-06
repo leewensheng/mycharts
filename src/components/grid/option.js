@@ -53,7 +53,7 @@
 	        textWidth:null,//强制宽度
 	        formatter:null,
 	        style:{
-	            color:'',
+	            color:'red',
 	            fontSize:12,
 	            textAlign:"center",
 	            textBaseLine:"bottom"

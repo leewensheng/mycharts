@@ -151,5 +151,8 @@ class  Grids extends Component {
     shouldComponentUpdate(nextProps){
         return !nextProps.isReady;
     }
+    componentWillReceiveProps(nextProps){
+        this.setState(this.getRenderData(nextProps));
+    }
 }
 module.exports = Grids;

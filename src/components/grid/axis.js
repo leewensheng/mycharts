@@ -33,68 +33,69 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            data = gridService.getSplitArray(min||dataRange.min,max||dataRange.max,splitNumber);
+            data = gridService.getSplitArray(min,max,dataRange,splitNumber);
         }
-        var line = {};
-        var labels = [];
-        var ticks = [];
-        var title = {};
-        var splitLine = [];
-        var base;
-        if(axis === 'x') {
-            line.x1 = left;
-            line.x2 = right;
-            if(opposite) {
-                base = top;
-            } else {
-               base = bottom;
-            }
-            line.y1 = line.y2 = base;
-            if(type === 'category') {
-                data.map(function(text,index){
-                    var x = left + index*width/(data.length-1);
-                    var y = base + axisLabel.margin;
-                    labels.push({
-                        x:x,
-                        y:y,
-                        text:text,
-                        style:{
-                            color:'#333',
-                            textAlign:'center',
-                            textBaseLine:'top',
-                            fontSize:13
-                        }
-                    });
-                })
-            }
-        } else {
-            line.y1 =bottom;
-            line.y2 = top;
-            if(opposite) {
-                line.x1 = line.x2 = right;
-            } else {
-                line.x1 = line.x2 = left;
-            }
-            if(type === 'value') {
-            }
-        }
+        var ticks = data.map(function(val,index){
+            return start + (end - start)*index/(data.length - 1);
+        });
         return {
-            line:line,
-            labels:labels,
-            ticks:ticks,
-            title:title
+            start:start,
+            end:end,
+            other:other,
+            ticks:ticks
         }
     }
     render(){
-        var data = this.getRenderData(this.props);
-        var {line,labels,ticks} = data;
+        var props = this.props;
+        var {top,left,right,bottom,width,height,axis,min,max,option} = props;
+        var {data,inverse,title,axisLine,axisLabel,axisTick} = option;
+        var renderData = this.getRenderData(props);
+        var {start,end,other,ticks} = renderData;
+        var x1,y1,x2,y2;
+        if(axis === 'x') {
+            y1 = y2 = other;
+            x1 = start;
+            x2 = end;
+        } else {
+            x1 = x2 = other;
+            y1 = start;
+            y2 = end;
+        };
+        var labels = ticks.map(function(val,index){
+            var x,y,text;
+            text = data[index]||val;
+            if(axis === 'x') {
+                y = other + axisLabel.margin;
+                x = ticks[index];
+            } else {
+                x = other - axisLabel.margin;
+                y  = ticks[index];
+            }
+            return {x,y,text};
+        })
+        var className = 'vcharts-grid-axis';
+        if(axis === 'x') {
+            axisLabel.style.textBaseLine = 'top';
+            axisLabel.style.textAlign ='center';
+            className += ' xAxis';
+        } else {
+            className += ' yAxis';
+            axisLabel.style.textAlign = 'right';
+            axisLabel.style.textBaseLine = 'middle';
+        }
+
         return (
-            <g className="vcharts-grid-axis">
-                <Line className="vcharts-axis-line" x1={line.x1} y1={line.y1} x2={line.x2} y2={line.y2} style={line.style} />
+            <g className={className}>
+                <Line   className="vcharts-axis-line" 
+                        x1={x1} 
+                        y1={y1} 
+                        x2={x2} 
+                        y2={y2} 
+                        style={axisLine.lineStyle} />
                 <g class="vcharts-axis-labels">
                 {
                     labels.map(function(label){
-                        return <DataLabel x={label.x} y={label.y} text={label.text} style={label.style}/>
+                        return <DataLabel animation={true} x={label.x} y={label.y} text={label.text} style={axisLabel.style}/>
                     })
                 }
                 </g>

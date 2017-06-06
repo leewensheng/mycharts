@@ -2,6 +2,7 @@ import $ from 'jquery'
 import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import Axis from './axis'
+import Rect from '../../widget/rect'
 class Grid extends Component {
 	getDefaultProps(){
 		return {
@@ -38,7 +39,7 @@ class Grid extends Component {
 			axisHeight = axisBottom - axisTop;
 		return (
 			<g className="vcharts-grid">
-				<rect  className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
+				<Rect  className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
 				{
 					xAxis.map(function(axis){
 						return <Axis 	
@@ -68,8 +69,8 @@ class Grid extends Component {
 		)
 	}
 	computeTextWidth(){
-		var {onDependceReady,includeSeries} = this.props;
-		var {top,left,right,bottom,width,height,background,xAxis,yAxis} =this.props;
+		var props = this.props;
+		var {onDependceReady,includeSeries,top,left,right,bottom,width,height,background,xAxis,yAxis} = props;
 		onDependceReady('grid',includeSeries,{
 			top:top,
 			left:left,
