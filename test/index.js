@@ -74,7 +74,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[33,5,22,0]
+            data:[30,5,22,1]
         }
 	],
     grid:{
@@ -82,10 +82,56 @@ var option = {
         left:50
     },
     xAxis:{
-    	data:['一','二','三','四'],
-        axisLine:{
+    	gridIndex:0,//所属网格区域
+        min:null,
+        max:null,//对于分类轴来说仍然是有意义的
+        minRange:null,
+        splitNumber:5,//分割段数
+        data:['1','2','3','4','5'],//分类轴用到
+        opposite:true,
+        inverse:false,//数值反转
+        title:{
+            show:true,
+            align:"start",//start middle end
+            margin:15,
+            rotation:0,
             style:{
-                color:'blue'
+                color:"#666"
+            },
+            text:"",
+        },
+        axisLine:{
+            show:true,
+            lineStyle:{
+                color:"#333",
+                width:1,
+                type:"solid"
+            }
+        },
+        axisTick:{
+            show:true,
+            interval:"auto",
+            inside:true,
+            length:5,
+            lineStyle:{
+                color:"#333",
+                width:1,
+                type:"solid",
+            }
+        },
+        axisLabel:{
+            show:true,
+            interval:'auto',
+            inside:true,
+            rotate:0,
+            margin:8,
+            textWidth:null,//强制宽度
+            formatter:null,
+            style:{
+                color:'red',
+                fontSize:12,
+                textAlign:"center",
+                textBaseLine:"bottom"
             }
         }
     }

@@ -14,13 +14,11 @@ class  Axis extends Component {
             width:null,
             height:null,
             axis:'x',
-            min:null,
-            max:null,
             option:null
         }         
     }
     getRenderData(props){
-        var {top,left,right,bottom,width,height,axis,min,max,option} = props;
+        var {top,left,right,bottom,width,height,axis,option} = props;
         var {opposite,type,min,max,dataRange,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
         var start,end,other;
         if(axis === 'x') {
@@ -33,24 +31,25 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            data = gridService.getSplitArray(min,max,dataRange,splitNumber);
+            data = gridService.getSplitArray(min||dataRange.min,max||dataRange.max,splitNumber);
         }
-        var ticks = data.map(function(val,index){
+        var splits = data.map(function(val,index){
             return start + (end - start)*index/(data.length - 1);
         });
         return {
             start:start,
             end:end,
             other:other,
-            ticks:ticks
+            splits:splits,
+            data:data
         }
     }
     render(){
         var props = this.props;
         var {top,left,right,bottom,width,height,axis,min,max,option} = props;
-        var {data,inverse,title,axisLine,axisLabel,axisTick} = option;
+        var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,axisLabel,axisTick} = option;
         var renderData = this.getRenderData(props);
-        var {start,end,other,ticks} = renderData;
+        var {start,end,other,splits,data} = renderData;
         var x1,y1,x2,y2;
         if(axis === 'x') {
             y1 = y2 = other;
@@ -61,26 +60,53 @@ class  Axis extends Component {
             y1 = start;
             y2 = end;
         };
-        var labels = ticks.map(function(val,index){
+        var labelFlag = 1;
+        if(axisLabel.inside) {
+            labelFlag*= -1;
+        }
+        if(opposite) {
+            labelFlag*= -1;
+        }
+        var labels = splits.map(function(val,index){
             var x,y,text;
-            text = data[index]||val;
+            text = data[index];
             if(axis === 'x') {
-                y = other + axisLabel.margin;
-                x = ticks[index];
+                y = other + axisLabel.margin*labelFlag;
+                x = val;
             } else {
-                x = other - axisLabel.margin;
-                y  = ticks[index];
+                x = other - axisLabel.margin*labelFlag;
+                y  = val;
             }
             return {x,y,text};
+        });
+        var tickFlag = 1;
+        if(axisTick.inside) {
+            tickFlag*= -1;
+        }
+        if(opposite) {
+            tickFlag*= -1;
+        }
+        var ticks = splits.map(function(val,index){
+            var x1,y1,x2,y2;
+            if(axis === 'x') {
+                x1  = x2 = val;
+                y1 = other;
+                y2 = other + axisTick.length*tickFlag;
+            } else {
+                y1 = y2 = val;
+                x1 = other;
+                x2 = other - axisTick.length*tickFlag;
+            }
+            return {x1,y1,x2,y2};
         })
         var className = 'vcharts-grid-axis';
         if(axis === 'x') {
-            axisLabel.style.textBaseLine = 'top';
+            axisLabel.style.textBaseLine = labelFlag==1 ? 'top':'bottom';
             axisLabel.style.textAlign ='center';
             className += ' xAxis';
         } else {
             className += ' yAxis';
-            axisLabel.style.textAlign = 'right';
+            axisLabel.style.textAlign = labelFlag==1 ?'right':'left';
             axisLabel.style.textBaseLine = 'middle';
         }
 
@@ -92,12 +118,25 @@ class  Axis extends Component {
                         x2={x2} 
                         y2={y2} 
                         style={axisLine.lineStyle} />
-                <g class="vcharts-axis-labels">
+                <g className="vcharts-axis-labels">
                 {
                     labels.map(function(label){
                         return <DataLabel animation={true} x={label.x} y={label.y} text={label.text} style={axisLabel.style}/>
                     })
                 }
+                </g>
+                <g className="vcharts-axis-tick">
+                    {
+                        ticks.map(function(tick,index){
+                            var {x1,y1,x2,y2} = tick;
+                           return <Line   
+                                    x1={x1} 
+                                    y1={y1} 
+                                    x2={x2} 
+                                    y2={y2} 
+                                    style={axisTick.lineStyle} />
+                        })
+                    }
                 </g>
             </g>
         )

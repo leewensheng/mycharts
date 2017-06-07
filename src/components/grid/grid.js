@@ -13,6 +13,7 @@ class Grid extends Component {
 			width:null,
 			height:null,
 			background:'transparent',
+			containLabel:false,
 			xAxis:[],
 			yAxis:[],
 			includeSeries:[],

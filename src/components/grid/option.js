@@ -4,7 +4,8 @@
         top:30,
         bottom:80,
         right:80,
-        background:'transparent'
+        background:'transparent',
+        containLabel:false
     },
     axis:{
         gridIndex:0,//所属网格区域
@@ -39,7 +40,7 @@
 	        inside:false,
 	        length:5,
 	        lineStyle:{
-	            color:"",
+	            color:"#333",
 	            width:1,
 	            type:"solid",
 	        }
