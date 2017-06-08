@@ -50,6 +50,7 @@ module.exports = {
                 grow = Math.pow(10,k-1)/2;
                 tick = grow*5;
             }
+            //须根据实际情况求出最小刻度*
             var num = 0;
             var count = 0;
             while(!isOk) {
@@ -86,7 +87,7 @@ module.exports = {
                     }
                 }
                 if(!isOk){
-                    for(var i = 1; i < 3; i++) {
+                    for(var i = 1; i < 5; i++) {
                         realSplitNumber = splitNumber+i;
                         absMin = Math.abs(absMax - (realSplitNumber-1)*interval);
                         if(absMin%interval===0) {
@@ -104,7 +105,7 @@ module.exports = {
                         } 
                     }
                     if(!isOk) {
-                        for(var i = 1; i < 3; i++) {
+                        for(var i = 1; i < 5; i++) {
                             realSplitNumber = splitNumber - i;
                             absMin = Math.abs(absMax - (realSplitNumber-1)*interval);
                             if(absMin%interval===0&&realSplitNumber>2) {
