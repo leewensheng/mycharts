@@ -74,7 +74,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,60]
+            data:[1,-1]
         }
 	],
     grid:{
@@ -134,6 +134,9 @@ var option = {
                 textBaseLine:"bottom"
             }
         }
+    },
+    yAxis:{
+        splitNumber:5
     }
 };
 chart.setOption(option);

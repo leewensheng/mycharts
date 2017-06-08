@@ -17,7 +17,7 @@ module.exports = {
         var oldAbsMin = Math.min(Math.abs(min),Math.abs(max));
         var absMin = oldAbsMin;
         var absMax = oldAbsMax;
-        var k = -1;
+        var k = 0;
         var grow;
         var isOk = false;
         var maxFlag,minFlag
@@ -35,27 +35,19 @@ module.exports = {
             return [max];
         }
         if(absMax >= 1) {
-            while(Math.pow(10,k+1) <= absMax) {
+            while(Math.pow(10,k+1) < absMax) {
                 k++;
             }
-            if(k==0) {
-                grow = 0.1;
-                if(absMax>3) {
-                    tick = 1;
-                } else {
-                    grow = 0.1;
-                    tick = 0.5;
-                }
-            } else {
-                grow = Math.pow(10,k-1)/2;
-                tick = grow*5;
-            }
+            grow = (max-min)/(splitNumber);
+            tick = Math.pow(10,k-1)*5;
             //须根据实际情况求出最小刻度*
             var num = 0;
             var count = 0;
+            absMax = Math.floor(absMax/tick)*tick;
             while(!isOk) {
                 count++;
                 if(count>10) {
+                    console.log('over time')
                     break;
                 }
                 absMax += grow;
@@ -77,6 +69,7 @@ module.exports = {
                 absMin = Math.abs(absMax - (realSplitNumber-1)*interval);
                 if(absMin%interval===0) {
                     if(minFlag == 1) {
+                        /*修正比较逻辑*/
                         if(absMin*minFlag<oldAbsMin*minFlag) {
                             isOk = true;
                         }
