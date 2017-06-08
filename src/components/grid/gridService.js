@@ -13,13 +13,21 @@ module.exports = {
         }
     },
     getSplitArray:function(min,max,splitNumber) {
-        var absMax = Math.max(Math.abs(min),Math.abs(max));
-        var absMin = Math.min(Math.abs(min),Math.abs(max));
+        var oldAbsMax = Math.max(Math.abs(min),Math.abs(max));
+        var oldAbsMin = Math.min(Math.abs(min),Math.abs(max));
+        var absMin = oldAbsMin;
+        var absMax = oldAbsMax;
         var k = -1;
         var grow;
         var isOk = false;
-        var minFlag = min>0?1:-1;
-        var maxFlag = max>0?1:-1;
+        var maxFlag,minFlag
+        if(Math.abs(max) >= Math.abs(min)) {
+            maxFlag = max>0?1:-1;
+            minFlag = min>0?1:-1;
+        } else {
+            maxFlag = min>0?1:-1;
+            minFlag = max>0?1:-1;
+        }
         var realMax,realMin,interval;
         var data = [];
         var interval,tick ,realSplitNumber = splitNumber;
@@ -35,6 +43,7 @@ module.exports = {
                 if(absMax>3) {
                     tick = 1;
                 } else {
+                    grow = 0.1;
                     tick = 0.5;
                 }
             } else {
@@ -45,50 +54,81 @@ module.exports = {
             var count = 0;
             while(!isOk) {
                 count++;
-                if(count>1000) {
+                if(count>10) {
                     break;
                 }
                 absMax += grow;
-                var maxRate = Math.ceil(absMax / grow);
-                absMax = maxRate*grow;
-                var minRate = Math.floor(absMin / grow);
-                if(minRate!=0) {
-                    minRate--;
+                var maxRate = Math.ceil(absMax / tick);
+                absMax = maxRate*tick;
+                realMax = maxFlag * absMax;
+                realMin = minFlag * absMin;
+                interval = Math.abs(realMax - realMin)/(splitNumber - 1); 
+                interval = Math.floor(interval/tick)*tick;
+                if(absMax%interval!==0) {
+                    continue;
                 }
-                absMin = minRate*grow;
-                realMax = maxFlag*absMax;
-                realMin = minFlag*absMin; 
-                interval = (realMax - realMin)/(splitNumber - 1); 
                 var maxGap = absMax - Math.abs(max);
                 var minGap = 0.2;
-                if(absMax%tick == 0 && absMin%tick==0 && (absMin==0 ? true:(absMin<Math.abs(min)))) {
-                    if(maxGap/tick>minGap && interval % tick === 0 && absMax%interval=== 0&&absMin%interval===0) {
-                        realSplitNumber = splitNumber;
-                        isOk = true;         
-                    } else {
-                        for(var i = 1; i < 3; i++) {
-                             realSplitNumber = splitNumber+i;
-                             interval = (realMax - realMin) /(realSplitNumber - 1);
-                            if(maxGap/tick>minGap && interval  % tick === 0 && absMax%interval=== 0&&absMin%interval===0) {
-                                isOk = true;
-                                break;
-                            } 
+                if(maxGap/tick < minGap) {
+                    continue;
+                }
+                realSplitNumber = splitNumber;
+                absMin = Math.abs(absMax - (realSplitNumber-1)*interval);
+                if(absMin%interval===0) {
+                    if(minFlag == 1) {
+                        if(absMin*minFlag<oldAbsMin*minFlag) {
+                            isOk = true;
                         }
-                        if(!isOk) {
-                            for(var i = 1; i < 3; i++) {
-                                realSplitNumber = splitNumber - i;
-                                interval = (realMax - realMin) /(realSplitNumber - 1);
-                                if(maxGap/tick>minGap && realSplitNumber > 2 && interval % tick === 0 &&absMax%interval=== 0&&absMin%interval===0) {
+                    } else {
+                        if(absMin*minFlag>oldAbsMin*minFlag) {
+                            isOk = true;
+                        }
+                    }
+                }
+                if(!isOk){
+                    for(var i = 1; i < 3; i++) {
+                        realSplitNumber = splitNumber+i;
+                        absMin = Math.abs(absMax - (realSplitNumber-1)*interval);
+                        if(absMin%interval===0) {
+                            if(minFlag == 1) {
+                                if(absMin*minFlag < oldAbsMin*minFlag) {
+                                    isOk = true;
+                                    break;
+                                }
+                            } else {
+                                if(absMin*minFlag>oldAbsMin*minFlag) {
                                     isOk = true;
                                     break;
                                 }
                             }
+                        } 
+                    }
+                    if(!isOk) {
+                        for(var i = 1; i < 3; i++) {
+                            realSplitNumber = splitNumber - i;
+                            absMin = Math.abs(absMax - (realSplitNumber-1)*interval);
+                            if(absMin%interval===0&&realSplitNumber>2) {
+                                if(minFlag == 1) {
+                                    if(absMin*minFlag>oldAbsMin*minFlag) {
+                                        isOk = true;
+                                        break;
+                                    }
+                                } else {
+                                    if(absMin*minFlag < oldAbsMin*minFlag) {
+                                        isOk = true;
+                                        break;
+                                    }
+                                }
+                            } 
                         }
                     }
                 }
+                realMin = absMin*minFlag;
             }
+            min = Math.min(maxFlag*absMax,minFlag*absMin);
+            max = Math.max(maxFlag*absMax,minFlag*absMin);
             for(var i = 0; i < realSplitNumber;i++) {
-                data.push(realMin +interval*i);
+                data.push(min +interval*i);
             }
             return data;
         } else if(absMax < 1 && absMax > 0) {

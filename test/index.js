@@ -74,7 +74,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,-1]
+            data:[1,10]
         }
 	],
     grid:{
