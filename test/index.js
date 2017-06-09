@@ -74,7 +74,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,-1]
+            data:[1,12332]
         }
 	],
     grid:{
@@ -122,7 +122,7 @@ var option = {
         axisLabel:{
             show:true,
             interval:'auto',
-            inside:true,
+            inside:false,
             rotate:0,
             margin:8,
             textWidth:null,//强制宽度
