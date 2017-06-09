@@ -96,10 +96,16 @@ module.exports = {
                 realMin = absMin*minFlag;
                 if(interval*(realSplitNumber-1) >= Math.abs(realMax - realMin)) {
                     if(isSame) {
+                        if(min == 0 && realMin === 0) {
+                            isOk = true;
+                        }
                         if(realMin < min) {
                             isOk = true;
                         }
                     } else {
+                        if(min == 0 && max === 0) {
+                            isOk = true;
+                        }
                         if(realMin > max)  {
                             isOk = true;
                         }
@@ -114,10 +120,16 @@ module.exports = {
                         realMin = absMin*minFlag;
                         if(isGood(interval*(realSplitNumber-1) , Math.abs(realMax - realMin))) {
                             if(isSame) {
+                                if(min == 0 && realMin === 0) {
+                                    isOk = true;
+                                }
                                 if(realMin < min) {
                                     isOk = true;
                                 }
                             } else {
+                                if(min == 0 && max === 0) {
+                                    isOk = true;
+                                }
                                 if(realMin > max)  {
                                     isOk = true;
                                 }
@@ -136,10 +148,16 @@ module.exports = {
                             realMin = absMin*minFlag;
                             if(isGood(interval*(realSplitNumber-1) , Math.abs(realMax - realMin))&&realSplitNumber>2) {
                                 if(isSame) {
+                                    if(min == 0 && realMin === 0) {
+                                        isOk = true;
+                                    }
                                     if(realMin < min) {
                                         isOk = true;
                                     }
                                 } else {
+                                    if(min == 0 && max === 0) {
+                                        isOk = true;
+                                    }
                                     if(realMin > max)  {
                                         isOk = true;
                                     }

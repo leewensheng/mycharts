@@ -35,7 +35,18 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            data = gridService.getSplitArray(min||dataRange.min,max||dataRange.max,splitNumber);
+            var axismin,axismax;
+            if(typeof min === 'number') {
+                axismin = min;
+            } else {
+                axismin = dataRange.min;
+            }
+            if(typeof max === 'number') {
+                axismax = max;
+            } else  {
+                axismax = dataRange.max;
+            }
+            data = gridService.getSplitArray(axismin,axismax,splitNumber);
         }
         var splits = data.map(function(val,index){
             return start + (end - start)*index/(data.length - 1);
