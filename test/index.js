@@ -74,7 +74,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,12332]
+            data:[1,3300]
         }
 	],
     grid:{
@@ -88,7 +88,7 @@ var option = {
         minRange:null,
         splitNumber:5,//分割段数
         data:['1','2','3','4','5'],//分类轴用到
-        opposite:true,
+        opposite:false,
         inverse:false,//数值反转
         title:{
             show:true,

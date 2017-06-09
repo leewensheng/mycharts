@@ -21,15 +21,19 @@ class Grid extends Component {
 		}
 	}
 	getInitialState(){
+		var {xAxis,yAxis} = this.props;
 		return {
 			leftLabelWidth:0,
 			rightLabelWidth:0,
 			bottomLabelHeight:0,
-			topLabelHeight:0
+			topLabelHeight:0,
+			xAxis:xAxis.map(function(){}),
+			yAxis:yAxis.map(function(){})
 		}
 	}
 	render(){
 		var props = this.props;
+		var setAxisData = this.setAxisData.bind(this);
 		var {top,left,right,bottom,width,height,background,xAxis,yAxis} = props;
 		var {leftLabelWidth,rightLabelWidth,bottomLabelHeight,topLabelHeight} = this.state;
 		var axisLeft = left - leftLabelWidth,
@@ -42,7 +46,7 @@ class Grid extends Component {
 			<g className="vcharts-grid">
 				<Rect  className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
 				{
-					xAxis.map(function(axis){
+					xAxis.map(function(axis,index){
 						return <Axis 	
 									left={axisLeft} 
 									right={axisRight} 
@@ -51,10 +55,13 @@ class Grid extends Component {
 									width={axisWidth}
 									height={axisHeight}
 									option={axis}
-									axis="x"/>
+									axis="x"
+									indexInGrid={index}
+									setAxisData={setAxisData}
+									/>
 					})
 				}{
-					yAxis.map(function(axis){
+					yAxis.map(function(axis,index){
 						return <Axis 	
 									left={axisLeft} 
 									right={axisRight} 
@@ -63,15 +70,37 @@ class Grid extends Component {
 									width={axisWidth}
 									height={axisHeight}
 									option={axis}
-									axis="y"/>
+									axis="y"
+									indexInGrid={index}
+									setAxisData={setAxisData}
+									/>
 					})
 				}
 			</g>
 		)
 	}
-	computeTextWidth(){
-		var props = this.props;
-		var {onDependceReady,includeSeries,top,left,right,bottom,width,height,background,xAxis,yAxis} = props;
+	setAxisData(axis,index,data){
+		var {xAxis,yAxis} = this.state;
+		if(axis==='x') {
+			xAxis[index] = data;
+		} else {
+			yAxis[index] = data;
+		}
+		var isReady = true;
+		xAxis.map(function(val){
+			if(!val) isReady = false;
+		})
+		yAxis.map(function(val){
+			if(!val) isReady = false;
+		})
+		if(isReady) {
+			this.onAxisReady();
+		}
+	}
+	onAxisReady(){
+		var {props,state} = this;
+		var {onDependceReady,includeSeries,top,left,right,bottom,width,height} = props;
+		var {xAxis,yAxis} = state;
 		onDependceReady('grid',includeSeries,{
 			top:top,
 			left:left,
@@ -79,15 +108,15 @@ class Grid extends Component {
 			bottom:bottom,
 			width:width,
 			height:height,
-			xAxis:[],
-			yAxis:[]
+			xAxis:xAxis,
+			yAxis:yAxis
 		});
 	}
-	componentDidMount(){
-		this.computeTextWidth();
+	componentWillReceiveProps(){
+		this.setState({updateType:'newProps'});
 	}
-	componentDidUpdate(){
-		this.computeTextWidth();
+	shouldComponentUpdate(nextProps,nextState){
+		return nextState.updateType === 'newProps';
 	}
 }
 

@@ -53,17 +53,17 @@ module.exports = {
             return [max];
         }
         var minTick = gap/(splitNumber);
-
         var k  = parseInt(Math.log10(minTick));
         var basic = Math.pow(10,k-1)*2.5;
         var scale = Math.ceil(minTick/basic);
         if(scale%2!=0) {
-            scale += 1;
+            if(basic*(scale+1)*3<gap) {
+                scale += 1;
+            }
         }
         if(scale>4) {
-            scale = Math.round(scale/4)*4;
+            scale = Math.round(scale/10)*10;
         }
-        
         tick = scale*basic;
         var count = 0;
         absMax = Math.floor(absMax/tick)*tick;

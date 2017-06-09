@@ -14,8 +14,12 @@ class  Axis extends Component {
             width:null,
             height:null,
             axis:'x',
+            indexInGrid:null,
             option:null
         }         
+    }
+    getInitialState(){
+        return this.getRenderData(this.props);
     }
     getRenderData(props){
         var {top,left,right,bottom,width,height,axis,option} = props;
@@ -48,8 +52,8 @@ class  Axis extends Component {
         var props = this.props;
         var {top,left,right,bottom,width,height,axis,min,max,option} = props;
         var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,axisLabel,axisTick} = option;
-        var renderData = this.getRenderData(props);
-        var {start,end,other,splits,data} = renderData;
+        var state = this.state;
+        var {start,end,other,splits,data} = state;
         var x1,y1,x2,y2;
         if(axis === 'x') {
             y1 = y2 = other;
@@ -140,6 +144,38 @@ class  Axis extends Component {
                 </g>
             </g>
         )
+    }
+    componentWillReceiveProps(nextProps){
+        var nextState = this.getRenderData(nextProps);
+        this.setState(nextState);
+    }
+    sendAxisData(){
+        var {props,state} = this;
+        var {setAxisData,axis,indexInGrid} = props;
+        var {index,axisLabel} = props.option
+        var labelSize;
+        var el = findDOMNode(this);
+        if(axisLabel.inside||!axisLabel.show) {
+            labelSize = 0;
+        } else {
+            var labelSize = 0;
+            $(el).find('.vcharts-axis-labels text').each(function(index,label){
+                var size = label.getComputedTextLength();
+                labelSize = Math.max(labelSize,size);
+            })
+        }
+        var {data} = state;
+        setAxisData(axis,indexInGrid,{
+            data:data,
+            index:index,
+            maxLabelSize:labelSize
+        })
+    }
+    componentDidMount(){
+        this.sendAxisData();
+    }
+    componentDidUpdate(){
+        this.sendAxisData();
     }
 }
 module.exports = Axis;
