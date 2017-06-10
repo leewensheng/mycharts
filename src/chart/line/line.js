@@ -2,6 +2,8 @@ import $ from 'jquery'
 import preact,{Component,VNode,findDOMNode} from 'preact'
 import cad from 'cad'
 import DataLabel from '../../widget/dataLabel'
+import Polyline from './polyline'
+
 import defaultOption from './option'
 class Linechart extends Component {
     getDefaultProps(){
@@ -36,18 +38,16 @@ class Linechart extends Component {
             var y = bottom  - (val-min)/scale;
             points.push({x,y});
         });
-        var polyline = points.map(function(p){
-            return p.x+','+ p.y;
-        }).join(' ');
         return (
-            <g className="vcharts-series line">
-                <polyline points={polyline}  stroke="red" stroke-width="2" fill="none"/>
-                <g className="series-labels">
+            <g className="vcharts-series vcharts-line-series">
+                <Polyline points={points}  stroke='red' fill='none' stroke-width='2'/>
+                <g className="series-line-labels">
                     {
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
                             return <DataLabel  
+                                    animation={true}
                                     x={x} 
                                     y={y - 5} 
                                     text={value} 

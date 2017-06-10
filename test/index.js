@@ -74,7 +74,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,2,3]
+            data:[1,20,30,500,300]
         }
 	],
     grid:{
@@ -136,8 +136,7 @@ var option = {
         }
     },
     yAxis:{
-        splitNumber:5,
-        min:0
+        splitNumber:5
     }
 };
 chart.setOption(option);
