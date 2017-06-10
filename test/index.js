@@ -74,7 +74,10 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,20,30,500,300]
+            data:[1,20,30,500,300],
+        },{
+            type:'line',
+            data:[5,200,300,589]
         }
 	],
     grid:{

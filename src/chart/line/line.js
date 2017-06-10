@@ -1,35 +1,20 @@
 import $ from 'jquery'
 import preact,{Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
+import Paper from 'cad/paper'
 import DataLabel from '../../widget/dataLabel'
 import Polyline from './polyline'
 
 import defaultOption from './option'
 class Linechart extends Component {
-    getDefaultProps(){
-
-    }
-    getInitialState(){
-
-    }
     render(){
         var props = this.props;
         var state = this.state;
-        var {width,height,series,option,dependciesData} = this.props;
+        var {width,height,series,option,dependciesData} = props;
         var {data,xAxisIndex,yAxisIndex,dataLabels} = series;
         var {left,top,right,bottom,width,height,width,xAxis,yAxis} = dependciesData;
         var points = [];
-        var yAxisData,xAxisData;
-        yAxis.map(function(axis){
-            if(axis.index === yAxisIndex) {
-                yAxisData = axis;
-            }
-        });
-        xAxis.map(function(axis){
-            if(axis.index === xAxisIndex) {
-                xAxisData = axis;
-            }
-        })
+        var xyData = this.getDependenyData();
+        var {xAxisData,yAxisData} = xyData;
         var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
         var scale = (max - min)/height;
         var len = xAxisData.data.length;
@@ -61,8 +46,46 @@ class Linechart extends Component {
             </g>
         );
     }
+    getDependenyData(){
+        var props = this.props;
+        var {dependciesData,series} = props;
+        var {xAxisIndex,yAxisIndex,dataLabels} = series;
+        var {xAxis,yAxis} = dependciesData;
+        var yAxisData,xAxisData;
+        yAxis.map(function(axis){
+            if(axis.index === yAxisIndex) {
+                yAxisData = axis;
+            }
+        });
+        xAxis.map(function(axis){
+            if(axis.index === xAxisIndex) {
+                xAxisData = axis;
+            }
+        })
+        return {xAxisData,yAxisData};
+    }
+    componentDidMount(){
+        this.animate();
+    }
     animate(){
-
+        var {state,props} = this;
+        var {option,dependciesData} = props;
+        var {top,left,width,height} = dependciesData;
+        var el = findDOMNode(this);
+        var {serieIndex} = props;
+        var svg = $(el).closest("svg").get(0);
+        var paper = new Paper(svg);
+        var clip = paper.clipPath(function(){
+            paper.rect(top,left,0,height);
+        });
+        clip.attr("id","line-clip"+serieIndex);
+        $(el).attr("clip-path","url(#line-clip"+ serieIndex +")");
+        var rect = clip.find("rect");
+        rect.transition({width:width},600,'linear',function(){
+            rect.remove();
+            $(el).removeAttr('clip-path');
+        });
+        paper.destroy();
     }
 }
 Linechart.defaultOption = defaultOption;
