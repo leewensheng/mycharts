@@ -12,7 +12,13 @@ var vchart = {
 	},
 	cad:cad,
     defineChart:function(type,chart){
-        charts[type] = chart;
+    	if(Array.isArray(type)) {
+    		type.map(function(val){
+    			charts[val] = chart;
+    		})
+    	} else {
+        	charts[type] = chart;
+    	}
     }
 }
 module.exports = vchart;
