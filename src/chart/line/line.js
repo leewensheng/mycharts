@@ -67,6 +67,13 @@ class Linechart extends Component {
     componentDidMount(){
         this.animate();
     }
+    shouldComponentUpdate(nextProps){
+        if(!nextProps.isDependReady) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     animate(){
         var {state,props} = this;
         var {option,dependciesData} = props;

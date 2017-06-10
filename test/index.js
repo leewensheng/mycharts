@@ -148,11 +148,8 @@ console.log('total-time:'+ (t2-t1)+'ms');
 document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
-	chart.setOption({
-		grid:{
-			left:150*Math.random(),
-			bottom:200*Math.random()
-		}
-	})
+    option.xAxis.data.push(3);
+    option.series[3].data.push(200);
+	chart.setOption(option)
 
 })
