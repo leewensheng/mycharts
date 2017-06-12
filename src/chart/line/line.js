@@ -1,5 +1,6 @@
 import $ from 'jquery'
-import preact,{Component,VNode,findDOMNode} from 'preact'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper'
 import DataLabel from '../../widget/dataLabel'
 import Polyline from './polyline'
@@ -26,13 +27,14 @@ class Linechart extends Component {
         });
         return (
             <g className="vcharts-series vcharts-line-series">
-                <Polyline points={points}  stroke='red' fill='none' stroke-width='1'/>
+                <Polyline points={points}  stroke='red' fill='none' strokeWidth='1'/>
                 <g className="series-line-labels">
                     {
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
                             return <DataLabel  
+                                    key={index}
                                     animation={true}
                                     x={x} 
                                     y={y - 10} 
@@ -46,9 +48,15 @@ class Linechart extends Component {
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
-                            return <Circle  cx={x} cy={y} r={4} fill="#fff" stroke="red" stroke-width="1" 
-                                            onMouseOver={that.animateSymbol}
-                                            onMouseOut={that.animateSymbol} />
+                            return <Circle  
+                                        key={index}
+                                        cx={x} 
+                                        cy={y} r={4} 
+                                        fill="#fff" 
+                                        stroke="red" 
+                                        strokeWidth="1" 
+                                        onMouseOver={that.animateSymbol}
+                                        onMouseOut={that.animateSymbol} />
                         })
                     }
                 </g>

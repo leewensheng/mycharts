@@ -1,9 +1,12 @@
 import $ from 'jquery'
-import {Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
-cad.defineShape("pie_connect_line",function(options){
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
+import Path from 'cad/path'
+import shape from 'cad/shape'
+import {interpolate} from 'cad/interpolate'
+shape.defineShape("pie_connect_line",function(options){
     var {cx,cy,midAngle,radius,x,y,length2,textAlign} = options;
-    var path = new cad.Path();
+    var path = new Path();
     if(textAlign === "right") {
         length2 *= -1;
     }
@@ -11,40 +14,20 @@ cad.defineShape("pie_connect_line",function(options){
     return path;
 })
 class  ConnectLine extends Component{
-    getDefaultProps(){
-        return {
-            animation:false,
-            cx:null,
-            cy:null,
-            radius:null,
-            midAngle:null,
-            x:null,
-            y:null,
-            length2:20,
-            textAlign:null,
-            lineStyle:{
-                color:null,
-                width:null,
-                dash:0
-            }
-        }
-    }
     render(){
         var {cx,cy,radius,midAngle,x,y,length2,lineStyle,textAlign} = this.props;
-        var vpath = new VNode("path");
-        var path = cad.getShapePath("pie_connect_line",{cx,cy,midAngle,radius,x,y,length2,textAlign});
-        vpath.attr("d",path.toString())
-             .attr("stroke",lineStyle.color)
-             .attr("stroke-width",lineStyle.width)
-             .attr("stroke-dasharray",lineStyle.dash);
-        return vpath;
+        var d = shape.getShapePath("pie_connect_line",{cx,cy,midAngle,radius,x,y,length2,textAlign}).toString();
+        return <path d={d} 
+                    stroke={lineStyle.color} 
+                    strokeWidth={lineStyle.width} 
+                    strokeDasharray={lineStyle.dash} />
     }
     componentWillReceiveProps(nextProps){
         if(nextProps.updateType === "select") {
             return;
         }
         var {lineStyle,textAlign} = nextProps;
-        var interpolate = cad.interpolate(this.props,nextProps);
+        var interpolateFunc = interpolate(this.props,nextProps);
         var el = findDOMNode(this);
         var that = this;
         $(el).attr("stroke",lineStyle.color)
@@ -63,14 +46,30 @@ class  ConnectLine extends Component{
             onUpdate:onUpdate
         });
         function onUpdate(k){
-            var val = interpolate(k);
+            var val = interpolateFunc(k);
             var {cx,cy,radius,midAngle,x,y,length2} = val;
-            var path = cad.getShapePath("pie_connect_line",{cx,cy,radius,midAngle,x,y,length2,textAlign});
+            var path = shape.getShapePath("pie_connect_line",{cx,cy,radius,midAngle,x,y,length2,textAlign});
             $(el).attr("d",path);
         }
     }
     shouldComponentUpdate(){
         return false;
+    }
+}
+ConnectLine.defaultProps =  {
+    animation:false,
+    cx:null,
+    cy:null,
+    radius:null,
+    midAngle:null,
+    x:null,
+    y:null,
+    length2:20,
+    textAlign:null,
+    lineStyle:{
+        color:null,
+        width:null,
+        dash:0
     }
 }
 module.exports = ConnectLine;

@@ -1,28 +1,13 @@
 import $ from 'jquery'
-import preact,{Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import Axis from './axis'
 import Rect from '../../widget/rect'
 class Grid extends Component {
-	getDefaultProps(){
-		return {
-			left:null,
-			top:null,
-			bottom:null,
-			right:null,
-			width:null,
-			height:null,
-			background:'transparent',
-			containLabel:false,
-			xAxis:[],
-			yAxis:[],
-			includeSeries:[],
-			onDependceReady:null
-		}
-	}
-	getInitialState(){
-		var {xAxis,yAxis} = this.props;
-		return {
+	constructor(props){
+		super(props);
+		var {xAxis,yAxis} = props;
+		this.state =  {
 			leftLabelWidth:0,
 			rightLabelWidth:0,
 			bottomLabelHeight:0,
@@ -48,6 +33,7 @@ class Grid extends Component {
 				{
 					xAxis.map(function(axis,index){
 						return <Axis 	
+									key={'xaxis'+index}
 									hasOpposite={xAxis.length>=2}
 									left={axisLeft} 
 									right={axisRight} 
@@ -64,6 +50,7 @@ class Grid extends Component {
 				}{
 					yAxis.map(function(axis,index){
 						return <Axis 	
+									key={'yaxis'+index}
 									hasOpposite={yAxis.length>=2}
 									left={axisLeft} 
 									right={axisRight} 
@@ -121,5 +108,18 @@ class Grid extends Component {
 		return nextState.updateType === 'newProps';
 	}
 }
-
+Grid.defaultProps = {
+	left:null,
+	top:null,
+	bottom:null,
+	right:null,
+	width:null,
+	height:null,
+	background:'transparent',
+	containLabel:false,
+	xAxis:[],
+	yAxis:[],
+	includeSeries:[],
+	onDependceReady:null
+}
 module.exports = Grid;

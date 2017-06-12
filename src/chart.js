@@ -2,7 +2,8 @@ import $ from 'jquery'
 import default_option from './option/index'
 import Core from './chart/index'
 import cad from '../../src/index'
-import {render,VNode} from 'preact'
+import React from 'react'
+import {render} from 'react-dom'
 function Chart(el,option){
 	this.container = null;
 	this.width = null;
@@ -34,7 +35,7 @@ Chart.prototype = {
 		var height = this.height;
 		var innerContainer = $("<div class='vcharts-container'></div>").attr("style","font-size:0;width:0;position:relative;overflow:visible");
 		$(container).append(innerContainer);
-		var vchart = new VNode(Core,{chart:this,option,width,height});
+		var vchart = <Core chart={this} option={option} width={width} height={height} />;
 		render(vchart,innerContainer[0]);
 		this.componentDidMount();
 	},

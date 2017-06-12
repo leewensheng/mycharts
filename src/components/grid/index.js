@@ -1,19 +1,14 @@
 import $ from 'jquery'
-import preact,{Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import Grid from './grid'
 import defaultOption  from './option'
 import charts from '../../chart/charts'
 import gridService from './gridService'
 class  Grids extends Component {
-    getDefaultProps(){
-        return {
-            chartOption:null,
-            chartWidth:null,//图表宽度
-            chartHeight:null,//图表高度
-            onDependceReady:null,
-            isReady:false
-        }
+    constructor(props) {
+        super(props);
+        this.state = this.getRenderData(props);
     }
     getRenderData(props){
     	//todo 计算出grid的大小，和各axis的值范围
@@ -115,10 +110,6 @@ class  Grids extends Component {
             grids:grids
         }
     }
-    getInitialState(){
-        var props = this.props;
-        return this.getRenderData(props);
-    }
     render(){
         var props = this.props;
         var {chartWidth,chartHeight,chartOption,onDependceReady} = props;
@@ -126,12 +117,13 @@ class  Grids extends Component {
         return (
         	<g className='vcharts-grids'>
 	        {
-	        	grids.map(function(grid){
+	        	grids.map(function(grid,index){
 	        	var {xAxis,yAxis,option,includeSeries} = grid;
                 var {top,left,bottom,right,background} = option;
                 var width = chartWidth - right - left;
                 var height = chartHeight - bottom - top;
 		        return <Grid 
+                            key={index}
 		        			background={background}
 		        			top={top}
 		        			left={left}
@@ -155,4 +147,11 @@ class  Grids extends Component {
         this.setState(this.getRenderData(nextProps));
     }
 }
+Grids.defaultProps = {
+        chartOption:null,
+        chartWidth:null,//图表宽度
+        chartHeight:null,//图表高度
+        onDependceReady:null,
+        isReady:false
+    }
 module.exports = Grids;

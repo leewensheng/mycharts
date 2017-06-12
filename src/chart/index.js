@@ -1,15 +1,20 @@
-import {Component,VNode,findDOMNode} from 'preact'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import cad from 'cad'
+import namespace from 'cad/namespace'
 import charts from './charts'
 import $ from 'jquery'
 import Grids from '../components/grid/index'
 class Core extends Component {
-    getDefaultProps(){
-        return  {
-            width:600,
-            height:400,
-            option:null       
-        }
+    constructor(props){
+        super(props);
+        this.state = {
+            props:props,
+            dependencies:this.getDependcies(props),
+            dependenceData:{
+
+            }
+        };
     }
     getDependcies(props){
         var {option} = props;
@@ -28,35 +33,17 @@ class Core extends Component {
         });
         return dependencies;
     }
-    getInitialState(){
-        var props = this.props;
-        return {
-            dependencies:this.getDependcies(props),
-            dependenceData:{
-
-            }
-        }
-    }
     render(){
-        //return ''
         var state = this.state;
-        var props = this.props;
+        var props = this.state.props;
         var {width,height,option} = props;
         var {chart,colors,series} = option;
         var onDependceReady = this.onDependceReady.bind(this);
-        var paper = new cad.Paper();
-        var svg = new VNode("svg",{width,height})
-                    .attr("xmlns",cad.namespace.svg)
-                    .attr("xmlns:xlink",cad.namespace.xlink)
-        paper.switchLayer(svg);
-        //defs层
-        paper.append("defs");
-        //设置background
-        paper.rect(0,0,"100%","100%").attr("fill",chart.background);
-        //所有的图表g
         var {dependencies,dependenceData,updateType} = this.state;
+        var components = [];
         for(var dependence in dependencies) {
-            paper.append(Grids,{
+            components.push({
+                name:dependence,
                 chartOption:option,
                 chartWidth:width,
                 chartHeight:height,
@@ -65,36 +52,53 @@ class Core extends Component {
                 updateType:updateType
             });
         };
-        var group = paper.g({className:'vcharts-series'});
-        series.map(function(chartOption,index){
-            var type = chartOption.type;
-            if(!type) {return;}
-            var Chart = charts[type];
-            if(!Chart) {return;}
-            var chartDependencies = Chart.dependencies||[];
-            var dependeData = dependenceData[index]
-            if(chartDependencies.length&&!dependeData) return;
-            var isDependReady = true;
-            for(var i = 0; i < chartDependencies.length;i++) {
-                if(!dependencies[chartDependencies[i]]) {
-                    isDependReady = false;
+        return (
+            <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink}>
+                <defs></defs>
+                <rect x="0" y="0" width="100%" height="100%" fill={chart.background} className="vcharts-background"/>
+                {
+                    components.map(function(component){
+                        var name = component.name;
+                        return (
+                            <Grids key={name} {...component}/>
+                        )
+                    })
                 }
-            };
-            paper.switchLayer(group);
-            var defaultOption = Chart.defaultOption;
-            chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
-            paper.append(Chart,{
-                option :option , 
-                width:width,
-                height:height,
-                series : chartOption,
-                serieIndex:index,
-                dependciesData:dependeData,
-                updateType:updateType,
-                isDependReady:isDependReady
-            });
-        });
-        return svg;
+                {
+                     series.map(function(chartOption,index){
+                        var type = chartOption.type;
+                        if(!type) {return;}
+                        var Chart = charts[type];
+                        if(!Chart) {return;}
+                        var chartDependencies = Chart.dependencies||[];
+                        var dependeData = dependenceData[index]
+                        if(chartDependencies.length&&!dependeData) return;
+                        var isDependReady = true;
+                        for(var i = 0; i < chartDependencies.length;i++) {
+                            if(!dependencies[chartDependencies[i]]) {
+                                isDependReady = false;
+                            }
+                        };
+                        var defaultOption = Chart.defaultOption;
+                        chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
+                       
+                       return (
+                        <Chart
+                            key={index}
+                            option={option} 
+                            width={width}
+                            height={height}
+                            series={chartOption}
+                            serieIndex={index}
+                            dependciesData={dependeData}
+                            updateType={updateType}
+                            isDependReady={isDependReady}
+                        />
+                        )
+                    })
+                }
+            </svg>
+        )
     }
     onDependceReady(name,serieIndex,data){
         var {dependencies,dependenceData} = this.state;
@@ -113,7 +117,7 @@ class Core extends Component {
     }
     componentDidMount(){
         this.props.chart.vchart = this;
-        delete this.props.chart;
+        //delete this.props.chart;
         var el = findDOMNode(this);
         $(el).find("svg").addSVGNamespace();
     }
@@ -124,9 +128,15 @@ class Core extends Component {
     setOption(nextProps){
         var dependencies = this.getDependcies(nextProps);
         this.setState({
+            props:nextProps,
             dependencies:dependencies,
             updateType:'newProps'
         })
     }
+}
+Core.defaultProps = {
+    width:600,
+    height:400,
+    option:null       
 }
 module.exports = Core;

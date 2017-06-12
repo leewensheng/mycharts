@@ -28,7 +28,7 @@ var option = {
                 {value:400, name:'搜索引擎'}
             ].sort(function (a, b) { return a.value-b.value}),
 			sliceOffset:20,
-			size:0.75,
+			size:0.55,
 			minSize:80,
 			innerSize:0,
 			startAngle:0,
@@ -55,13 +55,14 @@ var option = {
             }
 		},
         {
-			type:"pieeee",
+			type:"pie",
 			data:data,
-            innerSize:0.5,
+            size:0.5,
+            innerSize:0.2,
             dataLabels:{
-                color:"#fff",
+                color:"#333",
                 enabled:1,
-            	distance:-40,
+            	distance:20,
                 inside:false
             },
             connectLine:{

@@ -1,11 +1,21 @@
 import $ from 'jquery'
-import {Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
+import Paper from 'cad/paper'
+import mathUtils from 'cad/math'
+import colorHelper from 'cad/color/index'
+import shape from 'cad/shape'
+import Point from 'cad/point'
+
 import Slice from './slice'
 import DataLabel from '../../widget/dataLabel'
 import ConnectLine from './connect-line'
 import defaultOption from './option'
 class  Pie extends Component{
+	constructor(props) {
+		super(props);
+		this.state = this.getRenderData(this.props);
+	}
 	getRenderData(props,oldState){
 		var {series,width,height,option} = props;
 		var colors = option.colors;
@@ -16,10 +26,10 @@ class  Pie extends Component{
 		var arr_value = data.map(function(val){
 			return val.value;
 		})
-		var sum = cad.sum(arr_value);
-		var max_num = cad.max(arr_value);
-		var min_num = cad.min(arr_value);
-		var mean_num = cad.mean(arr_value);
+		var sum = mathUtils.sum(arr_value);
+		var max_num = mathUtils.max(arr_value);
+		var min_num = mathUtils.min(arr_value);
+		var mean_num = mathUtils.mean(arr_value);
 	    var cx = series.center[0]*width;
 	    var cy = series.center[1]*height;
 	    var innerSize = series.innerSize;
@@ -53,7 +63,7 @@ class  Pie extends Component{
 	        if(color) {
 	        	//颜色差以和平均值差对比
 	        	if(max_num - min_num > 0) {
-	        		obj.color = cad.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
+	        		obj.color = colorHelper.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
 	        	} else {
 	        		obj.color = color;
 	        	}
@@ -99,46 +109,15 @@ class  Pie extends Component{
 	    	innerRadius:radius*innerSize
 	    }
 	}
-	getInitialState(){
-		return this.getRenderData(this.props);
-	}
+
 	render(){
 		var that = this;
 		var {width,height,series,option} = this.props;
-		var paper  =new cad.Paper();
 		var points = this.state.points;
 		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
-		var virtualDOM = new VNode("g",{className:"vcharts-series pie"});
-		paper.switchLayer(virtualDOM);
-		var connectLayer = paper.g({className:"connect-line-layer"}).attr("fill","none").css("display","none")
-		var pointLayer = paper.g({className:"point-layer"});
-		var labelLayer = paper.g({className:"label-layer"}).css("display","none")
-		paper.switchLayer(pointLayer);
 		var onSlice = this.onSlice.bind(this);
-		points.map(function(point,index){
-			paper.append(Slice,{
-				animation:option.chart.animation,
-				cx:cx,
-				cy:cy,
-				startAngle:point.startAngle,
-				endAngle:point.endAngle,
-				radius:point.radius,
-				innerRadius:innerRadius,
-				selected:point.selected,
-				midAngle:point.midAngle,
-				borderWidth:borderWidth,
-				borderColor:borderColor,
-				color:point.color,
-				index:index,
-				selected:point.selected,
-				sliceOffset:sliceOffset,
-				onSlice:onSlice,
-				isAdded:point.isAdded,
-				updateType:point.updateType || "newProps",
-				prevOption:point.prevOption
-			})
-		});
+		var slices = [],labels = [],lines = [];
 		dataLabels.enabled
 		&&
 		points.map(function(p,index){
@@ -149,7 +128,7 @@ class  Pie extends Component{
 				textPoint = {x:cx,y:cy};
 				hide = true;
 			} else {
-				textPoint = cad.Point(cx,cy).angleMoveTo(midAngle,radius + dataLabels.distance);
+				textPoint = Point(cx,cy).angleMoveTo(midAngle,radius + dataLabels.distance);
 			}
 			var textOption = {
 				fontSize:13,
@@ -160,7 +139,6 @@ class  Pie extends Component{
 			} else {
 				textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
 			}
-			paper.switchLayer(labelLayer);
 			//文本略微偏移
 			var dx = 0;
 			if(textOption.textAlign === "left") {
@@ -171,17 +149,17 @@ class  Pie extends Component{
 			var length2 = connectLine.length2;//水平引线长度,需要考虑超出最大长度
 			//三角形正弦定理 2*sin(A)/a = 1/R;其中A为角,a为对边长,R为外接圆半径;
 			/*var maxLength2 = 3
-			var startPoint = cad.Point(cx,cy).angleMoveTo(midAngle,p.radius);
-			var hline = new cad.Line(startPoint.x,startPoint.y,startPoint.x+5,startPoint.y);
+			var startPoint = Point(cx,cy).angleMoveTo(midAngle,p.radius);
+			var hline = new Line(startPoint.x,startPoint.y,startPoint.x+5,startPoint.y);
 			var crossPoints = hline.getPointWithCircle(cx,cy,p.radius);*/
 			if(!(dataLabels.inside || dataLabels.distance < 0 )) {
-				var rotate = cad.asin(cad.sin(midAngle)*length2/(radius + dataLabels.distance));
+				var rotate = mathUtils.asin(mathUtils.sin(midAngle)*length2/(radius + dataLabels.distance));
 				if(textOption.textAlign === "left") {
 					rotate*= -1;
 				}
 				textPoint.rotate(rotate,cx,cy);
-			}
-			paper.append(DataLabel,{
+			};
+			labels.push({
 				animation:option.chart.animation,
 				x:textPoint.x + dx,
 				y:textPoint.y,
@@ -195,8 +173,7 @@ class  Pie extends Component{
 				}
 			})
 			if(connectLine.enabled && !dataLabels.inside && dataLabels.distance>0) {
-				paper.switchLayer(connectLayer);
-				paper.append(ConnectLine,{
+				lines.push({
 					animation:option.chart.animation,
 					width:width,
 					cx:cx,
@@ -216,8 +193,52 @@ class  Pie extends Component{
 				})
 			}
 		});
-		paper.destroy();
-		return virtualDOM;
+		return (
+			<g className="vcharts-series vcharts-pie-series">
+				<g className="pie-connect-line" fill="none">
+				{
+					lines.map(function(line,index){
+						return <ConnectLine key={index} {...line} />
+					})
+				}
+				</g>
+				<g className="vcharts-points vcharts-pie-points">
+				{
+				points.map(function(point,index){
+					return <Slice
+							key={index}
+							animation={option.chart.animation}
+							cx={cx}
+							cy={cy}
+							startAngle={point.startAngle}
+							endAngle={point.endAngle}
+							radius={point.radius}
+							innerRadius={innerRadius}
+							selected={point.selected}
+							midAngle={point.midAngle}
+							borderWidth={borderWidth}
+							borderColor={borderColor}
+							color={point.color}
+							index={index}
+							selected={point.selected}
+							sliceOffset={sliceOffset}
+							onSlice={onSlice}
+							isAdded={point.isAdded}
+							updateType={point.updateType || "newProps"}
+							prevOption={point.prevOption}
+						/>
+				})			
+			}
+				</g>
+				<g className="vchart-pie-labels">
+				{
+					labels.map(function(label,index){
+						return <DataLabel key={'labels'+index} {...label}/>
+					})
+				}
+				</g>
+			</g>
+		)
 	}
 	onSlice(e){
 		var index = $(e.target).index();
@@ -245,7 +266,7 @@ class  Pie extends Component{
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		var el = findDOMNode(this);
 		var svg = $(el).closest("svg").get(0);
-		var paper = new cad.Paper(svg);
+		var paper = new Paper(svg);
 		var group = $(findDOMNode(this));
 		var clip = paper.clipPath(function(){
 			paper.addShape("sector",cx,cy,{
@@ -257,6 +278,7 @@ class  Pie extends Component{
 		clip.attr("id","pie-clip"+serieIndex);
 		group.attr("clip-path","url(#pie-clip"+ serieIndex +")");
 		var path = clip.find("path");
+		$(".connect-line-layer,.label-layer").css("display","none");
 		path.transition({
 			from:startAngle,
 			to:endAngle,
@@ -268,7 +290,7 @@ class  Pie extends Component{
 				$(".connect-line-layer,.label-layer").css("display","");
 			},
 			onUpdate:function(val){
-				path.attr("d",cad.getShapePath("sector",cx,cy,{
+				path.attr("d",shape.getShapePath("sector",cx,cy,{
 					startAngle:startAngle,
 					endAngle:val,
 					radius:radius + sliceOffset

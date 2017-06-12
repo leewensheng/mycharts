@@ -1,4 +1,5 @@
-import preact,{Component,VNode,findDOMNode} from 'preact'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
 
 class  Circle extends Component{

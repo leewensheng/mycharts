@@ -1,4 +1,5 @@
-import {Component,VNode,findDOMNode} from 'preact'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
 //todo 多行支持tspan
 var defaultStyle = {
@@ -10,27 +11,16 @@ var defaultStyle = {
     textBaseLine:"bottom",
 }
 class  DataLabel extends Component{
-    getDefaultProps(){
-        return {
-            animation:true,
-            x:0,
-            y:0,
-            text:'',
-            style:null
-        }
-    }
-    getInitialState(){
-        return {
-            x:this.props.x,
-            y:this.props.y
-        }
+    constructor(props){
+        super(props);
+        var {x,y} = props;
+        this.state = {x,y}
     }
     render(){
         var {text,style} = this.props;
         style = $.extend({},defaultStyle,style);
         var {color,fontSize,fontFamily,fontWeight,textAlign,textBaseLine} = style;
         var {x,y} = this.state;
-        var label = new VNode("text");
         var anchor = {
             left:'start',
             right:'end',
@@ -42,19 +32,18 @@ class  DataLabel extends Component{
         } else if(textBaseLine === "top") {
             dy = fontSize;
         }
-        label.attr("x",x)
-             .attr("y",y)
-             .text(text.toString())
-             .attr("fill",color)
-             .attr("text-anchor",anchor[textAlign])
-             .attr("dy",dy)
-             .css("font-family",fontFamily)
-             .attr("font-size",fontSize)  
-             .css("font-weight",fontWeight)
-             .css("pointer-events","none")
-             .css("stroke","none");
-        ;
-        return label; 
+        return (
+            <text x={x}
+                  y={y}
+                  fill={color}
+                  fontSize={fontSize}
+                  fontWeight={fontWeight}
+                  fontFamily={fontFamily}
+                  textAnchor={anchor[textAlign]}
+                  dy={dy}
+                  pointerEvents='none'
+                  stroke="none">{text.toString()}</text>
+        )
     }
     animate(){
         var {x,y,animation} = this.props;
@@ -77,5 +66,12 @@ class  DataLabel extends Component{
         this.setState({update:false,x:x,y:y});
         this.animate();
     }
+}
+DataLabel.defaultProps = {
+    animation:true,
+    x:0,
+    y:0,
+    text:'',
+    style:null
 }
 module.exports = DataLabel;

@@ -1,21 +1,12 @@
-import preact,{Component,VNode,findDOMNode} from 'preact'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
 //todo 多行支持tspan
 class  Rect extends Component{
-    getDefaultProps(){
-        return {
-            x:0,
-            y:0,
-            width:0,
-            height:0,
-            style:{
-             
-            }
-        }
-    }
-    getInitialState(){
-        var {x,y,width,height} = this.props;
-        return {x,y,width,height}
+    constructor(props){
+        super(props);
+        var {x,y,width,height} = props;
+        this.state = {x,y,width,height};
     }
     render(){
         var {x,y,width,height} = this.state;
@@ -35,6 +26,16 @@ class  Rect extends Component{
     }
     shouldComponentUpdate(nextProps,nextState){
         return false;
+    }
+}
+Rect.defaultProps =
+ {
+    x:0,
+    y:0,
+    width:0,
+    height:0,
+    style:{
+     
     }
 }
 module.exports = Rect;

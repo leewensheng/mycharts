@@ -1,26 +1,13 @@
 import $ from 'jquery'
-import preact,{Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 import gridService from './gridService'
 import DataLabel from '../../widget/dataLabel'
 import Line from '../../widget/line'
 class  Axis extends Component {
-    getDefaultProps(){
-        return {
-            hasOpposite:false,
-            top:null,
-            left:null,
-            right:null,
-            bottom:null,
-            width:null,
-            height:null,
-            axis:'x',
-            indexInGrid:null,
-            option:null
-        }         
-    }
-    getInitialState(){
-        return this.getRenderData(this.props);
+    constructor(props){
+        super(props);
+        this.state = this.getRenderData(this.props);        
     }
     getRenderData(props){
         var {top,left,right,bottom,width,height,axis,option} = props;
@@ -161,7 +148,8 @@ class  Axis extends Component {
                             if(index === gridLines.length-1&&hasOpposite) {
                                 return;
                             }
-                            return <Line   
+                            return <Line  
+                                    key={index} 
                                     x1={x1} 
                                     y1={y1} 
                                     x2={x2} 
@@ -172,8 +160,8 @@ class  Axis extends Component {
                 </g>
                 <g className="vcharts-axis-labels">
                 {
-                    labels.map(function(label){
-                        return <DataLabel animation={true} x={label.x} y={label.y} text={label.text} style={axisLabel.style}/>
+                    labels.map(function(label,index){
+                        return <DataLabel key={index} animation={true} x={label.x} y={label.y} text={label.text} style={axisLabel.style}/>
                     })
                 }
                 </g>
@@ -182,6 +170,7 @@ class  Axis extends Component {
                         ticks.map(function(tick,index){
                             var {x1,y1,x2,y2} = tick;
                             return <Line   
+                                    key={index}
                                     x1={x1} 
                                     y1={y1} 
                                     x2={x2} 
@@ -226,4 +215,16 @@ class  Axis extends Component {
         this.sendAxisData();
     }
 }
+Axis.defaultProps = {
+    hasOpposite:false,
+    top:null,
+    left:null,
+    right:null,
+    bottom:null,
+    width:null,
+    height:null,
+    axis:'x',
+    indexInGrid:null,
+    option:null
+} 
 module.exports = Axis;

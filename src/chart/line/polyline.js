@@ -1,6 +1,8 @@
 import $ from 'jquery'
-import preact,{Component,VNode,findDOMNode} from 'preact'
-import cad from 'cad'
+import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
+import Path from 'cad/path'
+import {interpolate} from 'cad/interpolate'
 class  Polyline extends Component {
 	constructor(props){
 		super(props);
@@ -12,13 +14,13 @@ class  Polyline extends Component {
 		var {props,state} = this;
 		var {points} = props;
 		var {prevPoints}  = state;
-		var d = new cad.Path().LineToAll(prevPoints||points).toString();
+		var d = new Path().LineToAll(prevPoints||points).toString();
 		return <path d={d} fill="none" {...props}/>
 	}
 	animate(){
 		var {points} = this.props;
 		var {prevPoints} = this.state;
-		var interpolate = cad.interpolate(prevPoints,points);
+		var interpolateFunc = interpolate(prevPoints,points);
 		var el = findDOMNode(this);
 		$(el).stopTransition(true).transition({
 			from:0,
@@ -26,8 +28,8 @@ class  Polyline extends Component {
 			during:400,
 			ease:'easeOut',
 			onUpdate(k){
-				var pts = interpolate(k);
-				var d = new cad.Path().LineToAll(pts).toString();
+				var pts = interpolateFunc(k);
+				var d = new Path().LineToAll(pts).toString();
 				$(el).attr('d',d);
 			}
 		})
@@ -42,6 +44,7 @@ class  Polyline extends Component {
 	}
 }
 Polyline.defaultProps = {
+	animation:true,
 	points:[]
 }
 module.exports = Polyline;

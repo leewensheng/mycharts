@@ -1,15 +1,15 @@
-import cad from 'cad'
+import mathUtils from 'cad/math'
 module.exports = {
     getValueRange(series){
         var mins = [],maxs = [];
         series.map(function(val){
-            mins.push(cad.min(val.data));
-            maxs.push(cad.max(val.data));
+            mins.push(mathUtils.min(val.data));
+            maxs.push(mathUtils.max(val.data));
 
         });
         return {
-            min:cad.min(mins),
-            max:cad.max(maxs)
+            min:mathUtils.min(mins),
+            max:mathUtils.max(maxs)
         }
     },
     getSplitArray:function(min,max,splitNumber,isForceMin,isForceMax) {
