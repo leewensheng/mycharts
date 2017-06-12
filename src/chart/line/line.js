@@ -7,6 +7,7 @@ import Circle from '../../widget/circle'
 import defaultOption from './option'
 class Linechart extends Component {
     render(){
+        var that = this;
         var props = this.props;
         var state = this.state;
         var {width,height,series,option,dependciesData} = props;
@@ -45,12 +46,21 @@ class Linechart extends Component {
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
-                            return <Circle cx={x} cy={y} r={4} fill="#fff" stroke="red" stroke-width="1"/>
+                            return <Circle  cx={x} cy={y} r={4} fill="#fff" stroke="red" stroke-width="1" 
+                                            onMouseOver={that.animateSymbol}
+                                            onMouseOut={that.animateSymbol} />
                         })
                     }
                 </g>
             </g>
         );
+    }
+    animateSymbol(e){
+        var r = 4;
+        if(e.type === 'mouseover') {
+            r = 6;
+        }
+        $(e.target).stopTransition().transition({r:r},400,'elasticOut');
     }
     getDependenyData(){
         var props = this.props;
@@ -94,9 +104,11 @@ class Linechart extends Component {
         clip.attr("id","line-clip"+serieIndex);
         $(el).attr("clip-path","url(#line-clip"+ serieIndex +")");
         var rect = clip.find("rect");
+        $(el).find('.series-line-labels').hide();
         rect.transition({width:width},1000,'linear',function(){
             clip.remove();
             $(el).removeAttr('clip-path');
+            $(el).find('.series-line-labels').show();
         });
         paper.destroy();
     }
