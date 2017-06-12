@@ -48,6 +48,7 @@ class Grid extends Component {
 				{
 					xAxis.map(function(axis,index){
 						return <Axis 	
+									hasOpposite={xAxis.length>=2}
 									left={axisLeft} 
 									right={axisRight} 
 									bottom={axisBottom}
@@ -63,6 +64,7 @@ class Grid extends Component {
 				}{
 					yAxis.map(function(axis,index){
 						return <Axis 	
+									hasOpposite={yAxis.length>=2}
 									left={axisLeft} 
 									right={axisRight} 
 									bottom={axisBottom}

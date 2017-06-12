@@ -73,15 +73,9 @@ class  Grids extends Component {
             var isValueType = grid.xAxis.some(function(axis){return axis.type === 'value'});
             grid.yAxis.forEach(function(axis){
                 axis.type = isValueType ? 'category' :'value';
-                if(yAxis.length>=2) {
-                    axis.hasOpposite = true;
-                }
             });
             grid.xAxis.forEach(function(axis){
                 axis.type = isValueType ?'value':'category';
-                if(xAxis.length>=2) {
-                    axis.hasOpposite = true;
-                }
             });
             grid.valueAxis = isValueType?'x':'y';
         });

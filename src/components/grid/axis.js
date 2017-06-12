@@ -7,6 +7,7 @@ import Line from '../../widget/line'
 class  Axis extends Component {
     getDefaultProps(){
         return {
+            hasOpposite:false,
             top:null,
             left:null,
             right:null,
@@ -61,8 +62,8 @@ class  Axis extends Component {
     }
     render(){
         var props = this.props;
-        var {top,left,right,bottom,width,height,axis,min,max,option} = props;
-        var {hasOpposite,opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
+        var {hasOpposite,top,left,right,bottom,width,height,axis,min,max,option} = props;
+        var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
         var state = this.state;
         var {start,end,other,splits,data} = state;
         var x1,y1,x2,y2;
