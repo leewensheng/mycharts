@@ -3,7 +3,7 @@ import preact,{Component,VNode,findDOMNode} from 'preact'
 import Paper from 'cad/paper'
 import DataLabel from '../../widget/dataLabel'
 import Polyline from './polyline'
-
+import Circle from '../../widget/circle'
 import defaultOption from './option'
 class Linechart extends Component {
     render(){
@@ -34,14 +34,20 @@ class Linechart extends Component {
                             return <DataLabel  
                                     animation={true}
                                     x={x} 
-                                    y={y - 5} 
+                                    y={y - 10} 
                                     text={value} 
                                     style={dataLabels.style}/>
                         })
                     }
                 </g>
                 <g className="series-symbols">
-
+                    {
+                        data.map(function(value,index){
+                            var x = points[index].x;
+                            var y = points[index].y;
+                            return <Circle cx={x} cy={y} r={4} fill="#fff" stroke="red" stroke-width="1"/>
+                        })
+                    }
                 </g>
             </g>
         );

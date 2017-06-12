@@ -151,6 +151,25 @@ class  Axis extends Component {
                         x2={x2} 
                         y2={y2} 
                         style={axisLine.lineStyle} />
+                <g className="vhcart-axis-gridline">
+                    {
+                        gridLines.map(function(grid,index){
+                            var {x1,y1,x2,y2} = grid;
+                            if(index === 0) {
+                                return;
+                            }
+                            if(index === gridLines.length-1&&hasOpposite) {
+                                return;
+                            }
+                            return <Line   
+                                    x1={x1} 
+                                    y1={y1} 
+                                    x2={x2} 
+                                    y2={y2} 
+                                    style={gridLine.lineStyle} />
+                        })
+                    }
+                </g>
                 <g className="vcharts-axis-labels">
                 {
                     labels.map(function(label){
@@ -168,25 +187,6 @@ class  Axis extends Component {
                                     x2={x2} 
                                     y2={y2} 
                                     style={axisTick.lineStyle} />
-                        })
-                    }
-                </g>
-                <g className="vhcart-axis-gridline">
-                    {
-                        gridLines.map(function(grid,index){
-                            var {x1,y1,x2,y2} = grid;
-                            if(index === 0) {
-                                return;
-                            }
-                            if(index === gridLines.length-1&&hasOpposite) {
-                                return;
-                            }
-                            return <Line   
-                                    x1={x1} 
-                                    y1={y1} 
-                                    x2={x2} 
-                                    y2={y2} 
-                                    style={gridLine.lineStyle} />
                         })
                     }
                 </g>

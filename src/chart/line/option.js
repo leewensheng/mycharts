@@ -8,6 +8,12 @@ module.exports =
     	color:'red',
     	fontSize:13,
     	textBaseLine:'bottom'
+    },
+    marker:{
+        enabled:true,
+        symbol:'circle',//rect,roundRect,triangle,diamond,pin arrow
+        size:4,
+        offset:[0,0],
     }
 }
     

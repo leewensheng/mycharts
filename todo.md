@@ -7,3 +7,4 @@
 5.animation支持
 6.tooltip
 7.legend
+8.stack支持
