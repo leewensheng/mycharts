@@ -55,7 +55,7 @@ var option = {
             }
 		},
         {
-			type:"pie",
+			type:"pieeee",
 			data:data,
             innerSize:0.5,
             dataLabels:{
@@ -81,8 +81,7 @@ var option = {
         }
 	],
     grid:{
-        background:'#eee',
-        left:50
+        
     },
     xAxis:{
     	gridIndex:0,//所属网格区域

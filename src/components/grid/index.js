@@ -64,20 +64,26 @@ class  Grids extends Component {
         grids.forEach(function(grid){
             var {xAxis,yAxis,option} = grid;
             grid.option = $.extend({},defaultOption.grid,option);
+            if(xAxis.length >= 2) {
+                xAxis[1].opposite  =  !xAxis[0].opposite;
+            }
+            if(yAxis.length >= 2) {
+                yAxis[1].opposite = !xAxis[0].opposite;
+            }
             var isValueType = grid.xAxis.some(function(axis){return axis.type === 'value'});
             grid.yAxis.forEach(function(axis){
                 axis.type = isValueType ? 'category' :'value';
+                if(yAxis.length>=2) {
+                    axis.hasOpposite = true;
+                }
             });
             grid.xAxis.forEach(function(axis){
                 axis.type = isValueType ?'value':'category';
+                if(xAxis.length>=2) {
+                    axis.hasOpposite = true;
+                }
             });
             grid.valueAxis = isValueType?'x':'y';
-            if(xAxis.length === 2) {
-                xAxis[1].opposite  =  !xAxis[0].opposite;
-            }
-            if(yAxis.length === 2) {
-                yAxis[1].opposite = !xAxis[0].opposite;
-            }
         });
         setAxisDataRange(xAxis,'xAxis');
         setAxisDataRange(yAxis,'yAxis');
@@ -91,7 +97,7 @@ class  Grids extends Component {
                 var includeSeries = series.filter(function(serie,index){
                     var type = serie.type;
                     var chart = charts[type];
-                    if(!type) {
+                    if(!type||!chart) {
                         return;
                     }
                     var dependencies = chart.dependencies||[];

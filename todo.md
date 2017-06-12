@@ -1,5 +1,9 @@
 #to do list 
-1.组件化
-2.虚拟dom更多的方法支持，如addClass,toggleClass,css连续调用bugfix
-3.对外的接口,如下载 ,downloadImage等
-4.setOption加入debounce避免性能问题merge [option1,option2,option3]
+1.坐标轴不限定type，可以同时是categories,value
+    坐标轴splitLine,splitArea
+2.统一text ,line 配置 
+3.symbol支持
+4,label formatter
+5.animation支持
+6.tooltip
+7.legend

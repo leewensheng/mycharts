@@ -23,7 +23,7 @@ class  Line extends Component{
         var style = this.props.style||{color:"#333",width:1,type:'solid'};
         var className = this.props.className;
         var {x1,y1,x2,y2} = this.state;
-        return <line className={className} x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} stroke-width={style.width} /> 
+        return <line transform="translate(0.5,0.5)" className={className} x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} fill="none" stroke-width={style.width} /> 
     }
     animate(nextProps){
         var el = findDOMNode(this);

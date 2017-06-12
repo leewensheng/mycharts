@@ -25,7 +25,7 @@ class Linechart extends Component {
         });
         return (
             <g className="vcharts-series vcharts-line-series">
-                <Polyline points={points}  stroke='red' fill='none' stroke-width='2'/>
+                <Polyline points={points}  stroke='red' fill='none' stroke-width='1'/>
                 <g className="series-line-labels">
                     {
                         data.map(function(value,index){
@@ -88,8 +88,8 @@ class Linechart extends Component {
         clip.attr("id","line-clip"+serieIndex);
         $(el).attr("clip-path","url(#line-clip"+ serieIndex +")");
         var rect = clip.find("rect");
-        rect.transition({width:width},600,'linear',function(){
-            rect.remove();
+        rect.transition({width:width},1000,'linear',function(){
+            clip.remove();
             $(el).removeAttr('clip-path');
         });
         paper.destroy();

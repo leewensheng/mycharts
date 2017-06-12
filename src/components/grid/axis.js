@@ -62,7 +62,7 @@ class  Axis extends Component {
     render(){
         var props = this.props;
         var {top,left,right,bottom,width,height,axis,min,max,option} = props;
-        var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,axisLabel,axisTick} = option;
+        var {hasOpposite,opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
         var state = this.state;
         var {start,end,other,splits,data} = state;
         var x1,y1,x2,y2;
@@ -114,6 +114,23 @@ class  Axis extends Component {
             }
             return {x1,y1,x2,y2};
         })
+        var gridFlag = 1;
+        if(opposite) {
+            gridFlag *= -1;
+        }
+        var gridLines = splits.map(function(val,index){
+            var x1,y1,x2,y2;
+            if(axis === 'x') {
+                x1  = x2 = val;
+                y1 = other;
+                y2 = other - height*gridFlag;
+            } else {
+                y1 = y2 = val;
+                x1 = other;
+                x2 = other + width*gridFlag;
+            }
+            return {x1,y1,x2,y2};
+        })
         var className = 'vcharts-grid-axis';
         if(axis === 'x') {
             axisLabel.style.textBaseLine = labelFlag==1 ? 'top':'bottom';
@@ -144,12 +161,31 @@ class  Axis extends Component {
                     {
                         ticks.map(function(tick,index){
                             var {x1,y1,x2,y2} = tick;
-                           return <Line   
+                            return <Line   
                                     x1={x1} 
                                     y1={y1} 
                                     x2={x2} 
                                     y2={y2} 
                                     style={axisTick.lineStyle} />
+                        })
+                    }
+                </g>
+                <g className="vhcart-axis-gridline">
+                    {
+                        gridLines.map(function(grid,index){
+                            var {x1,y1,x2,y2} = grid;
+                            if(index === 0) {
+                                return;
+                            }
+                            if(index === gridLines.length-1&&hasOpposite) {
+                                return;
+                            }
+                            return <Line   
+                                    x1={x1} 
+                                    y1={y1} 
+                                    x2={x2} 
+                                    y2={y2} 
+                                    style={gridLine.lineStyle} />
                         })
                     }
                 </g>

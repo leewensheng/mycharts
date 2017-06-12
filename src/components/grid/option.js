@@ -3,7 +3,7 @@
         left:30,
         top:30,
         bottom:80,
-        right:80,
+        right:30,
         background:'transparent',
         containLabel:false
     },
@@ -17,7 +17,7 @@
 	    opposite:false,
 	    inverse:false,//数值反转
 	    title:{
-	        show:true,
+	        enabled:true,
 	        align:"start",//start middle end
 	        margin:0,
 	        rotation:0,
@@ -27,15 +27,23 @@
 	        text:"",
 	    },
 	    axisLine:{
-	        show:true,
+	        enabled:true,
 	        lineStyle:{
 	            color:"#333",
 	            width:1,
 	            type:"solid"
 	        }
 	    },
+	    gridLine:{
+	    	enabled:true,
+	    	lineStyle:{
+	    		color:"#e6e6e6",
+	    		width:1,
+	    		type:'solid'
+	    	}
+	    },
 	    axisTick:{
-	        show:true,
+	        enabled:true,
 	        interval:"auto",
 	        inside:false,
 	        length:5,
@@ -46,7 +54,7 @@
 	        }
 	    },
 	    axisLabel:{
-	        show:true,
+	        enabled:true,
 	        interval:'auto',
 	        inside:false,
 	        rotate:0,

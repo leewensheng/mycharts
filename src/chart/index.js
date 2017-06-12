@@ -70,6 +70,7 @@ class Core extends Component {
             var type = chartOption.type;
             if(!type) {return;}
             var Chart = charts[type];
+            if(!Chart) {return;}
             var chartDependencies = Chart.dependencies||[];
             var dependeData = dependenceData[index]
             if(chartDependencies.length&&!dependeData) return;
