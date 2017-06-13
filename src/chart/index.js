@@ -119,7 +119,7 @@ class Core extends Component {
         this.props.chart.vchart = this;
         //delete this.props.chart;
         var el = findDOMNode(this);
-        $(el).find("svg").addSVGNamespace();
+        $(el).addSVGNamespace();
     }
     componentWillUnmount(){
         this.props.chart.vchart = null;

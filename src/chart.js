@@ -2,6 +2,7 @@ import $ from 'jquery'
 import default_option from './option/index'
 import Core from './chart/index'
 import cad from '../../src/index'
+import Paper from 'cad/paper'
 import React from 'react'
 import {render} from 'react-dom'
 function Chart(el,option){
@@ -28,7 +29,7 @@ Chart.prototype = {
 		this.height = height;
 	},
 	render(){
-		var option = cad.extend(true,{},default_option,this.option);
+		var option = $.extend(true,{},default_option,this.option);
 		this.option = option;
 		var container = this.container;
 		var width = this.width;
@@ -42,7 +43,7 @@ Chart.prototype = {
 	setOption(option){
 		var oldOption = this.option;
 		if(oldOption) {
-			var newOption = cad.extend(true,oldOption,option);
+			var newOption = $.extend(true,oldOption,option);
 			this.option = newOption;
 			this.debounceUpdate();
 		} else {
@@ -79,7 +80,7 @@ Chart.prototype = {
 	componentDidMount(){
 		var that = this;
 		var svg = $(this.container).find("svg");
-		var paper = new cad.Paper();
+		var paper = new Paper();
 		paper.svg = svg;
 		window.chart = this;
 		this.$$paper = paper;
