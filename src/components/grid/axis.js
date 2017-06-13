@@ -179,6 +179,7 @@ class  Axis extends Component {
                 {
                     labels.map(function(label,index){
                         return <Text 
+                                    animation={false}
                                     key={index} 
                                     x={label.x} 
                                     y={label.y} 

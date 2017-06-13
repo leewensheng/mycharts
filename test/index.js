@@ -88,6 +88,7 @@ var option = {
         }
 	],
     grid:{
+        left:0,
         background:"#eee",
         containLabel:true
     },
