@@ -105,12 +105,14 @@ class Grid extends Component {
 		bottomLabelHeight=0,
 		rightLabelWidth=0,
 		leftLabelWidth=0;
-		xAxis.concat(yAxis).map(function(axis){
-		 	topLabelHeight += axis.labelPlace.top;
-		 	bottomLabelHeight += axis.labelPlace.bottom;
-		 	rightLabelWidth += axis.labelPlace.right;
-		 	leftLabelWidth += axis.labelPlace.left;
-		 });
+		if(containLabel) {
+			xAxis.concat(yAxis).map(function(axis){
+			 	topLabelHeight += axis.labelPlace.top;
+			 	bottomLabelHeight += axis.labelPlace.bottom;
+			 	rightLabelWidth += axis.labelPlace.right;
+			 	leftLabelWidth += axis.labelPlace.left;
+			 });		
+		}
 		var axisLeft = left + leftLabelWidth,
 			axisTop = top +  topLabelHeight,
 			axisRight = right - rightLabelWidth,
