@@ -8,10 +8,12 @@ module.exports =
 	data:[], //数据{name:'slcie1',value:1,color:'#fff',selected:true}
 	dataLabels:{
 		enabled:true,
-		color:"",
 		show:false,
 		inside:false,
-		distance:30
+		distance:30,
+		style:{
+			fontSize:12,
+		}
 	},
 	connectLine:{
 		enabled:true,

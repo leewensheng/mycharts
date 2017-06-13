@@ -8,7 +8,7 @@ import shape from 'cad/shape'
 import Point from 'cad/point'
 
 import Slice from './slice'
-import DataLabel from '../../widget/dataLabel'
+import Text from '../../widget/text'
 import ConnectLine from './connect-line'
 import defaultOption from './option'
 class  Pie extends Component{
@@ -165,8 +165,9 @@ class  Pie extends Component{
 				y:textPoint.y,
 				text:p.label,
 				style:{
-					color:dataLabels.color||p.color,
-					display:hide?"none":"",
+					fontSize:dataLabels.style.fontSize,
+					color:dataLabels.style.color||p.color,
+					display:hide?"none":undefined,
 					pointerEvents:"none",
 					textAlign:textOption.textAlign,
 					textBaseLine:"middle"
@@ -233,7 +234,12 @@ class  Pie extends Component{
 				<g className="vchart-pie-labels">
 				{
 					labels.map(function(label,index){
-						return <DataLabel key={'labels'+index} {...label}/>
+						return <Text 
+									key={'labels'+index} 
+									animation={label.animation}
+									x={label.x}
+									y={label.y}
+									style={label.style}>{label.text}</Text>
 					})
 				}
 				</g>
@@ -278,7 +284,7 @@ class  Pie extends Component{
 		clip.attr("id","pie-clip"+serieIndex);
 		group.attr("clip-path","url(#pie-clip"+ serieIndex +")");
 		var path = clip.find("path");
-		$(".connect-line-layer,.label-layer").css("display","none");
+		$(".pie-connect-line,.vchart-pie-labels").css("display","none");
 		path.transition({
 			from:startAngle,
 			to:endAngle,
@@ -287,7 +293,7 @@ class  Pie extends Component{
 			callback(){
 				clip.remove();
 				group.removeAttr("clip-path");
-				$(".connect-line-layer,.label-layer").css("display","");
+				$(".pie-connect-line,.vchart-pie-labels").css("display","");
 			},
 			onUpdate:function(val){
 				path.attr("d",shape.getShapePath("sector",cx,cy,{

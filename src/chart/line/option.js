@@ -5,9 +5,12 @@ module.exports =
     xAxisIndex:0,
     yAxisIndex:0,
     dataLabels:{
-    	color:'red',
-    	fontSize:13,
-    	textBaseLine:'bottom'
+    	enabled:true,
+        style:{
+            fontSize:12,
+            color:"red",
+            textAlign:'center'
+        }
     },
     marker:{
         enabled:true,

@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import gridService from './gridService'
-import DataLabel from '../../widget/dataLabel'
+import Text from '../../widget/text'
 import Line from '../../widget/line'
 class  Axis extends Component {
     constructor(props){
@@ -129,7 +129,6 @@ class  Axis extends Component {
             axisLabel.style.textAlign = labelFlag==1 ?'right':'left';
             axisLabel.style.textBaseLine = 'middle';
         }
-
         return (
             <g className={className}>
                 <Line   className="vcharts-axis-line" 
@@ -161,7 +160,11 @@ class  Axis extends Component {
                 <g className="vcharts-axis-labels">
                 {
                     labels.map(function(label,index){
-                        return <DataLabel key={index} animation={true} x={label.x} y={label.y} text={label.text} style={axisLabel.style}/>
+                        return <Text 
+                                    key={index} 
+                                    x={label.x} 
+                                    y={label.y} 
+                                    style={axisLabel.style}>{label.text}</Text>
                     })
                 }
                 </g>

@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper'
-import DataLabel from '../../widget/dataLabel'
+import Text from '../../widget/text'
 import Polyline from './polyline'
 import Circle from '../../widget/circle'
 import defaultOption from './option'
@@ -33,13 +33,12 @@ class Linechart extends Component {
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
-                            return <DataLabel  
+                            return <Text  
                                     key={index}
-                                    animation={true}
                                     x={x} 
                                     y={y - 10} 
-                                    text={value} 
-                                    style={dataLabels.style}/>
+                                    style={dataLabels.style} 
+                                    >{value}</Text>
                         })
                     }
                 </g>
