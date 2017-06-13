@@ -7,6 +7,9 @@ import Polyline from './polyline'
 import Circle from '../../widget/circle'
 import defaultOption from './option'
 class Linechart extends Component {
+    constructor(props){
+        super(props);
+    }
     render(){
         var that = this;
         var props = this.props;
@@ -111,7 +114,7 @@ class Linechart extends Component {
         var svg = $(el).closest("svg").get(0);
         var paper = new Paper(svg);
         var clip = paper.clipPath(function(){
-            paper.rect(top,left,0,height);
+            paper.rect(left,top,0,height);
         });
         clip.attr("id","line-clip"+serieIndex);
         $(el).attr("clip-path","url(#line-clip"+ serieIndex +")");

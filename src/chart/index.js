@@ -133,6 +133,9 @@ class Core extends Component {
             updateType:'newProps'
         })
     }
+    componentWillReceiveProps(nextProps) {
+        this.setOption(nextProps);
+    }
 }
 Core.defaultProps = {
     width:600,

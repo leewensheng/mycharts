@@ -5,7 +5,7 @@
         bottom:80,
         right:30,
         background:'transparent',
-        containLabel:false
+        containLabel:true
     },
     axis:{
         gridIndex:0,//所属网格区域
@@ -59,6 +59,7 @@
 	        inside:false,
 	        rotate:0,
 	        margin:8,
+	        rotation:'auto',
 	        textWidth:null,//强制宽度
 	        formatter:null,
 	        style:{

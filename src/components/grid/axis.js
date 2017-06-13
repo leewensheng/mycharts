@@ -7,10 +7,16 @@ import Line from '../../widget/line'
 class  Axis extends Component {
     constructor(props){
         super(props);
-        this.state = this.getRenderData(this.props);        
+        var state = this.getRenderData(this.props);        
+        if(props.containLabel) {
+            state.hasInited = false;
+        } else {
+            state.hasInited = true;
+        }
+        this.state = state;
     }
     getRenderData(props){
-        var {top,left,right,bottom,width,height,axis,option} = props;
+        var {top,left,right,bottom,width,height,axis,option,containLabel} = props;
         var {opposite,type,min,max,dataRange,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
         var start,end,other;
         if(axis === 'x') {
@@ -39,7 +45,9 @@ class  Axis extends Component {
         var splits = data.map(function(val,index){
             return start + (end - start)*index/(data.length - 1);
         });
+
         return {
+            hasInited:true,
             start:start,
             end:end,
             other:other,
@@ -128,15 +136,25 @@ class  Axis extends Component {
             className += ' yAxis';
             axisLabel.style.textAlign = labelFlag==1 ?'right':'left';
             axisLabel.style.textBaseLine = 'middle';
+        };
+        var {hasInited} = state;
+        if(!hasInited) {
+            gridLines = [];
+            ticks = [];
         }
         return (
             <g className={className}>
+                {
+                hasInited
+                &&
                 <Line   className="vcharts-axis-line" 
                         x1={x1} 
                         y1={y1} 
                         x2={x2} 
                         y2={y2} 
-                        style={axisLine.lineStyle} />
+                        style={axisLine.lineStyle} />                
+                    }
+
                 <g className="vhcart-axis-gridline">
                     {
                         gridLines.map(function(grid,index){
@@ -164,6 +182,7 @@ class  Axis extends Component {
                                     key={index} 
                                     x={label.x} 
                                     y={label.y} 
+                                    opacity={hasInited?1:0}
                                     style={axisLabel.style}>{label.text}</Text>
                     })
                 }
@@ -191,11 +210,12 @@ class  Axis extends Component {
     }
     sendAxisData(){
         var {props,state} = this;
-        var {setAxisData,axis,indexInGrid} = props;
-        var {index,axisLabel} = props.option
+        var {option} = props;
+        var {setAxisData,axis,indexInGrid,labelRoation} = props;
+        var {index,opposite,axisLabel,rotation} = option;
         var labelSize;
         var el = findDOMNode(this);
-        if(axisLabel.inside||!axisLabel.show) {
+        if(axisLabel.inside||!axisLabel.enabled) {
             labelSize = 0;
         } else {
             var labelSize = 0;
@@ -203,19 +223,42 @@ class  Axis extends Component {
                 var size = label.getComputedTextLength();
                 labelSize = Math.max(labelSize,size);
             })
-        }
+        };
+        var labelPlace = {
+            top:0,
+            left:0,
+            right:0,
+            bottom:0
+        };
+        if(!axisLabel.inside) {
+            if(axis === "x") {
+                if(!opposite) {
+                    labelPlace.bottom = axisLabel.style.fontSize + axisLabel.margin;
+                } else {
+                    labelPlace.top = axisLabel.style.fontSize + axisLabel.margin;
+                }   
+            } else {
+                if(!opposite) {
+                    labelPlace.left = labelSize + axisLabel.margin;
+                } else {
+                    labelPlace.right = labelSize + axisLabel.margin;
+                } 
+            }
+        } 
         var {data} = state;
         setAxisData(axis,indexInGrid,{
             data:data,
             index:index,
-            maxLabelSize:labelSize
+            labelPlace:labelPlace
         })
     }
     componentDidMount(){
         this.sendAxisData();
     }
     componentDidUpdate(){
-        this.sendAxisData();
+        if(this.props.updateType==='newProps') {
+            this.sendAxisData();
+        }
     }
 }
 Axis.defaultProps = {
@@ -227,6 +270,7 @@ Axis.defaultProps = {
     width:null,
     height:null,
     axis:'x',
+    labelRoation:0,
     indexInGrid:null,
     option:null
 } 

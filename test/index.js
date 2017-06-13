@@ -84,11 +84,12 @@ var option = {
             }
         },{
             type:'line',
-            data:[5,200,300,589]
+            data:[5,30,58]
         }
 	],
     grid:{
-        
+        background:"#eee",
+        containLabel:true
     },
     xAxis:{
     	gridIndex:0,//所属网格区域

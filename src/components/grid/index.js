@@ -119,7 +119,7 @@ class  Grids extends Component {
 	        {
 	        	grids.map(function(grid,index){
 	        	var {xAxis,yAxis,option,includeSeries} = grid;
-                var {top,left,bottom,right,background} = option;
+                var {top,left,bottom,right,background,containLabel} = option;
                 var width = chartWidth - right - left;
                 var height = chartHeight - bottom - top;
 		        return <Grid 
@@ -131,6 +131,7 @@ class  Grids extends Component {
                             bottom={top + height}
 		        			width={width}
 		        			height={height}
+                            containLabel={containLabel}
 		        			xAxis={xAxis}
 		        			yAxis={yAxis}
                             onDependceReady={onDependceReady}

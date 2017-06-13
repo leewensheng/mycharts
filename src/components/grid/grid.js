@@ -6,8 +6,9 @@ import Rect from '../../widget/rect'
 class Grid extends Component {
 	constructor(props){
 		super(props);
-		var {xAxis,yAxis} = props;
+		var {xAxis,yAxis,containLabel} = props;
 		this.state =  {
+			hasInited:containLabel?false:true,
 			leftLabelWidth:0,
 			rightLabelWidth:0,
 			bottomLabelHeight:0,
@@ -19,9 +20,9 @@ class Grid extends Component {
 	render(){
 		var props = this.props;
 		var setAxisData = this.setAxisData.bind(this);
-		var {top,left,right,bottom,width,height,background,xAxis,yAxis} = props;
-		var {leftLabelWidth,rightLabelWidth,bottomLabelHeight,topLabelHeight} = this.state;
-		var axisLeft = left - leftLabelWidth,
+		var {top,left,right,bottom,width,height,background,xAxis,yAxis,containLabel} = props;
+		var {leftLabelWidth,rightLabelWidth,bottomLabelHeight,topLabelHeight,hasInited,updateType} = this.state;
+		var axisLeft = left + leftLabelWidth,
 			axisTop = top +  topLabelHeight,
 			axisRight = right - rightLabelWidth,
 			axisBottom = bottom  - bottomLabelHeight,
@@ -29,10 +30,15 @@ class Grid extends Component {
 			axisHeight = axisBottom - axisTop;
 		return (
 			<g className="vcharts-grid">
-				<Rect  className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
+				{
+					hasInited
+					&&
+					<Rect  className="vcharts-grid-backgrould" x={axisLeft} y={axisTop} width={axisWidth} height={axisHeight} fill={background}/>
+				}
 				{
 					xAxis.map(function(axis,index){
 						return <Axis 	
+									containLabel={containLabel}
 									key={'xaxis'+index}
 									hasOpposite={xAxis.length>=2}
 									left={axisLeft} 
@@ -45,11 +51,13 @@ class Grid extends Component {
 									axis="x"
 									indexInGrid={index}
 									setAxisData={setAxisData}
+									updateType={updateType}
 									/>
 					})
 				}{
 					yAxis.map(function(axis,index){
 						return <Axis 	
+									containLabel={containLabel}
 									key={'yaxis'+index}
 									hasOpposite={yAxis.length>=2}
 									left={axisLeft} 
@@ -62,6 +70,7 @@ class Grid extends Component {
 									axis="y"
 									indexInGrid={index}
 									setAxisData={setAxisData}
+									updateType={updateType}
 									/>
 					})
 				}
@@ -88,24 +97,52 @@ class Grid extends Component {
 	}
 	onAxisReady(){
 		var {props,state} = this;
+		var {containLabel} = props;
 		var {onDependceReady,includeSeries,top,left,right,bottom,width,height} = props;
 		var {xAxis,yAxis} = state;
+		var  
+		topLabelHeight=0,
+		bottomLabelHeight=0,
+		rightLabelWidth=0,
+		leftLabelWidth=0;
+		xAxis.concat(yAxis).map(function(axis){
+		 	topLabelHeight += axis.labelPlace.top;
+		 	bottomLabelHeight += axis.labelPlace.bottom;
+		 	rightLabelWidth += axis.labelPlace.right;
+		 	leftLabelWidth += axis.labelPlace.left;
+		 });
+		var axisLeft = left + leftLabelWidth,
+			axisTop = top +  topLabelHeight,
+			axisRight = right - rightLabelWidth,
+			axisBottom = bottom  - bottomLabelHeight,
+			axisWidth = axisRight - axisLeft,
+			axisHeight = axisBottom - axisTop;
 		onDependceReady('grid',includeSeries,{
-			top:top,
-			left:left,
-			right:right,
-			bottom:bottom,
-			width:width,
-			height:height,
+			top:axisTop,
+			left:axisLeft,
+			right:axisRight,
+			bottom:axisBottom,
+			width:axisWidth,
+			height:axisHeight,
 			xAxis:xAxis,
 			yAxis:yAxis
 		});
+		if(containLabel) {
+			var updateType = 'adjust';
+			var hasInited = true;
+			this.setState({hasInited,topLabelHeight,bottomLabelHeight,rightLabelWidth,leftLabelWidth,updateType});
+		}
 	}
-	componentWillReceiveProps(){
-		this.setState({updateType:'newProps'});
+	componentWillReceiveProps(nextProps){
+		var {xAxis,yAxis,containLabel} = nextProps;
+		xAxis = xAxis.map(function(){}),
+		yAxis = yAxis.map(function(){})
+		var updateType = 'newProps';
+		this.setState({xAxis,yAxis,updateType});
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return nextState.updateType === 'newProps';
+		var {updateType} = nextState;
+		return updateType === 'newProps' || updateType === 'adjust';
 	}
 }
 Grid.defaultProps = {
@@ -116,7 +153,7 @@ Grid.defaultProps = {
 	width:null,
 	height:null,
 	background:'transparent',
-	containLabel:false,
+	containLabel:true,
 	xAxis:[],
 	yAxis:[],
 	includeSeries:[],
