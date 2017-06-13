@@ -1,14 +1,18 @@
 module.exports = 
  {
+    animation:true,
     color:null,//主色
     name:'',
     xAxisIndex:0,
     yAxisIndex:0,
+    lineWidth:2,
+    linecap:'round',
+    lineDash:'dash',
     dataLabels:{
     	enabled:true,
         style:{
             fontSize:12,
-            color:"red",
+            color:"#333",
             textAlign:'center'
         }
     },

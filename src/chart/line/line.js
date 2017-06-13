@@ -11,10 +11,11 @@ class Linechart extends Component {
         var that = this;
         var props = this.props;
         var state = this.state;
-        var {width,height,series,option,dependciesData} = props;
-        var {data,xAxisIndex,yAxisIndex,dataLabels} = series;
+        var {width,height,series,option,dependciesData,serieIndex} = props;
+        var {color,lineWidth,linecap,lineDash,data,xAxisIndex,yAxisIndex,dataLabels,marker} = series;
         var {left,top,right,bottom,width,height,width,xAxis,yAxis} = dependciesData;
         var points = [];
+        var color = series.color||option.colors[serieIndex];
         var xyData = this.getDependenyData();
         var {xAxisData,yAxisData} = xyData;
         var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
@@ -27,9 +28,11 @@ class Linechart extends Component {
         });
         return (
             <g className="vcharts-series vcharts-line-series">
-                <Polyline points={points}  stroke='red' fill='none' strokeWidth='1'/>
+                <Polyline points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
+                        dataLabels.enabled
+                        &&
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
@@ -44,6 +47,8 @@ class Linechart extends Component {
                 </g>
                 <g className="series-symbols">
                     {
+                        marker.enabled
+                        &&
                         data.map(function(value,index){
                             var x = points[index].x;
                             var y = points[index].y;
@@ -52,7 +57,7 @@ class Linechart extends Component {
                                         cx={x} 
                                         cy={y} r={4} 
                                         fill="#fff" 
-                                        stroke="red" 
+                                        stroke={color} 
                                         strokeWidth="1" 
                                         onMouseOver={that.animateSymbol}
                                         onMouseOut={that.animateSymbol} />

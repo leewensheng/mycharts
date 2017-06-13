@@ -76,6 +76,12 @@ var option = {
         {
             type:'line',
             data:[1,20,30,500,300],
+            lineWidth:2,
+            lineDash:'solid',
+            linecap:'round',
+            marker:{
+                enabled:false
+            }
         },{
             type:'line',
             data:[5,200,300,589]
