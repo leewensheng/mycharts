@@ -29,6 +29,10 @@ class  Axis extends Component {
         }
         var points = [];
         var gap = end - start;
+        /*
+            需要计算数字宽度时，会连续更新两次，导致动画失效，在前一次保持状态
+         */
+        var keepState = oldState && containLabel&&props.updateType!='adjust';
         data.map(function(value,index){
            var x,y,text;
            if(axis === 'x') {
@@ -46,6 +50,11 @@ class  Axis extends Component {
            }
            points.push({x,y,value});
         });
+        if(keepState) {
+            start = oldState.start;
+            end = oldState.end;
+            other = oldState.other;
+        }
         var isLabelAdjusted = false;
         if(!containLabel||props.updateType==='adjust') {
             isLabelAdjusted = true;
@@ -58,7 +67,7 @@ class  Axis extends Component {
         var {hasOpposite,top,left,right,bottom,width,height,axis,min,max,option,containLabel,updateType} = props;
         var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
         var state = this.state;
-        var {isLabelAdjusted,points:points,start,end,other,isFirstTime} = state;
+        var {isLabelAdjusted,points,start,end,other,isFirstTime} = state;
         var x1,y1,x2,y2;
         if(axis === 'x') {
             y1 = y2 = other;
