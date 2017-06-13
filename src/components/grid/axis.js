@@ -7,15 +7,9 @@ import Line from '../../widget/line'
 class  Axis extends Component {
     constructor(props){
         super(props);
-        var state = this.getRenderData(this.props);        
-        if(props.containLabel) {
-            state.hasInited = false;
-        } else {
-            state.hasInited = true;
-        }
-        this.state = state;
+        this.state = this.getRenderData(this.props);      
     }
-    getRenderData(props){
+    getRenderData(props,oldState){
         var {top,left,right,bottom,width,height,axis,option,containLabel} = props;
         var {opposite,type,min,max,dataRange,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
         var start,end,other;
@@ -29,38 +23,42 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            var axismin,axismax;
-            if(typeof min === 'number') {
-                axismin = min;
-            } else {
-                axismin = dataRange.min;
-            }
-            if(typeof max === 'number') {
-                axismax = max;
-            } else  {
-                axismax = dataRange.max;
-            }
+            var axismin = min||dataRange.min,
+                axismax = max||dataRange.max;
             data = gridService.getSplitArray(axismin,axismax,splitNumber);
         }
-        var splits = data.map(function(val,index){
-            return start + (end - start)*index/(data.length - 1);
+        var points = [];
+        var gap = end - start;
+        data.map(function(value,index){
+           var x,y,text;
+           if(axis === 'x') {
+                x = start + gap*index/(data.length-1);
+                y = other;
+           } else {
+                y = start + gap*index/(data.length-1);
+                x = other;
+           }
+           if(oldState&&oldState.points[index]) {
+                if(containLabel&&props.updateType!='adjust') {
+                    x = oldState.points[index].x;
+                    y = oldState.points[index].y;
+                }
+           }
+           points.push({x,y,value});
         });
-
-        return {
-            hasInited:true,
-            start:start,
-            end:end,
-            other:other,
-            splits:splits,
-            data:data
+        var isLabelAdjusted = false;
+        if(!containLabel||props.updateType==='adjust') {
+            isLabelAdjusted = true;
         }
+        var isFirstTime = !oldState;
+        return {isLabelAdjusted,points:points,start,end,other,isFirstTime};
     }
     render(){
         var props = this.props;
-        var {hasOpposite,top,left,right,bottom,width,height,axis,min,max,option} = props;
+        var {hasOpposite,top,left,right,bottom,width,height,axis,min,max,option,containLabel,updateType} = props;
         var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
         var state = this.state;
-        var {start,end,other,splits,data} = state;
+        var {isLabelAdjusted,points:points,start,end,other,isFirstTime} = state;
         var x1,y1,x2,y2;
         if(axis === 'x') {
             y1 = y2 = other;
@@ -71,61 +69,49 @@ class  Axis extends Component {
             y1 = start;
             y2 = end;
         };
-        var labelFlag = 1;
+        var labels = [],ticks = [],gridLines = [];
+        var labelFlag = 1,tickFlag = 1,gridFlag = 1;
         if(axisLabel.inside) {
-            labelFlag*= -1;
+            labelFlag *= -1;
+        }
+        if(axisTick.inside) {
+            tickFlag *= -1;
         }
         if(opposite) {
-            labelFlag*= -1;
+            labelFlag *= -1;
+            tickFlag *= -1;
+            gridFlag *= -1;
         }
-        var labels = splits.map(function(val,index){
-            var x,y,text;
-            text = data[index];
+        points.map(function(point,index){
+            var {x,y,value} = point;
+            var x1,x2,y1,y2;
+            var tickStart,tickEnd;
             if(axis === 'x') {
                 y = other + axisLabel.margin*labelFlag;
-                x = val;
             } else {
                 x = other - axisLabel.margin*labelFlag;
-                y  = val;
             }
-            return {x,y,text};
-        });
-        var tickFlag = 1;
-        if(axisTick.inside) {
-            tickFlag*= -1;
-        }
-        if(opposite) {
-            tickFlag*= -1;
-        }
-        var ticks = splits.map(function(val,index){
-            var x1,y1,x2,y2;
+            labels.push({x,y,value});
             if(axis === 'x') {
-                x1  = x2 = val;
+                x1  = x2 = x;
                 y1 = other;
                 y2 = other + axisTick.length*tickFlag;
             } else {
-                y1 = y2 = val;
+                y1 = y2 = y;
                 x1 = other;
                 x2 = other - axisTick.length*tickFlag;
             }
-            return {x1,y1,x2,y2};
-        })
-        var gridFlag = 1;
-        if(opposite) {
-            gridFlag *= -1;
-        }
-        var gridLines = splits.map(function(val,index){
-            var x1,y1,x2,y2;
+            ticks.push({x1,x2,y1,y2});
             if(axis === 'x') {
-                x1  = x2 = val;
+                x1  = x2 = x;
                 y1 = other;
                 y2 = other - height*gridFlag;
             } else {
-                y1 = y2 = val;
+                y1 = y2 = y;
                 x1 = other;
                 x2 = other + width*gridFlag;
             }
-            return {x1,y1,x2,y2};
+            gridLines.push({x1,y1,x2,y2});
         })
         var className = 'vcharts-grid-axis';
         if(axis === 'x') {
@@ -137,15 +123,14 @@ class  Axis extends Component {
             axisLabel.style.textAlign = labelFlag==1 ?'right':'left';
             axisLabel.style.textBaseLine = 'middle';
         };
-        var {hasInited} = state;
-        if(!hasInited) {
+        if(isFirstTime && containLabel) {
             gridLines = [];
             ticks = [];
         }
         return (
             <g className={className}>
                 {
-                hasInited
+                (!isFirstTime||!containLabel)
                 &&
                 <Line   className="vcharts-axis-line" 
                         x1={x1} 
@@ -179,12 +164,12 @@ class  Axis extends Component {
                 {
                     labels.map(function(label,index){
                         return <Text 
-                                    animation={false}
+                                    animation={isLabelAdjusted||!isFirstTime}
                                     key={index} 
                                     x={label.x} 
                                     y={label.y} 
-                                    opacity={hasInited?1:0}
-                                    style={axisLabel.style}>{label.text}</Text>
+                                    opacity={isFirstTime&&containLabel?0:1}
+                                    style={axisLabel.style}>{label.value}</Text>
                     })
                 }
                 </g>
@@ -206,7 +191,8 @@ class  Axis extends Component {
         )
     }
     componentWillReceiveProps(nextProps){
-        var nextState = this.getRenderData(nextProps);
+        var oldState = this.state;
+        var nextState = this.getRenderData(nextProps,oldState);
         this.setState(nextState);
     }
     sendAxisData(){
@@ -246,9 +232,9 @@ class  Axis extends Component {
                 } 
             }
         } 
-        var {data} = state;
+        var {points} = state;
         setAxisData(axis,indexInGrid,{
-            data:data,
+            data:points.map(function(p){return p.value}),
             index:index,
             labelPlace:labelPlace
         })

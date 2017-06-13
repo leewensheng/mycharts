@@ -27,12 +27,12 @@ class  Text extends Component{
         }
         return <text {...props} style={style}  x={x} y={y} fill={color} textAnchor={anchor[textAlign]} dy={dy}>{this.props.children}</text>
     }
-    animate(){
+    animate(prevProps){
         var {state,props} = this;
         var el = findDOMNode(this);
         var {animation,x,y} = props;
-        if(animation) {
-            $(el).stopTransition(true).transition({
+        if(animation&&prevProps.animation) {
+            $(el).stopTransition().transition({
                 x:x,
                 y:y,
             },400,'easeout');
@@ -46,11 +46,11 @@ class  Text extends Component{
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;
     }
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
         var {props} = this;
         var {x,y} = props;
         var update = false;
-        this.animate();
+        this.animate(prevProps);
         this.setState({x,y,update})
     }
 }

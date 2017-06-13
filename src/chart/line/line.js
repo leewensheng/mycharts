@@ -120,7 +120,7 @@ class Linechart extends Component {
         $(el).attr("clip-path","url(#line-clip"+ serieIndex +")");
         var rect = clip.find("rect");
         $(el).find('.series-line-labels').hide();
-        rect.transition({width:width},1000,'linear',function(){
+        rect.transition({width:width},600,'linear',function(){
             clip.remove();
             $(el).removeAttr('clip-path');
             $(el).find('.series-line-labels').show();

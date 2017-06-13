@@ -75,7 +75,7 @@ var option = {
 		},
         {
             type:'line',
-            data:[1,20,30,500,300],
+            data:[1,20,30,0,300],
             lineWidth:2,
             lineDash:'solid',
             linecap:'round',
@@ -88,9 +88,8 @@ var option = {
         }
 	],
     grid:{
-        left:0,
-        background:"#eee",
-        containLabel:true
+        left:150,
+        containLabel:false
     },
     xAxis:{
     	gridIndex:0,//所属网格区域
@@ -157,7 +156,7 @@ document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
     option.xAxis.data.push(3);
-    option.series[3].data.push(200);
+    option.series[3].data.push((1000*Math.random()).toFixed(0));
 	chart.setOption(option)
 
 })
