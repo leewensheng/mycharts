@@ -13,12 +13,15 @@ class  Rect extends Component{
         return <rect {...this.props} x={x} y={y} width={Math.abs(width)} height={Math.abs(height)} />
     }
     animate(nextProps){
+        var {x,y,width,height} = nextProps;
+        width = Math.abs(width);
+        height = Math.abs(height);
         var el = findDOMNode(this);
         $(el).stopTransition(true).transition({
-            x:nextProps.x,
-            y:nextProps.y,
-            width:nextProps.width,
-            height:nextProps.height
+            x:x,
+            y:y,
+            width:width,
+            height:height
         },400,'easeout');
     }
     componentWillReceiveProps(nextProps){

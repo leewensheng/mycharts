@@ -40,7 +40,7 @@ class Grid extends Component {
 						return <Axis 	
 									containLabel={containLabel}
 									key={'xaxis'+index}
-									hasOpposite={xAxis.length>=2}
+									hasOpposite={yAxis.length>=2}
 									left={axisLeft} 
 									right={axisRight} 
 									bottom={axisBottom}
@@ -59,7 +59,7 @@ class Grid extends Component {
 						return <Axis 	
 									containLabel={containLabel}
 									key={'yaxis'+index}
-									hasOpposite={yAxis.length>=2}
+									hasOpposite={xAxis.length>=2}
 									left={axisLeft} 
 									right={axisRight} 
 									bottom={axisBottom}

@@ -3,11 +3,11 @@ module.exports =
     animation:true,
     color:null,//主色
     name:'',
-    xAxisIndex:0,
-    yAxisIndex:0,
+    xAxis:0,
+    yAxis:0,
     lineWidth:2,
     linecap:'round',
-    lineDash:'dash',
+    lineDash:'solid',
     dataLabels:{
     	enabled:true,
         style:{

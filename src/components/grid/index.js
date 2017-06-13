@@ -25,7 +25,7 @@ class  Grids extends Component {
             yAxis = defaultOption.axis;
         };
         if(!grid.length) {
-            grids = [{option:grid,xAxis:[],yAxis:[]}];
+            grids = [{option:grid,xAxis:[],yAxis:[],includeSeries:[]}];
         } else {
             grids = grid.map(function(val){
                 return {
@@ -103,7 +103,11 @@ class  Grids extends Component {
                     var dataRange = gridService.getValueRange(includeSeries);
                     axis.dataRange = dataRange;
                 }
-                grid.includeSeries = arr;
+                arr.map(function(index){
+                   if(grid.includeSeries.indexOf(index) === -1) {
+                        grid.includeSeries.push(index);
+                   }
+                })
             });
         }
         return {

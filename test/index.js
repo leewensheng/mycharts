@@ -85,11 +85,16 @@ var option = {
         },{
             type:'line',
             data:[5,30,58]
+        },{
+            type:'line',
+            lineWidth:2,
+            data:[5,30,58],
+            yAxis:1
         }
 	],
     grid:{
         left:150,
-        containLabel:false
+        containLabel:true
     },
     xAxis:{
     	gridIndex:0,//所属网格区域
@@ -145,9 +150,29 @@ var option = {
             }
         }
     },
-    yAxis:{
-        splitNumber:5
-    }
+    yAxis:[
+        {
+
+        },
+        {
+            axisLine:{
+
+            },
+            axisTick:
+            {
+                inside:true,
+                enabled:true
+            },
+            axisLabel:
+            {
+                inside:true,
+                margin:30,
+                enabled:true
+            },
+            gridLine:{
+                enabled:false
+            }
+    }]
 };
 chart.setOption(option);
 var t2 = Date.now();

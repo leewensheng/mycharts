@@ -130,7 +130,7 @@ class  Axis extends Component {
         return (
             <g className={className}>
                 {
-                (!isFirstTime||!containLabel)
+                (!isFirstTime||!containLabel)&&axisLine.enabled
                 &&
                 <Line   className="vcharts-axis-line" 
                         x1={x1} 
@@ -142,6 +142,8 @@ class  Axis extends Component {
 
                 <g className="vhcart-axis-gridline">
                     {
+                        gridLine.enabled
+                        &&
                         gridLines.map(function(grid,index){
                             var {x1,y1,x2,y2} = grid;
                             if(index === 0) {
@@ -162,6 +164,8 @@ class  Axis extends Component {
                 </g>
                 <g className="vcharts-axis-labels">
                 {
+                    axisLabel.enabled
+                    &&
                     labels.map(function(label,index){
                         return <Text 
                                     animation={isLabelAdjusted||!isFirstTime}
@@ -175,6 +179,8 @@ class  Axis extends Component {
                 </g>
                 <g className="vcharts-axis-tick">
                     {
+                        axisTick.enabled
+                        &&
                         ticks.map(function(tick,index){
                             var {x1,y1,x2,y2} = tick;
                             return <Line   

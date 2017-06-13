@@ -80,7 +80,9 @@ class Linechart extends Component {
     getDependenyData(){
         var props = this.props;
         var {dependciesData,series} = props;
-        var {xAxisIndex,yAxisIndex,dataLabels} = series;
+        var {dataLabels} = series;
+        var xAxisIndex = series.xAxis;
+        var yAxisIndex = series.yAxis;
         var {xAxis,yAxis} = dependciesData;
         var yAxisData,xAxisData;
         yAxis.map(function(axis){
