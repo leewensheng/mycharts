@@ -14,7 +14,7 @@ import defaultOption from './option'
 class  Pie extends Component{
 	constructor(props) {
 		super(props);
-		this.state = this.getRenderData(this.props);
+		this.state = this.getRenderData(props);
 	}
 	getRenderData(props,oldState){
 		var {series,width,height,option} = props;

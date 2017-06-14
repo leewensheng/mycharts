@@ -7,7 +7,7 @@ import Line from '../../widget/line'
 class  Axis extends Component {
     constructor(props){
         super(props);
-        this.state = this.getRenderData(this.props);      
+        this.state = this.getRenderData(props);      
     }
     getRenderData(props,oldState){
         var {top,left,right,bottom,width,height,axis,option,containLabel} = props;
