@@ -23,8 +23,8 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            var axismin = min||dataRange.min,
-                axismax = max||dataRange.max;
+            var axismin = isNaN(min)?dataRange.min:min;
+                axismax = isNaN(max)?dataRange.max:max;
             data = gridService.getSplitArray(axismin,axismax,splitNumber);
         }
         var points = [];
@@ -43,7 +43,7 @@ class  Axis extends Component {
                 x = other;
            }
            if(oldState&&oldState.points[index]) {
-                if(containLabel&&props.updateType!='adjust') {
+                if(keepState) {
                     x = oldState.points[index].x;
                     y = oldState.points[index].y;
                 }
