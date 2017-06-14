@@ -23,8 +23,8 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            var axismin = isNaN(min)?dataRange.min:min;
-                axismax = isNaN(max)?dataRange.max:max;
+            var axismin = typeof(min)==='number'?min:dataRange.min;
+            var axismax = typeof(max)==='number'?max:dataRange.max;
             data = gridService.getSplitArray(axismin,axismax,splitNumber);
         }
         var points = [];

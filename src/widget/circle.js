@@ -19,7 +19,7 @@ class  Circle extends Component{
         var el = findDOMNode(this);
         var {animation,cx,cy,r} = props;
         if(animation) {
-            $(el).stopTransition(true).transition({
+            $(el).stopTransition().transition({
                 cx:cx,
                 cy:cy,
                 r:r

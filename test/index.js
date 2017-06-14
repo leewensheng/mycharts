@@ -148,11 +148,20 @@ var option = {
                 textAlign:"center",
                 textBaseLine:"bottom"
             }
+        },
+        gridLine:{
+            lineStyle:{
+                color:'red'
+            }
         }
     },
     yAxis:[
         {
-
+            gridLine:{
+                lineStyle:{
+                    color:'red'
+                }
+            }
         },
         {
             axisLine:{

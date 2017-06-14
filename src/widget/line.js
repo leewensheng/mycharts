@@ -1,6 +1,7 @@
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
+import browser from 'cad/browser'
 //todo 多行支持tspan
 class  Line extends Component{
     constructor(props) {
@@ -12,13 +13,17 @@ class  Line extends Component{
         var style = this.props.style||{color:"#333",width:1,type:'solid'};
         var className = this.props.className;
         var {x1,y1,x2,y2} = this.state;
-        return <line transform="translate(0.5,0.5)" className={className} x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} fill="none" strokeWidth={style.width}/> 
+        var transform = "";
+        if(browser.msie) {
+            transform = 'translate(0.5,0.5)';
+        }
+        return <line  transform={transform} style={{shapeRendering:"optimizeSpeed"}} x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} fill="none" strokeWidth={style.width}/> 
     }
     animate(nextProps){
         var el = findDOMNode(this);
         var style = nextProps.style ||{};
         $(el).attr('stroke',style.color).attr('stroke-width',style.width);
-        $(el).stopTransition(true).transition({
+        $(el).stopTransition().transition({
             x1:nextProps.x1,
             y1:nextProps.y1,
             x2:nextProps.x2,

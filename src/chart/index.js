@@ -53,7 +53,7 @@ class Core extends Component {
             });
         };
         return (
-            <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink}>
+            <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
                 <defs></defs>
                 <rect x="0" y="0" width="100%" height="100%" fill={chart.background} className="vcharts-background"/>
                 {

@@ -17,7 +17,7 @@ class  Rect extends Component{
         width = Math.abs(width);
         height = Math.abs(height);
         var el = findDOMNode(this);
-        $(el).stopTransition(true).transition({
+        $(el).stopTransition().transition({
             x:x,
             y:y,
             width:width,
