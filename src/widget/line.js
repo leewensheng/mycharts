@@ -31,6 +31,9 @@ class  Line extends Component{
         },400,'easeout');
     }
     componentWillReceiveProps(nextProps){
+        if(nextProps.update === false) {
+            return false;
+        }
         this.animate(nextProps);
     }
     shouldComponentUpdate(nextProps,nextState){

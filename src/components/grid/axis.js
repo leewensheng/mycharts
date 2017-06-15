@@ -162,6 +162,7 @@ class  Axis extends Component {
                                 return;
                             }
                             return <Line  
+                                    update={updateType==='newProps'&&containLabel?false:true}
                                     key={index} 
                                     x1={x1} 
                                     y1={y1} 
@@ -177,6 +178,7 @@ class  Axis extends Component {
                     &&
                     labels.map(function(label,index){
                         return <Text 
+                                    update={updateType==='newProps'&&containLabel?false:true}
                                     animation={isLabelAdjusted||!isFirstTime}
                                     key={index} 
                                     x={label.x} 

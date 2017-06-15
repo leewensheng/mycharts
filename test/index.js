@@ -93,7 +93,6 @@ var option = {
         }
 	],
     grid:{
-        left:150,
         containLabel:true
     },
     xAxis:{
@@ -190,7 +189,7 @@ document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
     option.xAxis.data.push(3);
-    option.series[3].data.push((1000*Math.random()).toFixed(0));
+    option.series[3].data.push((100000000).toFixed(0));
 	chart.setOption(option)
 
 })

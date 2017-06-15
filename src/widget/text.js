@@ -44,6 +44,9 @@ class  Text extends Component{
         this.setState({update:true})
     }
     shouldComponentUpdate(nextProps,nextState){
+        if(nextProps.update === false) {
+            return false;
+        }
         return nextState.update?true:false;
     }
     componentDidUpdate(prevProps){
