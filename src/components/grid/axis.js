@@ -141,7 +141,9 @@ class  Axis extends Component {
                 {
                 (!isFirstTime||!containLabel)&&axisLine.enabled
                 &&
-                <Line   className="vcharts-axis-line" 
+                <Line  
+                        update={updateType==='newProps'&&containLabel?false:true}
+                        className="vcharts-axis-line" 
                         x1={x1} 
                         y1={y1} 
                         x2={x2} 
@@ -195,6 +197,7 @@ class  Axis extends Component {
                         ticks.map(function(tick,index){
                             var {x1,y1,x2,y2} = tick;
                             return <Line   
+                                    update={updateType==='newProps'&&containLabel?false:true}
                                     key={index}
                                     x1={x1} 
                                     y1={y1} 
