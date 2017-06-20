@@ -3,8 +3,8 @@ import {findDOMNode} from 'react-dom'
 import cad from 'cad'
 import namespace from 'cad/namespace'
 import charts from './charts'
+import Vcomponents from '../components/index'
 import $ from 'jquery'
-import Grids from '../components/grid/index'
 class Core extends Component {
     constructor(props){
         super(props);
@@ -59,8 +59,9 @@ class Core extends Component {
                 {
                     components.map(function(component){
                         var name = component.name;
+                        var Vcomponent = Vcomponents[name];
                         return (
-                            <Grids key={name} {...component}/>
+                            <Vcomponent key={name} {...component}/>
                         )
                     })
                 }

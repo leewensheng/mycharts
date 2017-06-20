@@ -9,7 +9,7 @@
 7.legend
 8.stack
 
-
+animation配置化
 
 
 problem:

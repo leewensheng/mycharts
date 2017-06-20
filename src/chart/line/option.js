@@ -21,6 +21,7 @@ module.exports =
         symbol:'circle',//rect,roundRect,triangle,diamond,pin arrow
         size:4,
         offset:[0,0],
-    }
+    },
+    selected:true
 }
     

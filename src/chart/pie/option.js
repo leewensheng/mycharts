@@ -32,6 +32,7 @@ module.exports =
 	startAngle:0,//起始角度，以上向为0
 	endAngle:null,//不写则始终角差360，指定则按指定的来
 	sliceOffset:10,//选中时的偏移量
+	selected:true,
 	states:{
 		hover:{
 		}

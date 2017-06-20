@@ -40,7 +40,7 @@ class  Grids extends Component {
             xAxis = [xAxis]
         } 
         xAxis = xAxis.map(function(val,index){
-            val = $.extend(true,{},defaultOption.axis,val);
+            val = $.extend(true,{type:'category'},defaultOption.axis,val);
             var gridIndex = val.gridIndex;
             val.index = index;
             grids[gridIndex].xAxis.push(val);
@@ -50,7 +50,7 @@ class  Grids extends Component {
             yAxis = [yAxis];
         }
         yAxis = yAxis.map(function(val,index){
-            val = $.extend(true,{},defaultOption.axis,val);
+            val = $.extend(true,{type:'value'},defaultOption.axis,val);
             var gridIndex = val.gridIndex;
             val.index = index;
             grids[gridIndex].yAxis.push(val);
@@ -65,14 +65,6 @@ class  Grids extends Component {
             if(yAxis.length >= 2) {
                 yAxis[1].opposite = !xAxis[0].opposite;
             }
-            var isValueType = grid.xAxis.some(function(axis){return axis.type === 'value'});
-            grid.yAxis.forEach(function(axis){
-                axis.type = isValueType ? 'category' :'value';
-            });
-            grid.xAxis.forEach(function(axis){
-                axis.type = isValueType ?'value':'category';
-            });
-            grid.valueAxis = isValueType?'x':'y';
         });
         setAxisDataRange(xAxis,'xAxis');
         setAxisDataRange(yAxis,'yAxis');
