@@ -42,7 +42,7 @@ var option = {
 				enabled:true,
                 color:"#fff",
 				inside:false,
-				distance:30,
+				distance:150,
 				style:{
 					fontSize:11
 				}

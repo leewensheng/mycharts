@@ -59,6 +59,9 @@ class Legend extends Component {
 					item.x = oldItem.x;
 					item.y = oldItem.y;
 					item.width = oldItem.width;
+					if(props.updateType === 'newProps') {
+						item.selected = oldItem.selected;
+					}
 				}
 			})
 		}

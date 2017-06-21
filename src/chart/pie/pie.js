@@ -327,7 +327,7 @@ class  Pie extends Component{
 		if(nextState.updateType === 'select') {
 			return true;
 		} 
-		if(nextProps.updateType === 'newProps') {
+		if(nextProps.updateType === 'newProps'&&!nextProps.legend) {
 			return true;
 		}
 		if(nextProps.updateType === 'dependceChange') {
@@ -336,7 +336,7 @@ class  Pie extends Component{
 			} else {
 				return false;
 			}
-		}	
+		}
 		return false;
 	}
 }
