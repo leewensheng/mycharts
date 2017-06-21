@@ -1,7 +1,9 @@
-{
+
+module.exports = {
 	enable:true,
 	layout:'horizontal',
 	align:'center',
+	verticlAlign:'top',
 	borderColor:'#999',
 	borderWidth:1,
 	borderRadius:0,
@@ -13,7 +15,7 @@
 	itemPadding:5,
 	selectMode:'multiple',
 	inactiveColor:'#ccc',
-	labelStyle:{
+	itemStyle:{
 
 	}
 }

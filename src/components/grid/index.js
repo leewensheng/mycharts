@@ -81,8 +81,8 @@ class  Grids extends Component {
                     if(!type||!chart) {
                         return;
                     }
-                    var dependencies = chart.dependencies||[];
-                    if(dependencies.indexOf('grid') === -1) {
+                    var dependencies = chart.dependencies||{};
+                    if(!dependencies.grid) {
                         return;
                     }
                     var isInclude = (serie[key]||0) === axisIndex;

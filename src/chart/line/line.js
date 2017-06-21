@@ -6,6 +6,7 @@ import Text from '../../widget/text'
 import Polyline from './polyline'
 import Circle from '../../widget/circle'
 import defaultOption from './option'
+import LineIcon from './icon';
 class Linechart extends Component {
     constructor(props){
         super(props);
@@ -14,9 +15,9 @@ class Linechart extends Component {
         var that = this;
         var props = this.props;
         var state = this.state;
-        var {width,height,series,option,dependciesData,serieIndex} = props;
+        var {width,height,series,option,grid,legend,serieIndex} = props;
         var {color,lineWidth,linecap,lineDash,data,xAxisIndex,yAxisIndex,dataLabels,marker} = series;
-        var {left,top,right,bottom,width,height,width,xAxis,yAxis} = dependciesData;
+        var {left,top,right,bottom,width,height,width,xAxis,yAxis} = grid;
         var points = [];
         var color = series.color||option.colors[serieIndex];
         var xyData = this.getDependenyData();
@@ -30,7 +31,7 @@ class Linechart extends Component {
             points.push({x,y});
         });
         return (
-            <g className="vcharts-series vcharts-line-series">
+            <g className="vcharts-series vcharts-line-series" style={{display:legend&&!legend.selected?'none':''}}>
                 <Polyline points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
@@ -79,11 +80,11 @@ class Linechart extends Component {
     }
     getDependenyData(){
         var props = this.props;
-        var {dependciesData,series} = props;
+        var {grid,series} = props;
         var {dataLabels} = series;
         var xAxisIndex = series.xAxis;
         var yAxisIndex = series.yAxis;
-        var {xAxis,yAxis} = dependciesData;
+        var {xAxis,yAxis} = grid;
         var yAxisData,xAxisData;
         yAxis.map(function(axis){
             if(axis.index === yAxisIndex) {
@@ -109,8 +110,8 @@ class Linechart extends Component {
     }
     animate(){
         var {state,props} = this;
-        var {option,dependciesData} = props;
-        var {top,left,width,height} = dependciesData;
+        var {option,grid} = props;
+        var {top,left,width,height} = grid;
         var el = findDOMNode(this);
         var {serieIndex} = props;
         var svg = $(el).closest("svg").get(0);
@@ -131,5 +132,13 @@ class Linechart extends Component {
     }
 }
 Linechart.defaultOption = defaultOption;
-Linechart.dependencies = ['grid'];
+Linechart.dependencies = {
+    grid:{
+        must:true
+    },
+    legend:{
+        must:false,
+        icon:LineIcon
+    }
+};
 module.exports = Linechart;

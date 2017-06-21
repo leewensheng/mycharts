@@ -26,9 +26,9 @@ class Core extends Component {
             if(!Chart) {
                 return;
             }
-            var chartDependencies = Chart.dependencies||[];
-            for(var i = 0; i < chartDependencies.length;i++) {
-                dependencies[chartDependencies[i]] = false;
+            var chartDependencies = Chart.dependencies||{};
+            for(var key in chartDependencies) {
+                dependencies[key] = false;
             }
         });
         return dependencies;
@@ -60,6 +60,9 @@ class Core extends Component {
                     components.map(function(component){
                         var name = component.name;
                         var Vcomponent = Vcomponents[name];
+                        if(!Vcomponent) {
+                            return;
+                        }
                         return (
                             <Vcomponent key={name} {...component}/>
                         )
@@ -71,15 +74,15 @@ class Core extends Component {
                         if(!type) {return;}
                         var Chart = charts[type];
                         if(!Chart) {return;}
-                        var chartDependencies = Chart.dependencies||[];
-                        var dependeData = dependenceData[index]
-                        if(chartDependencies.length&&!dependeData) return;
+                        var chartDependencies = Chart.dependencies||{};
+                        var dependeData = dependenceData[index];
+                        if(chartDependencies&&!dependeData) return;
                         var isDependReady = true;
-                        for(var i = 0; i < chartDependencies.length;i++) {
-                            if(!dependencies[chartDependencies[i]]) {
+                        for(var key in chartDependencies) {
+                            if(!dependencies[key]) {
                                 isDependReady = false;
                             }
-                        };
+                        }
                         var defaultOption = Chart.defaultOption;
                         chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
                        
@@ -91,7 +94,7 @@ class Core extends Component {
                             height={height}
                             series={chartOption}
                             serieIndex={index}
-                            dependciesData={dependeData}
+                            {...dependeData}
                             updateType={updateType}
                             isDependReady={isDependReady}
                         />
@@ -106,10 +109,12 @@ class Core extends Component {
         dependencies[name]  = true;
         if(Array.isArray(serieIndex)) {
             serieIndex.map(function(index){
-                dependenceData[index] = data;
+                dependenceData[index] = dependenceData[index]||{};
+                dependenceData[index][name] = data;
             })
         } else {
-            dependenceData[serieIndex] = data;
+            dependenceData[serieIndex] = dependenceData[serieIndex]||{};
+            dependenceData[serieIndex][name] = data;
         }
         this.setState({
             dependencies,dependenceData,

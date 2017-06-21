@@ -25,7 +25,7 @@ class  Circle extends Component{
                 r:r
             },400,'easeout');
         } else {
-            $(el).attr({cx,cy,r});
+            $(el).stopTransition().attr({cx,cy,r});
         }
     }
     componentWillReceiveProps(nextProps){

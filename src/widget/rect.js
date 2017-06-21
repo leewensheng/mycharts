@@ -12,27 +12,35 @@ class  Rect extends Component{
         var {x,y,width,height} = this.state;
         return <rect {...this.props} x={x} y={y} width={Math.abs(width)} height={Math.abs(height)} />
     }
-    animate(nextProps){
-        var {x,y,width,height} = nextProps;
+    animate(){
+        var {state,props} = this;
+        var {animation,x,y,width,height} = props;
         width = Math.abs(width);
         height = Math.abs(height);
         var el = findDOMNode(this);
-        $(el).stopTransition().transition({
-            x:x,
-            y:y,
-            width:width,
-            height:height
-        },400,'easeout');
+        if(animation) {
+            $(el).stopTransition().transition({x,y,width,height},400,'easeout');        
+        } else {
+            $(el).stopTransition().attr({x,y,width,height});        
+        }
     }
     componentWillReceiveProps(nextProps){
-        this.animate(nextProps);
+        this.setState({update:true})
     }
     shouldComponentUpdate(nextProps,nextState){
-        return false;
+        return nextState.update?true:false;
+    }
+    componentDidUpdate(){
+        var {props} = this;
+        var {x,y,width,height} = props;
+        var update = false;
+        this.animate();
+        this.setState({x,y,width,height,update});
     }
 }
 Rect.defaultProps =
  {
+    animatin:true,
     x:0,
     y:0,
     width:0,

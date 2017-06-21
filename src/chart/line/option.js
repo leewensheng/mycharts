@@ -22,6 +22,7 @@ module.exports =
         size:4,
         offset:[0,0],
     },
+    showInLegend:true,
     selected:true
 }
     

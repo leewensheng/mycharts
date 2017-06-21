@@ -11,15 +11,25 @@ import Slice from './slice'
 import Text from '../../widget/text'
 import ConnectLine from './connect-line'
 import defaultOption from './option'
+import Icon from '../line/icon'
 class  Pie extends Component{
 	constructor(props) {
 		super(props);
 		this.state = this.getRenderData(props);
 	}
 	getRenderData(props,oldState){
-		var {series,width,height,option} = props;
+		var {series,width,height,option,legend} = props;
 		var colors = option.colors;
 		var {data,color} = series;
+		if(legend) {
+			var showData = [];
+			for(var i = 0; i < data.length;i++) {
+				if(legend[i].selected) {
+					showData.push(data[i]);
+				}
+			}		
+			data = showData;
+		}
 		if(series.colors) {
 			colors = series.colors;
 		}
@@ -314,8 +324,28 @@ class  Pie extends Component{
 		this.setState(nextState);
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return nextProps.updateType != 'dependceChange'||nextState.updateType==='select';
+		if(nextState.updateType === 'select') {
+			return true;
+		} 
+		if(nextProps.updateType === 'newProps') {
+			return true;
+		}
+		if(nextProps.updateType === 'dependceChange') {
+			if(nextProps.isDependReady) {
+				return true;
+			} else {
+				return false;
+			}
+		}	
+		return false;
 	}
 }
 Pie.defaultOption = defaultOption;
+Pie.dependencies = {
+	legend:{
+		must:false,
+		multiple:true,
+		icon:Icon
+	}
+}
 module.exports = Pie;

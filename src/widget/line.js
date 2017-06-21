@@ -22,13 +22,13 @@ class  Line extends Component{
     animate(nextProps){
         var el = findDOMNode(this);
         var style = nextProps.style ||{};
+        var {animation,x1,y1,x2,y2} = nextProps;
         $(el).attr('stroke',style.color).attr('stroke-width',style.width);
-        $(el).stopTransition().transition({
-            x1:nextProps.x1,
-            y1:nextProps.y1,
-            x2:nextProps.x2,
-            y2:nextProps.y2
-        },400,'easeout');
+        if(animation) {
+            $(el).stopTransition().transition({x1,y1,x2,y2},400,'easeout');        
+        } else {
+            $(el).stopTransition().attr({x1,y1,x2,y2})
+        }
     }
     componentWillReceiveProps(nextProps){
         if(nextProps.update === false) {
@@ -42,6 +42,7 @@ class  Line extends Component{
 }
 Line.defaultProps = 
 {
+    animation:true,
     x1:0,
     y1:0,
     x2:0,
