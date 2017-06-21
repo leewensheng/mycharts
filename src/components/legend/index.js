@@ -59,6 +59,7 @@ class Legend extends Component {
 					item.x = oldItem.x;
 					item.y = oldItem.y;
 					item.width = oldItem.width;
+					//todo 需要检测前后是否同一个系列
 					if(props.updateType === 'newProps') {
 						item.selected = oldItem.selected;
 					}
