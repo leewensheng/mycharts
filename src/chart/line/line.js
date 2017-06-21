@@ -102,10 +102,10 @@ class Linechart extends Component {
         this.animate();
     }
     shouldComponentUpdate(nextProps){
-        if(!nextProps.isDependReady) {
-            return false;
-        } else {
+        if(nextProps.isDependReady) {
             return true;
+        } else {
+            return false;
         }
     }
     animate(){
