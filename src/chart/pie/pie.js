@@ -310,7 +310,7 @@ class  Pie extends Component{
 		path.transition({
 			from:startAngle,
 			to:endAngle,
-			ease:'easeIn',
+			ease:'easeOutIn',
 			during:600,
 			callback(){
 				clip.remove();
