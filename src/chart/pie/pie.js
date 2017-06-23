@@ -221,7 +221,7 @@ class  Pie extends Component{
 				{
 				points.map(function(point,index){
 					return <Slice
-							key={index}
+							key={point.x}
 							animation={option.chart.animation}
 							cx={cx}
 							cy={cy}
