@@ -1,10 +1,10 @@
 #to do list 
+bug  坐标轴Y轴数目应当取最大并保持一致;
 1.坐标轴不限定type，可以同时是categories,value
-2坐标轴splitLine,splitArea,hoverStyle
+splitArea,hoverStyle
 2.统一text ,line 配置 ，并尽量扁平化
 3.symbol支持，自定义symbol
 4,formatter，内置一些filter,formatter支持jsx组件
-组件依赖顺序，堆叠顺序，统一化
 6.tooltip
 7.legend
 8.stack
