@@ -179,6 +179,10 @@ class  Slice extends Component{
 	shouldComponentUpdate(nextProps,nextState){
 		return false;
 	}
+	componentWillUnmount(){
+		var el = $(findDOMNode(this));
+		$(el).stopTransition();
+	}
 }
 Slice.defaultProps = {
 			animation:false,

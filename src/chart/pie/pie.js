@@ -24,7 +24,7 @@ class  Pie extends Component{
 		if(legend) {
 			var showData = [];
 			for(var i = 0; i < data.length;i++) {
-				if(legend[i].selected) {
+				if(legend[i].selected!==false) {
 					showData.push(data[i]);
 				}
 			}		

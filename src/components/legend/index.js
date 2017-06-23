@@ -34,7 +34,7 @@ class Legend extends Component {
 					y:0,
 					name:serie.name|| ('serie' + index),
 					icon:legend.icon,
-					selected:true,
+					selected:serie.selected,
 					multiple:false,
 					seriesIndex:index
 				})
@@ -45,7 +45,7 @@ class Legend extends Component {
 						y:0,
 						name:serie.name,
 						icon:legend.icon,
-						selected:true,
+						selected:val.selected,
 						multiple:true,
 						seriesIndex:index
 					})
@@ -61,7 +61,9 @@ class Legend extends Component {
 					item.width = oldItem.width;
 					//todo 需要检测前后是否同一个系列
 					if(props.updateType === 'newProps') {
-						item.selected = oldItem.selected;
+						if(typeof item.selected === 'undefined') {
+							item.selected = oldItem.selected;
+						}
 					}
 				}
 			})
@@ -97,7 +99,7 @@ class Legend extends Component {
 								style={{cursor:'pointer'}}
 								onClick={that.toggleItem.bind(that,index)}
 								>
-								<Rect animation={hasInited} x={x} y={y} width={width} height={50} fill={selected?'blue':'gray'} stroke={borderColor} strokeWidth={borderWidth} r1={borderRadius} r2={borderRadius} />
+								<Rect animation={hasInited} x={x} y={y} width={width} height={50} fill={selected!==false?'blue':'gray'} stroke={borderColor} strokeWidth={borderWidth} r1={borderRadius} r2={borderRadius} />
 								<Icon animation={hasInited} x={x} y={y} width={50} height={50} color="red"/>
 								<Text animation={hasInited} x={x + 50} y={y} fill="red" style={{textBaseLine:'middle'}}>{item.name}</Text>
 							</g>
@@ -111,8 +113,7 @@ class Legend extends Component {
 		var {props,state} = this;
 		var {items} = state;
 		var item = items[index];
-		item.selected = !item.selected;
-		this.setState({items:items,updateType:'toggle'});
+		item.selected = item.selected===false?true:false;
 		this.sendLegendData();
 	}
 	sendLegendData(){
@@ -145,11 +146,10 @@ class Legend extends Component {
 		} = legendOption;
 		var useItemWidth = typeof itemWidth === 'number' && itemWidth > 0;
     	var el = findDOMNode(this);
-    	var itemWidths = [],blockWidth = 0,blockHeight = 0;
+    	var blockWidth = 0,blockHeight = 0;
     	$(el).find(".vcharts-legend-item").each(function(index,dom){
-			var bbox = dom.getBBox();
-			var {width,height} = bbox;
-			itemWidths.push(width);
+			var textLen = $(dom).find('text').getComputedTextLength();
+			var width = textLen + 50 + 5;
 			items[index].width = useItemWidth ? itemWidth : width;
     	});
 		var rows = [[]];

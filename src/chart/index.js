@@ -5,9 +5,11 @@ import namespace from 'cad/namespace'
 import charts from './charts'
 import Vcomponents from '../components/index'
 import $ from 'jquery'
+import EventEmitter  from 'events'
 class Core extends Component {
     constructor(props){
         super(props);
+        this.chartEmitter = new EventEmitter();
         this.state = {
             props:props,
             dependencies:this.getDependcies(props),
@@ -41,6 +43,7 @@ class Core extends Component {
         var onDependceReady = this.onDependceReady.bind(this);
         var {dependencies,dependenceData,updateType} = this.state;
         var components = [];
+        var chartEmitter = this.chartEmitter;
         for(var dependence in dependencies) {
             components.push({
                 name:dependence,

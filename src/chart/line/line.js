@@ -31,7 +31,7 @@ class Linechart extends Component {
             points.push({x,y});
         });
         return (
-            <g className="vcharts-series vcharts-line-series" style={{display:legend&&!legend.selected?'none':''}}>
+            <g className="vcharts-series vcharts-line-series" style={{display:legend&&legend.selected===false?'none':''}}>
                 <Polyline points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {

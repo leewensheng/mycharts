@@ -145,10 +145,10 @@ class  Grids extends Component {
     }
 }
 Grids.defaultProps = {
-        chartOption:null,
-        chartWidth:null,//图表宽度
-        chartHeight:null,//图表高度
-        onDependceReady:null,
-        isReady:false
-    }
+    chartOption:null,
+    chartWidth:null,//图表宽度
+    chartHeight:null,//图表高度
+    onDependceReady:null,
+    isReady:false
+}
 module.exports = Grids;
