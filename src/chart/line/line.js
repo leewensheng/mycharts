@@ -10,18 +10,29 @@ import LineIcon from './icon';
 class Linechart extends Component {
     constructor(props){
         super(props);
+        this.onLegendChange = this.onLegendChange.bind(this);
+        this.onGridChange = this.onGridChange.bind(this);
+        props.chartEmitter.on('grid',this.onGridChange);
+        props.chartEmitter.on('legend',this.onLegendChange);
+        this.state = {
+            hasInited:false,
+            isGridReady:false
+        };
     }
     render(){
         var that = this;
         var props = this.props;
         var state = this.state;
-        var {width,height,series,option,grid,legend,serieIndex} = props;
-        var {color,lineWidth,linecap,lineDash,data,xAxisIndex,yAxisIndex,dataLabels,marker} = series;
-        var {left,top,right,bottom,width,height,width,xAxis,yAxis} = grid;
+        var {width,height,series,option,serieIndex} = props;
+        var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = series;
+        var {isGridReady,grid,legend,hasInited} = this.state;
+        if(!isGridReady) {
+            return <g></g>;
+        }
+        var {left,top,right,bottom,width,height,width} = grid;
         var points = [];
         var color = series.color||option.colors[serieIndex];
-        var xyData = this.getDependenyData();
-        var {xAxisData,yAxisData} = xyData;
+        var xAxisData = grid.xAxis[xAxis],yAxisData = grid.yAxis[yAxis];
         var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
         var scale = (max - min)/height;
         var len = xAxisData.data.length;
@@ -98,19 +109,20 @@ class Linechart extends Component {
         })
         return {xAxisData,yAxisData};
     }
-    componentDidMount(){
-        this.animate();
+    onLegendChange(msg){
+        if(msg.index == this.props.serieIndex) {
+            this.setState({legend:msg.data});
+        }
     }
-    shouldComponentUpdate(nextProps){
-        if(nextProps.isDependReady) {
-            return true;
-        } else {
-            return false;
+    onGridChange(grid){
+        if(grid.index == this.props.serieIndex) {
+            this.setState({grid,isGridReady:true,hasInited:true});
         }
     }
     animate(){
-        var {state,props} = this;
-        var {option,grid} = props;
+        var {props,state} = this;
+        var {option} = props;
+        var {grid} = state;
         var {top,left,width,height} = grid;
         var el = findDOMNode(this);
         var {serieIndex} = props;
@@ -129,6 +141,23 @@ class Linechart extends Component {
             $(el).find('.series-line-labels').show();
         });
         paper.destroy();
+    }
+    componentWillReceiveProps(){
+        this.setState({isGridReady:false});
+    }
+    shouldComponentUpdate(nextProps,nextState){
+        return nextState.isGridReady?true:false;
+    }
+    componentDidUpdate(prevProps,prevState){
+        var {props,state} = this;
+        if(state.hasInited != prevState.hasInited) {
+            this.animate();
+        }
+    }
+    componentWillUnmount(){
+        var {props,state} = this;
+        props.chartEmitter.off('legend',this.onLegendChange);
+        props.chartEmitter.off('grid',this.onGridChange);
     }
 }
 Linechart.defaultOption = defaultOption;

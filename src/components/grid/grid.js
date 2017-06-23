@@ -98,7 +98,7 @@ class Grid extends Component {
 	onAxisReady(){
 		var {props,state} = this;
 		var {containLabel} = props;
-		var {onDependceReady,includeSeries,top,left,right,bottom,width,height} = props;
+		var {chartEmitter,includeSeries,top,left,right,bottom,width,height} = props;
 		var {xAxis,yAxis} = state;
 		var  
 		topLabelHeight=0,
@@ -119,16 +119,21 @@ class Grid extends Component {
 			axisBottom = bottom  - bottomLabelHeight,
 			axisWidth = axisRight - axisLeft,
 			axisHeight = axisBottom - axisTop;
-		onDependceReady('grid',includeSeries,{
-			top:axisTop,
-			left:axisLeft,
-			right:axisRight,
-			bottom:axisBottom,
-			width:axisWidth,
-			height:axisHeight,
-			xAxis:xAxis,
-			yAxis:yAxis
-		});
+		includeSeries.map(function(serieIndex){
+			chartEmitter.emit('grid',
+				{	
+					index:serieIndex,
+					top:axisTop,
+					left:axisLeft,
+					right:axisRight,
+					bottom:axisBottom,
+					width:axisWidth,
+					height:axisHeight,
+					xAxis:xAxis,
+					yAxis:yAxis
+				}
+			)
+		})
 		if(containLabel) {
 			var updateType = 'adjust';
 			var hasInited = true;
@@ -159,6 +164,6 @@ Grid.defaultProps = {
 	xAxis:[],
 	yAxis:[],
 	includeSeries:[],
-	onDependceReady:null
+	chartEmitter:null
 }
 module.exports = Grid;

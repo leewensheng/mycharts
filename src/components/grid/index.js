@@ -8,9 +8,14 @@ import gridService from './gridService'
 class  Grids extends Component {
     constructor(props) {
         super(props);
-        this.state = this.getRenderData(props);
+        this.state = {
+            grids:this.getRenderData(props,{}),
+            hideSeries:{}
+        };
+        this.onLegendChange = this.onLegendChange.bind(this);
+        props.chartEmitter.on("legend.all",this.onLegendChange);
     }
-    getRenderData(props){
+    getRenderData(props,hideSeries){
     	//todo 计算出grid的大小，和各axis的值范围
         var {chartWidth,chartHeight,chartOption} = props;
         var {grid,xAxis,yAxis,series} = chartOption;
@@ -76,6 +81,9 @@ class  Grids extends Component {
                 var grid = grids[gridIndex];
                 var arr = [];
                 var includeSeries = series.filter(function(serie,index){
+                    if(hideSeries[index]) {
+                        return false;
+                    }
                     var type = serie.type;
                     var chart = charts[type];
                     if(!type||!chart) {
@@ -102,13 +110,11 @@ class  Grids extends Component {
                 })
             });
         }
-        return {
-            grids:grids
-        }
+        return grids;
     }
     render(){
         var props = this.props;
-        var {chartWidth,chartHeight,chartOption,onDependceReady} = props;
+        var {chartWidth,chartHeight,chartOption,chartEmitter} = props;
         var {grids} = this.state;
         return (
         	<g className='vcharts-grids'>
@@ -130,25 +136,41 @@ class  Grids extends Component {
                             containLabel={containLabel}
 		        			xAxis={xAxis}
 		        			yAxis={yAxis}
-                            onDependceReady={onDependceReady}
+                            chartEmitter={chartEmitter}
                             includeSeries={includeSeries}
                             />
 	        	})
 	        }
         	</g>);
     }
-    shouldComponentUpdate(nextProps){
-        return !nextProps.isReady;
+    onLegendChange(data){
+        var {props,state} = this;
+        var hideSeries = {};
+        data.map(function(legend){
+            if(legend.selected === false) {
+                hideSeries[legend.index] = true;
+            }
+        })
+        var grids = this.getRenderData(this.props,hideSeries);
+        this.setState({grids,hideSeries});
+    }
+    componentDidMount(){
+        var {props,state} = this;
+        var {chartEmitter} = props;
     }
     componentWillReceiveProps(nextProps){
-        this.setState(this.getRenderData(nextProps));
+        var grids = this.getRenderData(nextProps,this.state.hideSeries);
+        this.setState({grids});
+    }
+    componentWillUnmount(){
+        this.props.chartEmitter.removeListener('legend.all',this.onLegendChange);
     }
 }
 Grids.defaultProps = {
     chartOption:null,
     chartWidth:null,//图表宽度
     chartHeight:null,//图表高度
-    onDependceReady:null,
+    chartEmitter:null,
     isReady:false
 }
 module.exports = Grids;

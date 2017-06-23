@@ -34,7 +34,7 @@ class Legend extends Component {
 					y:0,
 					name:serie.name|| ('serie' + index),
 					icon:legend.icon,
-					selected:serie.selected,
+					selected:serie.selected===false?false:true,
 					multiple:false,
 					seriesIndex:index
 				})
@@ -45,7 +45,7 @@ class Legend extends Component {
 						y:0,
 						name:serie.name,
 						icon:legend.icon,
-						selected:val.selected,
+						selected:true,
 						multiple:true,
 						seriesIndex:index
 					})
@@ -72,7 +72,8 @@ class Legend extends Component {
 			isAdjusted:false,
 			legendOption:legend,
 			items:items,
-			hasInited:oldState?true:false
+			hasInited:oldState?true:false,
+			updateType:'newProps'
 		}
 	}
 	render(){
@@ -115,24 +116,34 @@ class Legend extends Component {
 		var item = items[index];
 		item.selected = item.selected===false?true:false;
 		this.sendLegendData();
+		this.setState({items});
 	}
 	sendLegendData(){
     	var {props,state} = this;
-    	var {onDependceReady} = props;
+    	var {chartEmitter} = props;
     	var {items} = this.state;
     	var groupedItems = {};
+ 		var multipleItems = [];
     	items.map(function(item,index){
     		var {seriesIndex,selected,multiple} = item;
     		if(!multiple) {
     			groupedItems[seriesIndex] = {selected:selected};
+    			multipleItems.push({
+    				index:seriesIndex,
+    				selected:selected
+    			});
     		} else {
     			groupedItems[seriesIndex] = groupedItems[seriesIndex] || [];
     			groupedItems[seriesIndex].push({selected:selected});
     		}
     	})
     	for(var index in groupedItems) {
-    		onDependceReady('legend',index,groupedItems[index]);
+    		chartEmitter.emit('legend',{
+    			index:index,
+    			data:groupedItems[index]
+    		})
     	}
+    	chartEmitter.emit('legend.all',multipleItems);
     }
     adjustPosition(){
     	var {props,state} = this;
@@ -207,22 +218,17 @@ class Legend extends Component {
 			isAdjusted:true,
 			updateType:'adjust'
 		});
-		this.sendLegendData();
-    }
-	shouldComponentUpdate(nextProps,nextState){
-        return !nextProps.isReady || nextState.updateType==='adjust'||nextState.updateType=='toggle';
-    }
-    componentWillReceiveProps(nextProps){
-    	if(nextProps.updateType === 'newProps') {
-    		var state = this.state;
-        	this.setState(this.getRenderData(nextProps,state));
-    	}
     }
     componentDidMount(){
     	this.adjustPosition();
     }
+    componentWillReceiveProps(nextProps){
+		var state = this.state;
+		var nextState = this.getRenderData(nextProps,state);
+    	this.setState(nextState);
+    }    
     componentDidUpdate(){
-    	if(!this.state.isAdjusted) {
+    	if(this.state.updateType !== 'adjust') {
     		this.adjustPosition();
     	}
     }

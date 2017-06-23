@@ -15,20 +15,19 @@ import Icon from '../line/icon'
 class  Pie extends Component{
 	constructor(props) {
 		super(props);
+		this.onSlice = this.onSlice.bind(this);
+		this.onLegendChange = this.onLegendChange.bind(this);
+		props.chartEmitter.on('legend',this.onLegendChange);
 		this.state = this.getRenderData(props);
 	}
 	getRenderData(props,oldState){
-		var {series,width,height,option,legend} = props;
+		var {series,width,height,option} = props;
 		var colors = option.colors;
 		var {data,color} = series;
-		if(legend) {
-			var showData = [];
-			for(var i = 0; i < data.length;i++) {
-				if(legend[i].selected!==false) {
-					showData.push(data[i]);
-				}
-			}		
-			data = showData;
+		if(oldState&&oldState.legend) {
+			data = data.filter(function(point,index){
+				return oldState.legend[index].selected!==false;
+			})
 		}
 		if(series.colors) {
 			colors = series.colors;
@@ -122,11 +121,12 @@ class  Pie extends Component{
 
 	render(){
 		var that = this;
-		var {width,height,series,option} = this.props;
-		var points = this.state.points;
+		var {props,state} = this;
+		var {width,height,series,option} = props;
+		var {points} = state;
 		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
 		var {cx,cy,radius,innerRadius} = this.state;
-		var onSlice = this.onSlice.bind(this);
+		var onSlice = this.onSlice;
 		var slices = [],labels = [],lines = [];
 		dataLabels.enabled
 		&&
@@ -275,6 +275,14 @@ class  Pie extends Component{
 		})
 		this.setState({points:points,updateType:'select'});
 	}
+	onLegendChange(msg){
+		var {state,props} = this;
+		if(msg.index == this.props.serieIndex) {
+			state.legend = msg.data
+			var nextState = this.getRenderData(props,state);
+			this.setState(nextState);
+		}
+	}
 	animate(){
 		var {width,height,option,series} = this.props;
 		var serieIndex = series.index;
@@ -323,21 +331,9 @@ class  Pie extends Component{
 		nextState.updateType = 'newProps';
 		this.setState(nextState);
 	}
-	shouldComponentUpdate(nextProps,nextState){
-		if(nextState.updateType === 'select') {
-			return true;
-		} 
-		if(nextProps.updateType === 'newProps'&&!nextProps.legend) {
-			return true;
-		}
-		if(nextProps.updateType === 'dependceChange') {
-			if(nextProps.isDependReady) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
+	componentWillUnmount(){
+		var {props,state} = this;
+		props.chartEmitter.removeListener('legend',this.onLegendChange);
 	}
 }
 Pie.defaultOption = defaultOption;
