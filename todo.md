@@ -1,4 +1,5 @@
 #to do list 
+bug 饼图选中配合图例开关，选中状态有问题
 bug  坐标轴Y轴数目应当取最大并保持一致;
 1.坐标轴不限定type，可以同时是categories,value
 splitArea,hoverStyle
