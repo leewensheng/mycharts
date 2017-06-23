@@ -24,8 +24,12 @@ class  Pie extends Component{
 		var {series,width,height,option} = props;
 		var colors = option.colors;
 		var {data,color} = series;
+		data.forEach(function(point,index){
+			point.x = index;
+		})
 		if(oldState&&oldState.legend) {
 			data = data.filter(function(point,index){
+				point.x = index;
 				return oldState.legend[index].selected!==false;
 			})
 		}
@@ -64,8 +68,8 @@ class  Pie extends Component{
 	        	endAngle:endAngle,
 	        	midAngle:(startAngle + endAngle)/2,
 	        	selected:curData.selected,
-	        	label:data[index].name,
-	        	x:index,
+	        	label:curData.name,
+	        	x:curData.x,
 	        	y:curData.value,
 	        	percent:percent.toFixed(2)
 	        };
@@ -77,7 +81,7 @@ class  Pie extends Component{
 	        		obj.color = color;
 	        	}
 	        } else {
-	        	obj.color = colors[index%colors.length];
+	        	obj.color = colors[curData.x%colors.length];
 	        }
 	        obj.radius = radius;
 	        if(roseType === "radius" || roseType === "area") {
