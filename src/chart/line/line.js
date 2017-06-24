@@ -2,9 +2,9 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper'
-import Text from '../../widget/text'
-import Polyline from './polyline'
-import Circle from '../../widget/circle'
+import Text from '../../element/text'
+import Polyline from '../../element/polyline'
+import Circle from '../../element/circle'
 import defaultOption from './option'
 import LineIcon from './icon';
 class Linechart extends Component {
@@ -117,6 +117,7 @@ class Linechart extends Component {
     onGridChange(grid){
         if(grid.index == this.props.serieIndex) {
             this.setState({grid,isGridReady:true,hasInited:true});
+            this.forceUpdate();
         }
     }
     animate(){

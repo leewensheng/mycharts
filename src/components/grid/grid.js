@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Axis from './axis'
-import Rect from '../../widget/rect'
+import Rect from '../../element/rect'
 class Grid extends Component {
 	constructor(props){
 		super(props);

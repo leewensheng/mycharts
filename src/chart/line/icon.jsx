@@ -1,8 +1,8 @@
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
-import Line from '../../widget/line'
-import Circle from '../../widget/circle'
+import Line from '../../element/line'
+import Circle from '../../element/circle'
 
 class LineIcon extends Component {
 	render(){

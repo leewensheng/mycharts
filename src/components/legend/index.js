@@ -3,8 +3,8 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import defaultOption from './option'
 import Vcharts from '../../chart/charts'
-import Text from '../../widget/text'
-import Rect from '../../widget/Rect'
+import Text from '../../element/text'
+import Rect from '../../element/Rect'
 import mathUtils from 'cad/math'
 class Legend extends Component {
 	constructor(props){
@@ -99,6 +99,8 @@ class Legend extends Component {
 								opacity={!hasInited&&!isAdjusted?0:1} 
 								style={{cursor:'pointer'}}
 								onClick={that.toggleItem.bind(that,index)}
+								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
+								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
 								<Rect animation={hasInited} x={x} y={y} width={width} height={50} fill={selected!==false?'blue':'gray'} stroke={borderColor} strokeWidth={borderWidth} r1={borderRadius} r2={borderRadius} />
 								<Icon animation={hasInited} x={x} y={y} width={50} height={50} color="red"/>
@@ -117,6 +119,18 @@ class Legend extends Component {
 		item.selected = item.selected===false?true:false;
 		this.sendLegendData();
 		this.setState({items});
+	}
+	handleMouseEvent(index,isHover){
+		var {props,state} = this;
+		var {items} = state;
+		var {chartEmitter} = props;
+		var item = items[index];
+		if(item.selected) {
+			chartEmitter.emit("legend.hover",{
+				index:item.serieIndex,
+				data:item
+			});
+		}
 	}
 	sendLegendData(){
     	var {props,state} = this;
@@ -162,6 +176,7 @@ class Legend extends Component {
 			var textLen = $(dom).find('text').getComputedTextLength();
 			var width = textLen + 50 + 5;
 			items[index].width = useItemWidth ? itemWidth : width;
+			items[index].plotWidth = width;
     	});
 		var rows = [[]];
 		var rowIndex = 0;
