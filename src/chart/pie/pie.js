@@ -8,7 +8,7 @@ import shape from 'cad/shape'
 import Point from 'cad/point'
 
 import Slice from './slice'
-import Text from '../../element/text'
+import Text from '../../elements/text'
 import ConnectLine from './connect-line'
 import defaultOption from './option'
 import Icon from '../line/icon'

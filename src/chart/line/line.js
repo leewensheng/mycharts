@@ -2,9 +2,9 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper'
-import Text from '../../element/text'
-import Polyline from '../../element/polyline'
-import Circle from '../../element/circle'
+import Text from '../../elements/text'
+import Polyline from '../../elements/polyline'
+import Circle from '../../elements/circle'
 import defaultOption from './option'
 import LineIcon from './icon';
 class Linechart extends Component {

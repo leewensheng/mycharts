@@ -3,8 +3,8 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import defaultOption from './option'
 import Vcharts from '../../chart/charts'
-import Text from '../../element/text'
-import Rect from '../../element/Rect'
+import Text from '../../elements/text'
+import Rect from '../../elements/Rect'
 import mathUtils from 'cad/math'
 class Legend extends Component {
 	constructor(props){

@@ -2,8 +2,8 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import gridService from './gridService'
-import Text from '../../element/text'
-import Line from '../../element/line'
+import Text from '../../elements/text'
+import Line from '../../elements/line'
 class  Axis extends Component {
     constructor(props){
         super(props);
