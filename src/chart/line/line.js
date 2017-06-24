@@ -12,8 +12,10 @@ class Linechart extends Component {
         super(props);
         this.onLegendChange = this.onLegendChange.bind(this);
         this.onGridChange = this.onGridChange.bind(this);
+        this.onLegendHover = this.onLegendHover.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
         props.chartEmitter.on('legend',this.onLegendChange);
+        props.chartEmitter.on('legend.hoverChange',this.onLegendHover);
         this.state = {
             hasInited:false,
             isGridReady:false
@@ -43,7 +45,7 @@ class Linechart extends Component {
         });
         return (
             <g className="vcharts-series vcharts-line-series" style={{display:legend&&legend.selected===false?'none':''}}>
-                <Polyline points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline className="vcharts-series-polyline" points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
@@ -89,26 +91,6 @@ class Linechart extends Component {
         }
         $(e.target).stopTransition().transition({r:r},400,'elasticOut');
     }
-    getDependenyData(){
-        var props = this.props;
-        var {grid,series} = props;
-        var {dataLabels} = series;
-        var xAxisIndex = series.xAxis;
-        var yAxisIndex = series.yAxis;
-        var {xAxis,yAxis} = grid;
-        var yAxisData,xAxisData;
-        yAxis.map(function(axis){
-            if(axis.index === yAxisIndex) {
-                yAxisData = axis;
-            }
-        });
-        xAxis.map(function(axis){
-            if(axis.index === xAxisIndex) {
-                xAxisData = axis;
-            }
-        })
-        return {xAxisData,yAxisData};
-    }
     onLegendChange(msg){
         if(msg.index == this.props.serieIndex) {
             this.setState({legend:msg.data});
@@ -118,6 +100,14 @@ class Linechart extends Component {
         if(grid.index == this.props.serieIndex) {
             this.setState({grid,isGridReady:true,hasInited:true});
             this.forceUpdate();
+        }
+    }
+    onLegendHover(msg){
+        var {index,eventType} = msg;
+        if(index === this.props.serieIndex) {
+            if(eventType === 'mouseover') {
+            } else {
+            }
         }
     }
     animate(){

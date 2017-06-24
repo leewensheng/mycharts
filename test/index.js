@@ -93,6 +93,7 @@ var option = {
         }
 	],
     grid:{
+        top:80,
         containLabel:true
     },
     xAxis:{

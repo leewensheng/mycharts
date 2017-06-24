@@ -4,7 +4,7 @@ import {findDOMNode} from 'react-dom'
 import defaultOption from './option'
 import Vcharts from '../../chart/charts'
 import Text from '../../elements/text'
-import Rect from '../../elements/Rect'
+import Rect from '../../elements/rect'
 import mathUtils from 'cad/math'
 class Legend extends Component {
 	constructor(props){
@@ -34,7 +34,7 @@ class Legend extends Component {
 					y:0,
 					name:serie.name|| ('serie' + index),
 					icon:legend.icon,
-					selected:serie.selected===false?false:true,
+					selected:true,
 					multiple:false,
 					seriesIndex:index
 				})
@@ -61,9 +61,7 @@ class Legend extends Component {
 					item.width = oldItem.width;
 					//todo 需要检测前后是否同一个系列
 					if(props.updateType === 'newProps') {
-						if(typeof item.selected === 'undefined') {
-							item.selected = oldItem.selected;
-						}
+						item.selected = oldItem.selected;
 					}
 				}
 			})
@@ -126,8 +124,9 @@ class Legend extends Component {
 		var {chartEmitter} = props;
 		var item = items[index];
 		if(item.selected) {
-			chartEmitter.emit("legend.hover",{
-				index:item.serieIndex,
+			chartEmitter.emit("legend.hoverChange",{
+				index:item.seriesIndex,
+				eventType:isHover?'mouseover':'mouseout',
 				data:item
 			});
 		}

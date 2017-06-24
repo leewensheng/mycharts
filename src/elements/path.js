@@ -13,7 +13,7 @@ class  PathShape extends Component{
     render(){
         var {state,props} = this;
         var {path} = state;
-        return <path d={path.toString()} {...props}/>
+        return <path {...props}  d={path.toString()} />
     }
     animate(){
         var {state,props} = this;

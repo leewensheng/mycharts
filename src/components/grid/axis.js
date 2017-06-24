@@ -25,7 +25,11 @@ class  Axis extends Component {
         if(type === 'value') {
             var axismin = typeof(min)==='number'?min:dataRange.min;
             var axismax = typeof(max)==='number'?max:dataRange.max;
-            data = gridService.getSplitArray(axismin,axismax,splitNumber);
+            if(axismin === null||axismax === null) {
+                data = [];
+            } else {
+                data = gridService.getSplitArray(axismin,axismax,splitNumber);
+            }
         }
         var points = [];
         var gap = end - start;
