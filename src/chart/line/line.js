@@ -32,7 +32,7 @@ class Linechart extends Component {
         var {left,top,right,bottom,width,height,width} = grid;
         var points = [];
         var color = series.color||option.colors[serieIndex];
-        var xAxisData = grid.xAxis[xAxis],yAxisData = grid.yAxis[yAxis];
+        var xAxisData = grid.xAxis,yAxisData = grid.yAxis;
         var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
         var scale = (max - min)/height;
         var len = xAxisData.data.length;

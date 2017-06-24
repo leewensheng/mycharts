@@ -119,7 +119,20 @@ class Grid extends Component {
 			axisBottom = bottom  - bottomLabelHeight,
 			axisWidth = axisRight - axisLeft,
 			axisHeight = axisBottom - axisTop;
-		includeSeries.map(function(serieIndex){
+		$.each(includeSeries,function(serieIndex,xy){
+			var xAxisIndex= xy.xAxis;
+			var yAxisIndex = xy.yAxis;
+			var xAxisData,yAxisData;
+			for(var i = 0; i < xAxis.length;i++) {
+				if(xAxis[i].index === xAxisIndex) {
+					xAxisData = xAxis[i];
+				}
+			}
+			for(var i = 0; i < yAxis.length;i++) {
+				if(yAxis[i].index === yAxisIndex) {
+					yAxisData = yAxis[i];
+				}
+			}
 			chartEmitter.emit('grid',
 				{	
 					index:serieIndex,
@@ -129,8 +142,8 @@ class Grid extends Component {
 					bottom:axisBottom,
 					width:axisWidth,
 					height:axisHeight,
-					xAxis:xAxis,
-					yAxis:yAxis
+					xAxis:xAxisData,
+					yAxis:yAxisData
 				}
 			)
 		})
