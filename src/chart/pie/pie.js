@@ -1,17 +1,19 @@
 import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
+
 import Paper from 'cad/paper'
 import mathUtils from 'cad/math'
 import colorHelper from 'cad/color/index'
 import shape from 'cad/shape'
 import Point from 'cad/point'
 
-import Slice from './slice'
 import Text from '../../elements/text'
 import ConnectLine from './connect-line'
+
 import defaultOption from './option'
-import Icon from '../line/icon'
+import Slice from './slice'
+import Icon from './icon'
 class  Pie extends Component{
 	constructor(props) {
 		super(props);

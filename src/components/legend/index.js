@@ -77,7 +77,7 @@ class Legend extends Component {
 	render(){
 		var that = this;
 		var {props,state} = this;
-		var {hasInited,isAdjusted,items,legendOption} = state;
+		var {hasInited,isAdjusted,items,legendOption,legendWidth,legendHeight} = state;
 		var {chartOption,chartWidth,chartHeight} = props;
 		var {legend} = chartOption;
 		var {
@@ -87,6 +87,9 @@ class Legend extends Component {
 		} = legendOption;
 		return (
 			<g className="vcharts-legend">
+				{
+					<Rect animation={hasInited} x={items[0].x} y={items[0].y} width={legendWidth} height={legendHeight} fill={background} stroke={borderColor} strokeWidth={borderWidth} r1={borderRadius} r2={borderRadius} />
+				}
 				{
 					items.map(function(item,index){
 						var Icon = item.icon;
@@ -100,8 +103,7 @@ class Legend extends Component {
 								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
-								<Rect animation={hasInited} x={x} y={y} width={width} height={50} fill={selected!==false?'blue':'gray'} stroke={borderColor} strokeWidth={borderWidth} r1={borderRadius} r2={borderRadius} />
-								<Icon animation={hasInited} x={x} y={y} width={50} height={50} color="red"/>
+								<Icon animation={hasInited} x={x} y={y} width={50} height={50} color={selected!==false?'red':'gray'}/>
 								<Text animation={hasInited} x={x + 50} y={y} fill="red" style={{textBaseLine:'middle'}}>{item.name}</Text>
 							</g>
 						)
@@ -227,9 +229,12 @@ class Legend extends Component {
 				return x + item.width;
 			}, startX );
 		});
+		var x,y;
 		this.setState({
 			items:items,
 			isAdjusted:true,
+			legendWidth:blockWidth,
+			legendHeight:blockHeight,
 			updateType:'adjust'
 		});
     }

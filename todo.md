@@ -1,6 +1,6 @@
 #to do list 
 legend hover状态
-preact下折线图未更新
+legend边框背景圆角支持，考虑各种对齐方式
 bug 饼图选中配合图例开关，选中状态有问题
 bug  坐标轴Y轴数目应当取最大并保持一致;
 bug 饼图key统一用x

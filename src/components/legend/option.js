@@ -4,10 +4,10 @@ module.exports = {
 	layout:'horizontal',
 	align:'center',
 	verticlAlign:'top',
-	borderColor:'#999',
-	borderWidth:1,
+	borderColor:'#999',//图例区域边框
+	borderWidth:1,//
 	borderRadius:0,
-	background:'transparent',
+	background:'transparent',//图例背景色
 	formatter:null,
 	margin:12,
 	itemWidth:'auto',
@@ -16,6 +16,11 @@ module.exports = {
 	selectMode:'multiple',
 	inactiveColor:'#ccc',
 	itemStyle:{
-
+		fontSize:12
+	},
+	symbol:{
+		width:10,
+		height:null,//默认和fontSize一致
+		radius:5,
 	}
 }
