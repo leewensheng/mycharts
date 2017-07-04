@@ -14,7 +14,7 @@ for(var i = 0; i <3; i++) {
 var option = {
 	chart:{
 		animation:true,
-		background:'#fff',
+		background:'#ddd',
 	},
 	series:[
 		{	color:"blue",
@@ -83,6 +83,7 @@ var option = {
                 enabled:false
             }
         },{
+            name:'系列',
             type:'line',
             data:[5,30,58]
         },{
@@ -181,7 +182,21 @@ var option = {
             gridLine:{
                 enabled:false
             }
-    }]
+    }],
+    legend:{
+        padding:20,
+        margin:10,
+        align:'center',
+        itemHeight:null,
+        borderWidth:0.5,
+        borderRadius:5,
+        background:"#fff",
+        layout:'vertical',
+        itemStyle:{
+            fontSize:12,
+            textBaseLine:'middle'
+        }
+    }
 };
 chart.setOption(option);
 var t2 = Date.now();

@@ -21,7 +21,7 @@ class  Text extends Component{
         };
         var dy = 0;
         if(textBaseLine === 'middle') {
-            dy = fontSize/2;
+            dy = fontSize/3;
         } else if(textBaseLine === "top") {
             dy = fontSize;
         }

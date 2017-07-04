@@ -32,7 +32,7 @@ class Legend extends Component {
 				items.push({
 					x:0,
 					y:0,
-					name:serie.name|| ('serie' + index),
+					name:serie.name|| ('series ' + index),
 					icon:legend.icon,
 					selected:true,
 					multiple:false,
@@ -43,7 +43,7 @@ class Legend extends Component {
 					items.push({
 						x:0,
 						y:0,
-						name:serie.name,
+						name:serie.name||('series ' + index),
 						icon:legend.icon,
 						selected:true,
 						multiple:true,
@@ -77,23 +77,27 @@ class Legend extends Component {
 	render(){
 		var that = this;
 		var {props,state} = this;
-		var {hasInited,isAdjusted,items,legendOption,legendWidth,legendHeight} = state;
+		var {hasInited,isAdjusted,items,legendOption,legendX,legendY,legendWidth,legendHeight} = state;
 		var {chartOption,chartWidth,chartHeight} = props;
 		var {legend} = chartOption;
 		var {
 			enabled,layout,align,verticlAlign,borderColor,
 			borderWidth,borderRadius,background,formatter,
-			margin,itemWidth,itemGap,itemPadding,selectMode,inactiveColor,labelStyle
+			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
 		} = legendOption;
 		return (
 			<g className="vcharts-legend">
 				{
-					<Rect animation={hasInited} x={items[0].x} y={items[0].y} width={legendWidth} height={legendHeight} fill={background} stroke={borderColor} strokeWidth={borderWidth} r1={borderRadius} r2={borderRadius} />
+					<Rect animation={hasInited} x={legendX} y={legendY} width={legendWidth} height={legendHeight} fill={background} stroke={borderColor} strokeWidth={borderWidth} rx={borderRadius} ry={borderRadius} />
 				}
 				{
 					items.map(function(item,index){
 						var Icon = item.icon;
 						var {x,y,width,selected} = item;
+						var symbolHeight = symbol.height||itemStyle.fontSize;
+						var symbolY =  y + (itemHeight - symbolHeight)/2;
+						var textX = x + symbol.width + symbol.padding;
+						var textY = y + itemHeight/2;
 						return (
 							<g 	className="vcharts-legend-item" 
 								key={index} 
@@ -103,8 +107,8 @@ class Legend extends Component {
 								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
-								<Icon animation={hasInited} x={x} y={y} width={50} height={50} color={selected!==false?'red':'gray'}/>
-								<Text animation={hasInited} x={x + 50} y={y} fill="red" style={{textBaseLine:'middle'}}>{item.name}</Text>
+								<Rect animation={hasInited} x={x} y={symbolY} width={symbol.width} height={symbolHeight} fill={selected!==false?'red':'gray'}/>
+								<Text animation={hasInited} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)
 					})
@@ -160,27 +164,37 @@ class Legend extends Component {
     	}
     	chartEmitter.emit('legend.all',multipleItems);
     }
-    adjustPosition(){
+    alignItems(){
     	var {props,state} = this;
     	var {isAdjusted,items,legendOption} = state;
 		var {chartOption,chartWidth,chartHeight} = props;
 		var {legend} = chartOption;
 		var {
-			enabled,layout,align,verticlAlign,borderColor,
-			borderWidth,borderRadius,background,formatter,
-			margin,itemWidth,itemGap,itemPadding,selectMode,inactiveColor,labelStyle
+			layout,align,verticlAlign,formatter,
+			margin,padding,itemWidth,itemHeight,itemGap,itemStyle,symbol
 		} = legendOption;
 		var useItemWidth = typeof itemWidth === 'number' && itemWidth > 0;
     	var el = findDOMNode(this);
     	var blockWidth = 0,blockHeight = 0;
     	$(el).find(".vcharts-legend-item").each(function(index,dom){
 			var textLen = $(dom).find('text').getComputedTextLength();
-			var width = textLen + 50 + 5;
+			var width = textLen + symbol.width + symbol.padding;
 			items[index].width = useItemWidth ? itemWidth : width;
 			items[index].plotWidth = width;
     	});
 		var rows = [[]];
 		var rowIndex = 0;
+		var vFlag = 0,hFlag = 0;
+		if(verticlAlign === 'bottom') {
+			vFlag = -1;
+		} else if(verticlAlign === 'top') {
+			vFlag = 1;
+		}
+		if(align === 'right') {
+			hFlag = -1;
+		} else if(align === 'left') {
+			hFlag = 1;
+		}
 		items.reduce(function(prev,item,index){
 			var width = item.width;
 			var currentRow = rows[rowIndex];
@@ -205,9 +219,27 @@ class Legend extends Component {
 				}
 			});
 			blockWidth = Math.max(rowWidth,blockWidth);
-			blockHeight += 20;// todo
+			blockHeight += itemHeight + (rowIndex!==0?itemGap:0);
 			return rowWidth;
 		});
+		blockWidth += padding*2;
+		blockHeight += padding*2;
+		var legendX,legendY;
+		if(align === 'left') {
+			legendX = margin;
+		} else if(align === 'right') {
+			legendX = chartWidth - blockWidth - margin;
+		} else {
+			legendX = chartWidth/2 - blockWidth/2;
+		}
+		if(verticlAlign === 'top') {
+			legendY = margin;
+		} else if (verticlAlign === 'bottom') {
+			 legendY = chartHeight - blockHeight - margin;
+		} else {
+			legendY = chartHeight/2 - blockHeight /2;
+		}
+
 		rows.map(function(row,rowIndex){
 			var startX;
 			if(align === 'left') {
@@ -215,31 +247,34 @@ class Legend extends Component {
 			} else if(align === 'center') {
 				startX = chartWidth/2 - rowsWidth[rowIndex]/2;
 			} else if (align === 'right') {
-				startX = chartWidth - rowWidth;
+				startX = chartWidth - rowsWidth;
 			} else {
 				startX = chartWidth/2 - rowsWidth[rowIndex]/2;
 			}
+			startX += (margin*hFlag);
+			startX += padding*hFlag;
 			row.reduce(function(prev,item,index){
 				var x = prev,y;
 				if(index !== 0) {
 					x += itemGap;
 				}
 				item.x = x;
-				item.y = rowIndex * 60;
+				item.y = rowIndex * (itemHeight + itemGap) + padding + vFlag * margin;
 				return x + item.width;
-			}, startX );
+			}, startX);
 		});
-		var x,y;
 		this.setState({
 			items:items,
 			isAdjusted:true,
-			legendWidth:blockWidth,
+			legendX:legendX,
+			legendY:legendY,
+			legendWidth:blockWidth ,
 			legendHeight:blockHeight,
 			updateType:'adjust'
 		});
     }
     componentDidMount(){
-    	this.adjustPosition();
+    	this.alignItems();
     }
     componentWillReceiveProps(nextProps){
 		var state = this.state;
@@ -248,7 +283,7 @@ class Legend extends Component {
     }    
     componentDidUpdate(){
     	if(this.state.updateType !== 'adjust') {
-    		this.adjustPosition();
+    		this.alignItems();
     	}
     }
 }
