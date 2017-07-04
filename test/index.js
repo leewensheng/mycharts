@@ -192,6 +192,7 @@ var option = {
         borderRadius:5,
         background:"#fff",
         layout:'vertical',
+        itemGap:10,
         itemStyle:{
             fontSize:12,
             textBaseLine:'middle'

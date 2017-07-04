@@ -1,4 +1,5 @@
 #to do list 
+折线图配置扁平化,不放到style里
 legend hover状态
 legend边框背景圆角支持，考虑各种对齐方式
 bug 饼图选中配合图例开关，选中状态有问题

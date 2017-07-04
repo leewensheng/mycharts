@@ -108,7 +108,7 @@ class Legend extends Component {
 								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
-								<Rect animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} fill={selected!==false?'red':'gray'}/>
+								<Icon animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={selected!==false?'red':'gray'}/>
 								<Text animation={animation} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)

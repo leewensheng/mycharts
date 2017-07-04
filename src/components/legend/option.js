@@ -22,7 +22,7 @@ module.exports = {
 		fontSize:12
 	},
 	symbol:{
-		width:16,
+		width:20,
 		padding:5,
 		height:null,//默认和fontSize一致
 		radius:5
