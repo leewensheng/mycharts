@@ -186,7 +186,7 @@ var option = {
     legend:{
         padding:20,
         margin:10,
-        align:'center',
+        align:'right',
         itemHeight:null,
         borderWidth:0.5,
         borderRadius:5,

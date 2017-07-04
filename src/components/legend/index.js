@@ -81,14 +81,15 @@ class Legend extends Component {
 		var {chartOption,chartWidth,chartHeight} = props;
 		var {legend} = chartOption;
 		var {
-			enabled,layout,align,verticlAlign,borderColor,
+			enabled,animation,layout,align,verticlAlign,borderColor,
 			borderWidth,borderRadius,background,formatter,
 			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
 		} = legendOption;
+		animation = animation&&hasInited;
 		return (
 			<g className="vcharts-legend">
 				{
-					<Rect animation={hasInited} x={legendX} y={legendY} width={legendWidth} height={legendHeight} fill={background} stroke={borderColor} strokeWidth={borderWidth} rx={borderRadius} ry={borderRadius} />
+					<Rect animation={animation} x={legendX} y={legendY} width={legendWidth} height={legendHeight} fill={background} stroke={borderColor} strokeWidth={borderWidth} rx={borderRadius} ry={borderRadius} />
 				}
 				{
 					items.map(function(item,index){
@@ -107,8 +108,8 @@ class Legend extends Component {
 								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
-								<Rect animation={hasInited} x={x} y={symbolY} width={symbol.width} height={symbolHeight} fill={selected!==false?'red':'gray'}/>
-								<Text animation={hasInited} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
+								<Rect animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} fill={selected!==false?'red':'gray'}/>
+								<Text animation={animation} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)
 					})

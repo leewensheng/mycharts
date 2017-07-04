@@ -1,6 +1,7 @@
 
 module.exports = {
 	enable:true,
+	animation:true,
 	layout:'horizontal',
 	align:'center',
 	verticlAlign:'top',
