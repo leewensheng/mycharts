@@ -44,43 +44,44 @@ class Core extends Component {
             components.push(dependence);
         };
         return (
-            <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
-                <defs></defs>
-                <rect x="0" y="0" width="100%" height="100%" fill={chart.background} className="vcharts-background"/>
-                {
-                    components.map(function(name){
-                        var Vcomponent = Vcomponents[name];
-                        if(!Vcomponent) {
-                            return;
-                        }
-                        return (
-                            <Vcomponent key={name} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} updateType={updateType}/>
-                        )
-                    })
-                }
-                {
-                     series.map(function(chartOption,index){
-                        var type = chartOption.type;
-                        if(!type) {return;}
-                        var Chart = charts[type];
-                        if(!Chart) {return;}
-                        var defaultOption = Chart.defaultOption;
-                        chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
-                       return (
-                        <Chart
-                            key={index}
-                            option={option} 
-                            width={width}
-                            height={height}
-                            series={chartOption}
-                            serieIndex={index}
-                            updateType={updateType}
-                            chartEmitter={chartEmitter}
-                        />
-                        )
-                    })
-                }
-            </svg>
+            <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative',background:chart.background}}>
+                <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
+                    <defs></defs>
+                    {
+                        components.map(function(name){
+                            var Vcomponent = Vcomponents[name];
+                            if(!Vcomponent) {
+                                return;
+                            }
+                            return (
+                                <Vcomponent key={name} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} updateType={updateType}/>
+                            )
+                        })
+                    }
+                    {
+                         series.map(function(chartOption,index){
+                            var type = chartOption.type;
+                            if(!type) {return;}
+                            var Chart = charts[type];
+                            if(!Chart) {return;}
+                            var defaultOption = Chart.defaultOption;
+                            chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
+                           return (
+                            <Chart
+                                key={index}
+                                option={option} 
+                                width={width}
+                                height={height}
+                                series={chartOption}
+                                serieIndex={index}
+                                updateType={updateType}
+                                chartEmitter={chartEmitter}
+                            />
+                            )
+                        })
+                    }
+                </svg>
+            </div>
         )
     }
     componentDidMount(){

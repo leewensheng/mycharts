@@ -34,10 +34,8 @@ Chart.prototype = {
 		var container = this.container;
 		var width = this.width;
 		var height = this.height;
-		var innerContainer = $("<div class='vcharts-container'></div>").attr("style","font-size:0;width:0;position:relative;overflow:visible");
-		$(container).append(innerContainer);
 		var vchart = <Core chart={this} option={option} width={width} height={height} />;
-		render(vchart,innerContainer[0]);
+		render(vchart,$(container)[0]);
 		this.componentDidMount();
 	},
 	setOption(option){
