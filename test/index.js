@@ -184,10 +184,10 @@ var option = {
             }
     }],
     legend:{
-        padding:20,
+        padding:5,
         margin:10,
         align:'right',
-        itemHeight:null,
+        itemHeight:20,
         borderWidth:0.5,
         borderRadius:5,
         background:"#fff",
