@@ -25,7 +25,7 @@ class  Text extends Component{
         } else if(textBaseLine === "top") {
             dy = fontSize;
         }
-        return <text {...props} style={style}  x={x} y={y} fill={color} textAnchor={anchor[textAlign]} dy={dy}>{this.props.children}</text>
+        return <text {...props} style={style} x={x} y={y} fill={color} textAnchor={anchor[textAlign]} dy={dy}>{this.props.children}</text>
     }
     animate(prevProps){
         var {state,props} = this;

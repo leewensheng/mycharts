@@ -86,6 +86,7 @@ class Legend extends Component {
 			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
 		} = legendOption;
 		animation = animation&&hasInited;
+		itemStyle.userSelect = 'none';
 		return (
 			<g className="vcharts-legend">
 				{

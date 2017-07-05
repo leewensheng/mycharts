@@ -2,7 +2,7 @@
     grid:{
         left:30,
         top:30,
-        bottom:80,
+        bottom:30,
         right:30,
         background:'transparent',
         containLabel:true

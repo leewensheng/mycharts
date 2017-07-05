@@ -94,7 +94,7 @@ var option = {
         }
 	],
     grid:{
-        top:120,
+        top:80,
         containLabel:true
     },
     xAxis:{
@@ -188,7 +188,6 @@ var option = {
         margin:10,
         align:'left',
         itemHeight:20,
-        itemWidth: 80,
         borderWidth:0.5,
         borderRadius:5,
         background:"#fff",
