@@ -1,5 +1,4 @@
 import vchart from '../src/index.js'
-import cad from 'cad'
 import $ from 'jquery'
 var el = document.getElementById("root");
 var t1 = Date.now();

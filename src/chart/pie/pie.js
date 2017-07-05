@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 
-import Paper from 'cad/paper'
+import Paper from 'cad/paper/index'
 import mathUtils from 'cad/math'
 import colorHelper from 'cad/color/index'
 import shape from 'cad/shape'

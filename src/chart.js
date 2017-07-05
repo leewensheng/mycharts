@@ -2,7 +2,7 @@ import $ from 'jquery'
 import 'cad/dom'
 import default_option from './option/index'
 import Core from './chart/index'
-import Paper from 'cad/paper'
+import Paper from 'cad/paper/index'
 import React from 'react'
 import {render} from 'react-dom'
 function Chart(el,option){
