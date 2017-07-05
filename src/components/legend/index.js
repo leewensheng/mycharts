@@ -85,6 +85,7 @@ class Legend extends Component {
 			borderWidth,borderRadius,background,formatter,
 			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
 		} = legendOption;
+		if(!enabled) return <g></g>;
 		animation = animation&&hasInited;
 		itemStyle.userSelect = 'none';
 		return (

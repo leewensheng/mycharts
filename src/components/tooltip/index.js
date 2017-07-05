@@ -31,7 +31,7 @@ class Tooltip extends Component {
 					{
 						points.map((point,index) => {
 							return (
-								<li key={index}>{point.name}</li>
+								<li style={{listStyle:'none'}} key={index}>{point.name}</li>
 							)
 						})
 					}
