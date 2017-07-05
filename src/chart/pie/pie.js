@@ -283,7 +283,7 @@ class  Pie extends Component{
 	}
 	onLegendChange(msg){
 		var {state,props} = this;
-		if(msg.index == this.props.serieIndex) {
+		if(msg.index == this.props.seriesIndex) {
 			state.legend = msg.data
 			var nextState = this.getRenderData(props,state);
 			this.setState(nextState);
@@ -291,7 +291,7 @@ class  Pie extends Component{
 	}
 	animate(){
 		var {width,height,option,series} = this.props;
-		var serieIndex = series.index;
+		var seriesIndex = series.index;
 		var sliceOffset = series.sliceOffset;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		var el = findDOMNode(this);
@@ -305,8 +305,8 @@ class  Pie extends Component{
 							endAngle:startAngle + 1e-6
 						});
 		});
-		clip.attr("id","pie-clip"+serieIndex);
-		group.attr("clip-path","url(#pie-clip"+ serieIndex +")");
+		clip.attr("id","pie-clip"+seriesIndex);
+		group.attr("clip-path","url(#pie-clip"+ seriesIndex +")");
 		var path = clip.find("path");
 		$(".pie-connect-line,.vchart-pie-labels").css("display","none");
 		path.transition({

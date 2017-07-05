@@ -25,7 +25,7 @@ class Linechart extends Component {
         var that = this;
         var props = this.props;
         var state = this.state;
-        var {width,height,series,option,serieIndex} = props;
+        var {width,height,series,option,seriesIndex} = props;
         var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = series;
         var {isGridReady,grid,legend,hasInited} = this.state;
         if(!isGridReady) {
@@ -33,7 +33,7 @@ class Linechart extends Component {
         }
         var {left,top,right,bottom,width,height,width} = grid;
         var points = [];
-        var color = series.color||option.colors[serieIndex];
+        var color = series.color||option.colors[seriesIndex];
         var xAxisData = grid.xAxis,yAxisData = grid.yAxis;
         var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
         var scale = (max - min)/height;
@@ -92,19 +92,19 @@ class Linechart extends Component {
         $(e.target).stopTransition().transition({r:r},400,'elasticOut');
     }
     onLegendChange(msg){
-        if(msg.index == this.props.serieIndex) {
+        if(msg.index == this.props.seriesIndex) {
             this.setState({legend:msg.data});
         }
     }
     onGridChange(grid){
-        if(grid.index == this.props.serieIndex) {
+        if(grid.index == this.props.seriesIndex) {
             this.setState({grid,isGridReady:true,hasInited:true});
             this.forceUpdate();
         }
     }
     onLegendHover(msg){
         var {index,eventType} = msg;
-        if(index === this.props.serieIndex) {
+        if(index === this.props.seriesIndex) {
             if(eventType === 'mouseover') {
             } else {
             }
@@ -116,14 +116,14 @@ class Linechart extends Component {
         var {grid} = state;
         var {top,left,width,height} = grid;
         var el = findDOMNode(this);
-        var {serieIndex} = props;
+        var {seriesIndex} = props;
         var svg = $(el).closest("svg").get(0);
         var paper = new Paper(svg);
         var clip = paper.clipPath(function(){
             paper.rect(left,top,0,height);
         });
-        clip.attr("id","line-clip"+serieIndex);
-        $(el).attr("clip-path","url(#line-clip"+ serieIndex +")");
+        clip.attr("id","line-clip"+seriesIndex);
+        $(el).attr("clip-path","url(#line-clip"+ seriesIndex +")");
         var rect = clip.find("rect");
         $(el).find('.series-line-labels').hide();
         rect.transition({width:width},600,'linear',function(){

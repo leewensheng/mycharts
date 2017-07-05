@@ -1,6 +1,5 @@
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import cad from 'cad'
 import namespace from 'cad/namespace'
 import charts from './charts'
 import Vcomponents from '../components/index'
@@ -74,7 +73,7 @@ class Core extends Component {
                                 width={width}
                                 height={height}
                                 series={chartOption}
-                                serieIndex={index}
+                                seriesIndex={index}
                                 updateType={updateType}
                                 chartEmitter={chartEmitter}
                             />
