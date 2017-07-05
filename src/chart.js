@@ -1,7 +1,7 @@
 import $ from 'jquery'
+import 'cad/dom'
 import default_option from './option/index'
 import Core from './chart/index'
-import cad from '../../src/index'
 import Paper from 'cad/paper'
 import React from 'react'
 import {render} from 'react-dom'

@@ -94,7 +94,7 @@ var option = {
         }
 	],
     grid:{
-        top:80,
+        top:120,
         containLabel:true
     },
     xAxis:{
@@ -186,8 +186,9 @@ var option = {
     legend:{
         padding:5,
         margin:10,
-        align:'right',
+        align:'left',
         itemHeight:20,
+        itemWidth: 80,
         borderWidth:0.5,
         borderRadius:5,
         background:"#fff",

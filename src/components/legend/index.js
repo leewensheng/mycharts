@@ -86,7 +86,6 @@ class Legend extends Component {
 			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
 		} = legendOption;
 		animation = animation&&hasInited;
-		console.log(itemHeight)
 		return (
 			<g className="vcharts-legend">
 				{
@@ -206,12 +205,14 @@ class Legend extends Component {
 				if(currentRow.length === 0) {
 					currentRow.push(item);
 				} else {
-					rows.push([]);
+					rows.push([item]);
 					rowIndex++;
+					return width;
 				}
 			} else {
 				currentRow.push(item);
 			}
+			return totalWidth;
 		},0);
 		var rowsWidth = rows.map(function(row,rowIndex){
 			var rowWidth = 0;
@@ -242,7 +243,6 @@ class Legend extends Component {
 		} else {
 			legendY = chartHeight/2 - blockHeight /2;
 		}
-
 		rows.map(function(row,rowIndex){
 			var startX;
 			if(align === 'left') {
@@ -250,7 +250,7 @@ class Legend extends Component {
 			} else if(align === 'center') {
 				startX = chartWidth/2 - rowsWidth[rowIndex]/2;
 			} else if (align === 'right') {
-				startX = chartWidth - rowsWidth;
+				startX = chartWidth - rowsWidth[rowIndex];
 			} else {
 				startX = chartWidth/2 - rowsWidth[rowIndex]/2;
 			}

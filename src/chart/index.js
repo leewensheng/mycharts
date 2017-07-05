@@ -44,9 +44,10 @@ class Core extends Component {
             components.push(dependence);
         };
         return (
-            <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative',background:chart.background}}>
+            <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
                     <defs></defs>
+                    <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={chart.background}/>
                     {
                         components.map(function(name){
                             var Vcomponent = Vcomponents[name];
