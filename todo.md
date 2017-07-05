@@ -1,8 +1,12 @@
 #to do list 
+tooltip  统一point结构
+组件默认值统一混合，zindex,useHTML
+所有select状态和points分离
 折线图配置扁平化,不放到style里
 legend hover状态
-legend边框背景圆角支持，考虑各种对齐方式
-bug 饼图选中配合图例开关，选中状态有问题
+bug 饼图选中配合\
+
+图例开关，选中状态有问题
 bug  坐标轴Y轴数目应当取最大并保持一致;
 bug 饼图key统一用x
 axis支持特殊场景  无series,单一值 
@@ -12,7 +16,6 @@ splitArea,hoverStyle
 3.symbol支持，自定义symbol
 4,formatter，内置一些filter,formatter支持jsx组件
 6.tooltip
-7.legend
 8.stack
 
 animation配置化

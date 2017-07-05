@@ -16,9 +16,6 @@ module.exports = {
         "#546570",
         "#c4ccd3"
     ],
-    title:{
-
-    },
     plotOptions:{
         series:{}
     },

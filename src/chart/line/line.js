@@ -133,6 +133,16 @@ class Linechart extends Component {
         });
         paper.destroy();
     }
+    componentDidMount(){
+        var el = findDOMNode(this);
+        var that = this;
+        setInterval(function(){
+           that.props.chartEmitter.emit('tooltip.showPoint',{
+                name:'test'
+            }); 
+        },1000)
+        
+    }
     componentWillReceiveProps(){
         this.setState({isGridReady:false});
     }

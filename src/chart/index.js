@@ -5,6 +5,7 @@ import charts from './charts'
 import Vcomponents from '../components/index'
 import $ from 'jquery'
 import EventEmitter  from 'events'
+import Tooltip from '../components/tooltip/index'
 class Core extends Component {
     constructor(props){
         super(props);
@@ -44,6 +45,7 @@ class Core extends Component {
         };
         return (
             <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
+                <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} updateType={updateType}/>
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
                     <defs></defs>
                     <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={chart.background}/>
