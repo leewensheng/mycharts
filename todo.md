@@ -1,4 +1,5 @@
 #to do list 
+line,path底层统一，饼图重构
 tooltip  统一point结构
 组件默认值统一混合，zindex,useHTML
 所有select状态和points分离
