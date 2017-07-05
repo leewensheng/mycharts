@@ -197,23 +197,29 @@ class Legend extends Component {
 		} else if(align === 'left') {
 			hFlag = 1;
 		}
-		items.reduce(function(prev,item,index){
-			var width = item.width;
-			var currentRow = rows[rowIndex];
-			var totalWidth = prev + width + itemGap;
-			if(totalWidth > chartWidth) {
-				if(currentRow.length === 0) {
-					currentRow.push(item);
+		if(layout === 'horizontal') {
+			items.reduce(function(prev,item,index){
+				var width = item.width;
+				var currentRow = rows[rowIndex];
+				var totalWidth = prev + width + itemGap;
+				if(totalWidth > chartWidth) {
+					if(currentRow.length === 0) {
+						currentRow.push(item);
+					} else {
+						rows.push([item]);
+						rowIndex++;
+						return width;
+					}
 				} else {
-					rows.push([item]);
-					rowIndex++;
-					return width;
+					currentRow.push(item);
 				}
-			} else {
-				currentRow.push(item);
-			}
-			return totalWidth;
-		},0);
+				return totalWidth;
+			},0);
+		} else {
+			rows = items.map(function(item){
+				return [item];
+			});
+		}
 		var rowsWidth = rows.map(function(row,rowIndex){
 			var rowWidth = 0;
 			row.map(function(item,index){

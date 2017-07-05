@@ -192,7 +192,7 @@ var option = {
         borderWidth:0.5,
         borderRadius:5,
         background:"#fff",
-        layout:'vertical',
+        layout:'horizontal',
         itemGap:10,
         itemStyle:{
             fontSize:12,
