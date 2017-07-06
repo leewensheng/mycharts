@@ -1,9 +1,10 @@
 #to do list 
+通过在配置层引入defs如渐变，填充等，提供高级支持
 line,path底层统一，饼图重构
 tooltip  统一point结构
 组件默认值统一混合，zindex,useHTML
 所有select状态和points分离
-折线图配置扁平化,不放到style里
+line配置扁平化,不放到style里
 legend hover状态
 bug 饼图选中配合\
 

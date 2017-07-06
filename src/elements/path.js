@@ -7,21 +7,21 @@ import {interpolatePath} from 'cad/interpolate'
 class  PathShape extends Component{
     constructor(props){
         super(props);
-        var {path} = props;
-        this.state = {path};
+        var {d} = props;
+        this.state = {d};
     }
     render(){
         var {state,props} = this;
-        var {path} = state;
-        return <path {...props}  d={path.toString()} />
+        var {d} = state;
+        return <path {...props}  d={d.toString()} />
     }
     animate(){
         var {state,props} = this;
         var el = findDOMNode(this);
-        var {animation,path} = props;
+        var {animation,d,onAnimationEnd} = props;
         var oldPath = $(el).attr('d');
         oldPath = new Path(oldPath);
-        var ease = interpolatePath(oldPath,path);
+        var ease = interpolatePath(oldPath,d);
         $(el).stopTransition().transition({
             from:0,
             to:1,
@@ -29,7 +29,10 @@ class  PathShape extends Component{
             ease:'easeOut',
             onUpdate(k){
                 var d = ease(k);
-                $(el).attr('d');
+                $(el).attr('d',d);
+            },
+            callback(){
+                onAnimationEnd&&onAnimationEnd();
             }
         });
     }
@@ -41,14 +44,14 @@ class  PathShape extends Component{
     }
     componentDidUpdate(){
         var {props} = this;
-        var {path} = props;
+        var {d} = props;
         var update = false;
         this.animate();
-        this.setState({path,update})
+        this.setState({d,update})
     }
 }
 PathShape.defaultProps = {
     animation:true,
-    path:null
+    d:''
 }
 module.exports = PathShape;

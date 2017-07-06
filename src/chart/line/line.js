@@ -92,7 +92,7 @@ class Linechart extends Component {
         $(e.target).stopTransition().transition({r:r},400,'elasticOut');
     }
     onLegendChange(msg){
-        if(msg.index == this.props.seriesIndex) {
+        if(msg.seriesIndex == this.props.seriesIndex) {
             this.setState({legend:msg.data});
         }
     }

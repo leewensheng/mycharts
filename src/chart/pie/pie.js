@@ -283,7 +283,7 @@ class  Pie extends Component{
 	}
 	onLegendChange(msg){
 		var {state,props} = this;
-		if(msg.index == this.props.seriesIndex) {
+		if(msg.seriesIndex == this.props.seriesIndex) {
 			state.legend = msg.data
 			var nextState = this.getRenderData(props,state);
 			this.setState(nextState);

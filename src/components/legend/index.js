@@ -16,8 +16,8 @@ class Legend extends Component {
 		var {series,legend} = chartOption;
 		legend = $.extend(true,{},defaultOption,legend);
 		var items = [];
-		series.map(function(serie,index){
-			var type = serie.type;
+		series.map(function(series,index){
+			var type = series.type;
 			var Chart = Vcharts[type];
 			if(!Chart) {
 				return;
@@ -27,23 +27,25 @@ class Legend extends Component {
 			if(!legend) {
 				return;
 			}
-			var showInLegend = serie.showInLegend;
+			var showInLegend = series.showInLegend;
 			if(!legend.multiple) {
 				items.push({
 					x:0,
 					y:0,
-					name:serie.name|| ('series ' + index),
+					name:series.name|| ('series ' + index),
+					color:series.color || chartOption.colors[index%chartOption.colors.length],
 					icon:legend.icon,
 					selected:true,
 					multiple:false,
 					seriesIndex:index
 				})
 			} else {
-				serie.data.map(function(val){
+				series.data.map(function(val,index){
 					items.push({
 						x:0,
 						y:0,
-						name:serie.name||('series ' + index),
+						name:series.name||('series ' + index),
+						color:series.color || chartOption.colors[index%chartOption.colors.length],
 						icon:legend.icon,
 						selected:true,
 						multiple:true,
@@ -96,7 +98,7 @@ class Legend extends Component {
 				{
 					items.map(function(item,index){
 						var Icon = item.icon;
-						var {x,y,width,selected} = item;
+						var {x,y,color,width,selected} = item;
 						var symbolHeight = symbol.height||itemStyle.fontSize;
 						var symbolY =  y + (itemHeight - symbolHeight)/2;
 						var textX = x + symbol.width + symbol.padding;
@@ -111,7 +113,7 @@ class Legend extends Component {
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
 								<Rect animation={animation} fill="transparent" x={x} y={y} width={width} height={itemHeight} stroke="none"/>
-								<Icon animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={selected!==false?'red':'gray'}/>
+								<Icon animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={selected!==false?color:'gray'}/>
 								<Text animation={animation} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)
@@ -160,10 +162,10 @@ class Legend extends Component {
     			groupedItems[seriesIndex].push({selected:selected});
     		}
     	})
-    	for(var index in groupedItems) {
+    	for(let seriesIndex in groupedItems) {
     		chartEmitter.emit('legend',{
-    			index:index,
-    			data:groupedItems[index]
+    			seriesIndex:seriesIndex,
+    			data:groupedItems[seriesIndex]
     		})
     	}
     	chartEmitter.emit('legend.all',multipleItems);

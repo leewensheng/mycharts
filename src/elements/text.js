@@ -62,8 +62,7 @@ Text.defaultProps = {
     x:0,
     y:0,
     style:{
-        fontSize:12,
-        color:"#333"
+        fontSize:12
     }
 }
 module.exports = Text;
