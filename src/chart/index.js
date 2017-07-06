@@ -46,6 +46,7 @@ class Core extends Component {
         return (
             <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
                 <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} updateType={updateType}/>
+                <div>
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
                     <defs></defs>
                     <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={chart.background}/>
@@ -83,14 +84,14 @@ class Core extends Component {
                         })
                     }
                 </svg>
+                </div>
             </div>
         )
     }
     componentDidMount(){
         this.props.chart.vchart = this;
-        //delete this.props.chart;
         var el = findDOMNode(this);
-        $(el).addSVGNamespace();
+        $(el).find('svg').addSVGNamespace();
     }
     componentWillUnmount(){
         this.props.chart.vchart = null;
