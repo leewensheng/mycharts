@@ -83,8 +83,7 @@ class  Pie extends Component{
 		}
 	}
 	animate(){
-		var {width,height,option,series} = this.props;
-		var seriesIndex = series.index;
+		var {width,height,option,series,seriesIndex} = this.props;
 		var sliceOffset = series.sliceOffset;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		var el = findDOMNode(this);

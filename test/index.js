@@ -16,7 +16,9 @@ var option = {
 		background:'#ddd',
 	},
 	series:[
-		{	color:"blue",
+		{	
+            type:'pie',
+            color:"darkred",
 			name:'a pie chart',
 			/*color:'#c23531',*/
 			data:[
@@ -35,7 +37,7 @@ var option = {
 			selectMode:"single",
 			roseType:'radius',//radius false area
 			borderColor:"#fff",
-			borderWidth:0,
+			borderWidth:2,
 			center:[0.2,0.5],
 			dataLabels:{
 				enabled:true,
@@ -205,7 +207,7 @@ document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
     option.xAxis.data.push(3);
-    option.series[3].data.push((100000000).toFixed(0));
+    option.series[4].data.push({name:'haha',value:Math.random()*500});
 	chart.setOption(option)
 
 })
