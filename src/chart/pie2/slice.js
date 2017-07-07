@@ -107,7 +107,7 @@ class  Slice extends Component{
 
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return nextProps.updateType === 'newProps' && nextState.update;
+		return nextProps.updateType !== 'select' && nextState.update;
 	}
 }
 Slice.defaultProps = {
