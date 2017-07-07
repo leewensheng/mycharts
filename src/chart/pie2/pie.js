@@ -194,7 +194,7 @@ class  Pie extends Component{
 		clip.attr("id","pie-clip"+seriesIndex);
 		group.attr("clip-path","url(#pie-clip"+ seriesIndex +")");
 		var path = clip.find("path");
-		$(".pie-connect-line,.vchart-pie-labels").css("display","none");
+		$(el).find('.vcharts-labels').css("display","none");
 		path.transition({
 			from:startAngle,
 			to:endAngle,
@@ -203,7 +203,7 @@ class  Pie extends Component{
 			callback(){
 				clip.remove();
 				group.removeAttr("clip-path");
-				$(".pie-connect-line,.vchart-pie-labels").css("display","");
+				$(el).find('.vcharts-labels').css("display","");
 			},
 			onUpdate:function(val){
 				path.attr("d",shape.getShapePath("sector",{
