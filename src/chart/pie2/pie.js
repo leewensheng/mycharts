@@ -5,7 +5,7 @@ import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper/index'
 import shape from 'cad/shape'
 import Point from 'cad/point'
-
+import mathUtils from 'cad/math'
 import Text from '../../elements/text'
 import ConnectLine from './connect-line'
 
@@ -59,6 +59,91 @@ class  Pie extends Component{
 						/>
 					})			
 				}
+				</g>
+				<g className="vcharts-labels">
+					{
+						points.map((p ,index) => {
+							var textPoint;
+							var hide  = false;
+							var midAngle  = p.midAngle;
+							if(dataLabels.inside) {
+								textPoint = {x:cx,y:cy};
+								hide = true;
+							} else {
+								textPoint = Point(cx,cy).angleMoveTo(midAngle,radius + dataLabels.distance);
+							}
+							var textOption = {
+								fontSize:13,
+								textBaseLine:"middle"
+							};
+							if(dataLabels.inside || dataLabels.distance < 0 ) {
+								textOption.textAlign = "center";
+							} else {
+								textOption.textAlign = (midAngle>-90&&midAngle<90)?"left":"right";
+							}
+							//文本略微偏移
+							var dx = 0;
+							if(textOption.textAlign === "left") {
+								dx = 3;
+							} else if(textOption.textAlign === "right") {
+								dx = -3;
+							}
+							var leadLength = connectLine.leadLength;//水平引线长度,需要考虑超出最大长度
+							//三角形正弦定理 2*sin(A)/a = 1/R;其中A为角,a为对边长,R为外接圆半径;
+							/*var maxleadLength = 3
+							var startPoint = Point(cx,cy).angleMoveTo(midAngle,p.radius);
+							var hline = new Line(startPoint.x,startPoint.y,startPoint.x+5,startPoint.y);
+							var crossPoints = hline.getPointWithCircle(cx,cy,p.radius);*/
+							if(!(dataLabels.inside || dataLabels.distance < 0 )) {
+								var rotate = mathUtils.asin(mathUtils.sin(midAngle)*leadLength/(radius + dataLabels.distance));
+								if(textOption.textAlign === "left") {
+									rotate*= -1;
+								}
+								textPoint.rotate(rotate,cx,cy);
+							};
+							return (
+							<g className="vcharts-pie-labels" key={index}>
+								{
+									dataLabels.enabled
+									&&
+									<Text 
+									animation={option.chart.animation}
+									x={textPoint.x + dx}
+									y={textPoint.y}
+									style={{
+										fontSize:dataLabels.style.fontSize,
+										color:dataLabels.style.color||p.color,
+										display:hide?"none":undefined,
+										pointerEvents:"none",
+										textAlign:textOption.textAlign,
+										textBaseLine:"middle"
+									}}>{p.name}</Text>
+								}
+								{
+									connectLine.enabled && !dataLabels.inside && dataLabels.distance>0
+									&&
+									<ConnectLine
+										animation={option.chart.animation}
+										cx={cx}
+										cy={cy}
+										radius={p.radius}
+										midAngle={p.midAngle}
+										x={textPoint.x}
+										y={textPoint.y}
+										textAlign={textOption.textAlign}
+										updateType={p.updateType}
+										leadLength={connectLine.leadLength}
+										lineStyle={{
+											color:connectLine.lineStyle.color||p.color,
+											width:connectLine.lineStyle.width,
+											dash:connectLine.lineStyle.dash
+										}}
+									 />
+								}
+							</g>
+							)
+						})
+					}
 				</g>
 			</g>
 		)

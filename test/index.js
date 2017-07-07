@@ -43,7 +43,7 @@ var option = {
 				enabled:true,
                 color:"#fff",
 				inside:false,
-				distance:150,
+				distance:50,
 				style:{
 					fontSize:11
 				}
@@ -51,7 +51,7 @@ var option = {
             connectLine:{
                 enabled:true,
                 lineStyle:{
-                    color:"#fff"
+                    color:"#333"
                 }
             }
 		},
@@ -68,7 +68,7 @@ var option = {
             },
             connectLine:{
                 enabled:true,
-                length2:30,
+                leadLength:30,
                 lineStyle:{
                 }
             },
@@ -187,7 +187,7 @@ var option = {
     legend:{
         padding:5,
         margin:10,
-        align:'left',
+        align:'center',
         itemHeight:20,
         borderWidth:0.5,
         borderRadius:5,

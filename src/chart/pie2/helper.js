@@ -39,7 +39,7 @@ export function getRenderData(props){
 	        	startAngle:startAngle,
 	        	endAngle:endAngle,
 	        	midAngle:(startAngle + endAngle)/2,
-	        	label:curData.name,
+	        	name:curData.name,
 	        	x:curData.index,
 	        	y:curData.value,
 	        	percent:percent.toFixed(2)

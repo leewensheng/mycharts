@@ -206,7 +206,7 @@ class Legend extends Component {
 				var width = item.width;
 				var currentRow = rows[rowIndex];
 				var totalWidth = prev + width + itemGap;
-				if(totalWidth > chartWidth) {
+				if(totalWidth > (chartWidth - margin*2 - padding*2)) {
 					if(currentRow.length === 0) {
 						currentRow.push(item);
 					} else {

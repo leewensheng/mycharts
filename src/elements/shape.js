@@ -4,7 +4,7 @@ import $ from 'jquery'
 import Path from 'cad/path'
 import {interpolatePath} from 'cad/interpolate'
 
-class  PathShape extends Component{
+class  Shape extends Component{
     constructor(props){
         super(props);
         var {d} = props;
@@ -50,8 +50,8 @@ class  PathShape extends Component{
         this.setState({d,update})
     }
 }
-PathShape.defaultProps = {
+Shape.defaultProps = {
     animation:true,
     d:''
 }
-module.exports = PathShape;
+module.exports = Shape;

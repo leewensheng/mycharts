@@ -1,4 +1,5 @@
 #to do list 
+getShapePath应该提供原始path接口
 optionsManager 统一管理配置defaultOption,theme,数据分发
 svg outerHTML
 通过在配置层引入defs如渐变，填充等，提供高级支持

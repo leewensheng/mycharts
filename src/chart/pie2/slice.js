@@ -8,7 +8,7 @@ import shape from 'cad/shape'
 import Point from 'cad/point'
 import utils from 'cad/utils'
 import {interpolatePath} from 'cad/interpolate'
-import Path from '../../elements/path'
+import Shape from '../../elements/shape'
 
 //the radius will be more when mouserover
 const HOVER_RADIUS_ADD = 10;
@@ -39,7 +39,7 @@ class  Slice extends Component{
 				innerRadius
 			});
 		return (
-			<Path 
+			<Shape 
 				d={d}
 				fill={color}
 				stroke={borderColor}
@@ -60,7 +60,7 @@ class  Slice extends Component{
 	handleMouseOver(isHover,forceSelected,forceValue){
 		var {props,state} = this;
 		var {selected,cx,cy,startAngle,midAngle,
-			endAngle,radius,innerRadius,sliceOffset} = props;
+			endAngle,radius,innerRadius,color,sliceOffset} = props;
 		if(state.isAnimating) {
 			return;
 		}
@@ -71,6 +71,7 @@ class  Slice extends Component{
 		var d = $el.attr('d');
 		if(isHover) {
 			radius += HOVER_RADIUS_ADD;
+			color = colorHelper.brighten(color,0.1);
 		}
 		if(selected) {
 			var offset = Point(0,0).angleMoveTo(midAngle,sliceOffset);
@@ -80,7 +81,7 @@ class  Slice extends Component{
 		var d2 = shape.getShapePath('sector',cx,cy,{startAngle,endAngle,radius,innerRadius});
 		var pathEase = interpolatePath(d,d2);
 		var during = 400;
-		$el.stopTransition().transition({
+		$el.attr('fill',color).stopTransition().transition({
 			from:0,
 			to:1,
 			ease:forceSelected?'easeOut':'elastic',
