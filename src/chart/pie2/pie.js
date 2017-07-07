@@ -220,8 +220,8 @@ class  Pie extends Component{
 	componentDidMount(){
 		this.animate();
 	}
-	componentWillReceiveProps(nextProps,nextState){
-		var state = getRenderData(nextProps,nextState.showPoints);
+	componentWillReceiveProps(nextProps){
+		var state = getRenderData(nextProps,this.state.showPoints);
 		var selectedPointsMap = this.state.selectedPointsMap;
 		$.extend(selectedPointsMap,getSelectedPointsMap(nextProps));
 		state.selectedPointsMap = selectedPointsMap;
