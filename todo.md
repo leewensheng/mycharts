@@ -1,4 +1,6 @@
 #to do list 
+optionsManager 统一管理配置defaultOption,theme,数据分发
+svg outerHTML
 通过在配置层引入defs如渐变，填充等，提供高级支持
 line,path底层统一，饼图重构
 tooltip  统一point结构
