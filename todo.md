@@ -1,4 +1,5 @@
 #to do list 
+饼图支持图例开关
 getShapePath应该提供原始path接口
 optionsManager 统一管理配置defaultOption,theme,数据分发
 svg outerHTML

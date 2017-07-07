@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import Path from 'cad/path'
 import shape from 'cad/shape'
-import Shape from '../../elements/shape'
+import PathElement from '../../elements/path'
 shape.defineShape("pie_connect_line",function(options){
     var {cx,cy,midAngle,radius,x,y,leadLength,textAlign} = options;
     var path = new Path();
@@ -16,7 +16,7 @@ class  ConnectLine extends Component{
     render(){
         var {cx,cy,radius,midAngle,x,y,leadLength,lineStyle,textAlign} = this.props;
         var d = shape.getShapePath("pie_connect_line",{cx,cy,midAngle,radius,x,y,leadLength,textAlign}).toString();
-        return <Shape d={d} fill="none" stroke={lineStyle.color} strokeWidth={lineStyle.width} />
+        return <PathElement d={d} fill="none" stroke={lineStyle.color} strokeWidth={lineStyle.width} />
     }
 }
 ConnectLine.defaultProps =  {

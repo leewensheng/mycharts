@@ -16,7 +16,7 @@ class Legend extends Component {
 		var {series,legend} = chartOption;
 		legend = $.extend(true,{},defaultOption,legend);
 		var items = [];
-		series.map(function(series,index){
+		series.map(function(series,seriesIndex){
 			var type = series.type;
 			var Chart = Vcharts[type];
 			if(!Chart) {
@@ -32,24 +32,25 @@ class Legend extends Component {
 				items.push({
 					x:0,
 					y:0,
-					name:series.name|| ('series ' + index),
-					color:series.color || chartOption.colors[index%chartOption.colors.length],
+					name:series.name|| ('series ' + seriesIndex),
+					color:series.color || chartOption.colors[seriesIndex%chartOption.colors.length],
 					icon:legend.icon,
 					selected:true,
 					multiple:false,
-					seriesIndex:index
+					seriesIndex:seriesIndex
 				})
 			} else {
-				series.data.map(function(val,index){
+				series.data.map(function(val,subIndex){
 					items.push({
 						x:0,
 						y:0,
-						name:series.name||('series ' + index),
-						color:series.color || chartOption.colors[index%chartOption.colors.length],
+						name:series.name||('series ' + subIndex),
+						color:series.color || chartOption.colors[subIndex%chartOption.colors.length],
 						icon:legend.icon,
 						selected:true,
 						multiple:true,
-						seriesIndex:index
+						index:subIndex,
+						seriesIndex:seriesIndex
 					})
 				});
 			}
@@ -127,8 +128,8 @@ class Legend extends Component {
 		var {items} = state;
 		var item = items[index];
 		item.selected = item.selected===false?true:false;
-		this.sendLegendData();
 		this.setState({items});
+		this.sendLegendData();
 	}
 	handleMouseEvent(index,isHover){
 		var {props,state} = this;
@@ -150,7 +151,7 @@ class Legend extends Component {
     	var groupedItems = {};
  		var multipleItems = [];
     	items.map(function(item,index){
-    		var {seriesIndex,selected,multiple} = item;
+    		var {seriesIndex,selected,multiple,index} = item;
     		if(!multiple) {
     			groupedItems[seriesIndex] = {selected:selected};
     			multipleItems.push({
@@ -158,8 +159,8 @@ class Legend extends Component {
     				selected:selected
     			});
     		} else {
-    			groupedItems[seriesIndex] = groupedItems[seriesIndex] || [];
-    			groupedItems[seriesIndex].push({selected:selected});
+    			groupedItems[seriesIndex] = groupedItems[seriesIndex] || {};
+    			groupedItems[seriesIndex][index] = selected;
     		}
     	})
     	for(let seriesIndex in groupedItems) {

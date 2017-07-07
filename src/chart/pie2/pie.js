@@ -31,13 +31,14 @@ class  Pie extends Component{
 		var {width,height,series,option} = props;
 		var {points} = state;
 		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
-		var {cx,cy,radius,innerRadius,selectedPointsMap,updateType} = this.state;
+		var {cx,cy,radius,innerRadius,selectedPointsMap,showPoints,updateType} = this.state;
 		var onSlice = this.onSlice;
 		return (
 			<g className="vcharts-series vcharts-pie-series">
 				<g className="vcharts-points vcharts-pie-points">
 				{
 				points.map(function(point,index){
+					if(showPoints&&!showPoints[index]) return;
 					return <Slice
 							key={index}
 							animation={option.chart.animation}
@@ -63,6 +64,8 @@ class  Pie extends Component{
 				<g className="vcharts-labels">
 					{
 						points.map((p ,index) => {
+							if(showPoints&&!showPoints[index]) return;
+
 							var textPoint;
 							var hide  = false;
 							var midAngle  = p.midAngle;
@@ -164,7 +167,11 @@ class  Pie extends Component{
 	onLegendChange(msg){
 		var {state,props} = this;
 		if(msg.seriesIndex == this.props.seriesIndex) {
-			
+			var showPoints = msg.data;
+			var nextState = getRenderData(this.props,showPoints);
+			nextState.showPoints = showPoints;
+			nextState.updateType = 'legendChange';
+			this.setState(nextState);
 		}
 	}
 	animate(){
@@ -176,7 +183,9 @@ class  Pie extends Component{
 		var paper = new Paper(svg);
 		var group = $(findDOMNode(this));
 		var clip = paper.clipPath(function(){
-			paper.addShape("sector",cx,cy,{
+			paper.addShape("sector",{
+							cx,
+							cy,
 							radius:radius + sliceOffset,
 							startAngle:startAngle,
 							endAngle:startAngle + 1e-6
@@ -197,7 +206,9 @@ class  Pie extends Component{
 				$(".pie-connect-line,.vchart-pie-labels").css("display","");
 			},
 			onUpdate:function(val){
-				path.attr("d",shape.getShapePath("sector",cx,cy,{
+				path.attr("d",shape.getShapePath("sector",{
+					cx,
+					cy,
 					startAngle:startAngle,
 					endAngle:val,
 					radius:radius + sliceOffset
@@ -209,13 +220,13 @@ class  Pie extends Component{
 	componentDidMount(){
 		this.animate();
 	}
-	componentWillReceiveProps(nextProps){
-		var nextState = getRenderData(nextProps);
+	componentWillReceiveProps(nextProps,nextState){
+		var state = getRenderData(nextProps,nextState.showPoints);
 		var selectedPointsMap = this.state.selectedPointsMap;
 		$.extend(selectedPointsMap,getSelectedPointsMap(nextProps));
-		nextState.selectedPointsMap = selectedPointsMap;
-		nextState.updateType = 'newProps';
-		this.setState(nextState);
+		state.selectedPointsMap = selectedPointsMap;
+		state.updateType = 'newProps';
+		this.setState(state);
 	}
 	componentWillUnmount(){
 		var {props,state} = this;

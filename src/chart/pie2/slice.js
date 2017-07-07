@@ -8,7 +8,7 @@ import shape from 'cad/shape'
 import Point from 'cad/point'
 import utils from 'cad/utils'
 import {interpolatePath} from 'cad/interpolate'
-import Shape from '../../elements/shape'
+import PathElement from '../../elements/path'
 
 //the radius will be more when mouserover
 const HOVER_RADIUS_ADD = 10;
@@ -32,19 +32,22 @@ class  Slice extends Component{
 			cx += offset.x;
 			cy += offset.y;
 		}
-		var d = shape.getShapePath("sector",cx,cy,{
+		var d = shape.getShapePath("sector" , {
+				cx,
+				cy,
 				startAngle,
 				endAngle,
 				radius,
 				innerRadius
 			});
 		return (
-			<Shape 
+			<PathElement 
 				d={d}
 				fill={color}
 				stroke={borderColor}
 				strokeWidth={borderWidth}
 				onClick={this.props.onSlice}
+				pathShape={{name:'sector',config:{cx,cy,startAngle,endAngle,radius,innerRadius}}}
 				onAnimationEnd={this.onAnimationEnd.bind(this)}
 				onMouseOver={this.handleMouseOver.bind(this,true,false)}
 				onMouseOut={this.handleMouseOver.bind(this,false,false)}
@@ -78,7 +81,7 @@ class  Slice extends Component{
 			cx += offset.x;
 			cy += offset.y;
 		}
-		var d2 = shape.getShapePath('sector',cx,cy,{startAngle,endAngle,radius,innerRadius});
+		var d2 = shape.getShapePath('sector',{cx,cy,startAngle,endAngle,radius,innerRadius});
 		var pathEase = interpolatePath(d,d2);
 		var during = 400;
 		$el.attr('fill',color).stopTransition().transition({
@@ -96,17 +99,18 @@ class  Slice extends Component{
 		this.handleMouseOver(this.state.isHover,true,selected);
 	}
 	componentWillReceiveProps(nextProps){
-		if(nextProps.updateType === 'newProps') {
-			this.setState({update:true,isAnimating:true});
-		} else if(nextProps.updateType === 'select') {
+	 	if(nextProps.updateType === 'select') {
 			if(this.props.selected != nextProps.selected) {
 				this.offset(nextProps.selected);
 			}
 			this.setState({update:false});
+		} else {
+			this.setState({update:true,isAnimating:true});
 		}
+
 	}
 	shouldComponentUpdate(nextProps,nextState){
-		return nextState.update?true:false;
+		return nextProps.updateType === 'newProps'|| nextState.update;
 	}
 }
 Slice.defaultProps = {

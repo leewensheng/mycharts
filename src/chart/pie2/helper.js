@@ -1,7 +1,7 @@
 import mathUtils from 'cad/math'
 import colorHelper from 'cad/color/index'
 
-export function getRenderData(props){
+export function getRenderData(props,showPoints){
 		var {series,width,height,option} = props;
 		var colors = option.colors;
 		var {data,color} = series;
@@ -9,6 +9,9 @@ export function getRenderData(props){
 			colors = series.colors;
 		}
 		var arr_value = data.map(function(val,index){
+			if(showPoints&&!showPoints[index]) {
+				return 0;
+			}
 			return val.value;
 		})
 		var sum = mathUtils.sum(arr_value);
@@ -27,8 +30,12 @@ export function getRenderData(props){
 	    var totalAngle = endAngle - startAngle;
 	    var roseType = series.roseType;
 	    data.reduce(function(startAngle,curData,index){
-	    	var percent = curData.value/sum
-	    	var endAngle;
+	    	var percent,endAngle;
+	    	if(showPoints&&!showPoints[index]) {
+	    		percent = 0;
+	    	} else {
+	    		percent = curData.value/sum;
+	    	}
 	        if(roseType !== "area") {
 	       		endAngle = startAngle + percent*totalAngle;
 	        } else {
