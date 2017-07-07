@@ -1,9 +1,9 @@
 #to do list 
-饼图支持图例开关
+饼图单个时的移动端抖动问题(hover事件click触突)
 getShapePath应该提供原始path接口
 optionsManager 统一管理配置defaultOption,theme,数据分发
 svg outerHTML
-通过在配置层引入defs如渐变，填充等，提供高级支持
+通过在配置层引入defs如渐变，填充、滤镜等，提供高级支持
 line,path底层统一，饼图重构
 tooltip  统一point结构
 组件默认值统一混合，zindex,useHTML
