@@ -64,6 +64,9 @@ class  Slice extends Component{
 		var {props,state} = this;
 		var {selected,cx,cy,startAngle,midAngle,
 			endAngle,radius,innerRadius,color,sliceOffset} = props;
+		if(state.isAnimating) {
+			return;
+		}
 		if(forceSelected) {
 			selected = forceValue;
 		}
