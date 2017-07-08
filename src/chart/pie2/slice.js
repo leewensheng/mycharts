@@ -7,7 +7,7 @@ import colorHelper from 'cad/color/index'
 import shape from 'cad/shape'
 import Point from 'cad/point'
 import utils from 'cad/utils'
-import {interpolatePath} from 'cad/interpolate'
+import {interpolatePath,interpolateTransform} from 'cad/interpolate'
 import PathElement from '../../elements/path'
 
 //the radius will be more when mouserover
@@ -27,10 +27,11 @@ class  Slice extends Component{
 		var {color,borderColor,borderWidth} = props;
 		var {isHover} = state
 		var that = this;
+		var offsetX = 0, offsetY = 0;
 		if(selected) {
 			var offset = Point(0,0).angleMoveTo(midAngle,sliceOffset);
-			cx += offset.x;
-			cy += offset.y;
+			offsetX = offset.x;
+			offsetY = offset.y;
 		}
 		var d = shape.getShapePath("sector" , {
 				cx,
@@ -46,6 +47,7 @@ class  Slice extends Component{
 				fill={color}
 				stroke={borderColor}
 				strokeWidth={borderWidth}
+				transform={'translate('+offsetX + ',' + offsetY + ')'}
 				onClick={this.props.onSlice}
 				pathShape={{name:'sector',config:{cx,cy,startAngle,endAngle,radius,innerRadius}}}
 				onAnimationEnd={this.onAnimationEnd.bind(this)}
@@ -76,14 +78,16 @@ class  Slice extends Component{
 			radius += HOVER_RADIUS_ADD;
 			color = colorHelper.brighten(color,0.1);
 		}
+		var transform = $el.attr('transform');
+		var offsetX = 0, offsetY = 0;
 		if(selected) {
 			var offset = Point(0,0).angleMoveTo(midAngle,sliceOffset);
-			cx += offset.x;
-			cy += offset.y;
+			offsetX = offset.x;
+			offsetY = offset.y;
 		}
 		var d2 = shape.getShapePath('sector',{cx,cy,startAngle,endAngle,radius,innerRadius});
 		var pathEase = interpolatePath(d,d2);
-		var during = 400;
+		var transformEase = interpolateTransform(transform,'translate('+offsetX+ ',' + offsetY + ')');
 		$el.attr('fill',color).stopTransition().transition({
 			from:0,
 			to:1,
@@ -91,6 +95,7 @@ class  Slice extends Component{
 			during:400,
 			onUpdate(k){
 				$el.attr('d',pathEase(k));
+				$el.attr('transform',transformEase(k));
 			}
 		});
 		this.setState({isHover:isHover,update:false});
