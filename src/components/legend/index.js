@@ -27,7 +27,9 @@ class Legend extends Component {
 			if(!legend) {
 				return;
 			}
-			var showInLegend = series.showInLegend;
+			if(series.showInLegend===false) {
+				return;
+			}
 			if(!legend.multiple) {
 				items.push({
 					x:0,
@@ -289,16 +291,6 @@ class Legend extends Component {
     }
     componentDidMount(){
     	this.alignItems();
-    	this.test();
-    }
-    test(){
-    	setTimeout(()=>{
-    		this.props.chartEmitter.emit('legend',{
-    			seriesIndex:1,
-    			data:[Math.random()>0.5,Math.random()>0.5,true]
-    		});
-    		this.test();
-    	},300)
     }
     componentWillReceiveProps(nextProps){
 		var state = this.state;

@@ -28,11 +28,12 @@ class  Slice extends Component{
 		if(isHover) {
 			radius += HOVER_RADIUS_ADD;
 		}
-		var d = shape.getShapePath("sector",cx,cy,{
-				startAngle:startAngle,
-				endAngle:endAngle,
-				radius:radius,
-				innerRadius:innerRadius
+		var d = shape.getShapePath("sector",{
+				cx,cy,
+				startAngle,
+				endAngle,
+				radius,
+				innerRadius
 			});
 		return (
 			<path 
@@ -96,7 +97,7 @@ class  Slice extends Component{
 			during:400,
 			ease:'elasticOut',
 			onUpdate(val){
-				var path = shape.getShapePath("sector",cx,cy,{startAngle:startAngle,endAngle:endAngle,radius:val,innerRadius:innerRadius})
+				var path = shape.getShapePath("sector",{cx,cy,startAngle,endAngle,radius:val,innerRadius})
 				$(el).attr("d",path);
 			}
 		})
@@ -155,7 +156,8 @@ class  Slice extends Component{
 		function onUpdate(tick){
 			var val = interpolateFunc(tick);
 			var {cx,cy,startAngle,endAngle,radius,innerRadius,sliceOffset} = val;
-			var path = shape.getShapePath("sector",cx,cy,{
+			var path = shape.getShapePath("sector",{
+				cx,cy,
 				startAngle:startAngle,
 				endAngle:endAngle,
 				radius:isHover?radius+ HOVER_RADIUS_ADD:radius,

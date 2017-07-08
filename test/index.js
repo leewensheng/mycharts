@@ -206,8 +206,13 @@ console.log('total-time:'+ (t2-t1)+'ms');
 document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
-    option.xAxis.data.push(3);
-    option.series[4].data.push({name:'haha',value:Math.random()*500});
-	chart.setOption(option)
-
+    option.series[1].showInLegend = false;
+    option.series[1].data.push({name:'haha',value:Math.random()*50});
+    chart.setOption(option)
 })
+var count = 0;
+setInterval(function(){
+    count++;
+    document.title = count;
+    btn.click();
+},300)

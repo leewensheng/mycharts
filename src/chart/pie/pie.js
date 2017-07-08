@@ -299,14 +299,16 @@ class  Pie extends Component{
 		var paper = new Paper(svg);
 		var group = $(findDOMNode(this));
 		var clip = paper.clipPath(function(){
-			paper.addShape("sector",cx,cy,{
+			paper.addShape("sector",{
+							cx,cy,
 							radius:radius + sliceOffset,
 							startAngle:startAngle,
 							endAngle:startAngle + 1e-6
 						});
 		});
-		clip.attr("id","pie-clip"+seriesIndex);
-		group.attr("clip-path","url(#pie-clip"+ seriesIndex +")");
+		var id = Math.random();
+		clip.attr("id",id);
+		group.attr("clip-path","url(#"+ id +")");
 		var path = clip.find("path");
 		$(".pie-connect-line,.vchart-pie-labels").css("display","none");
 		path.transition({
@@ -320,7 +322,8 @@ class  Pie extends Component{
 				$(".pie-connect-line,.vchart-pie-labels").css("display","");
 			},
 			onUpdate:function(val){
-				path.attr("d",shape.getShapePath("sector",cx,cy,{
+				path.attr("d",shape.getShapePath("sector",{
+					cx,cy,
 					startAngle:startAngle,
 					endAngle:val,
 					radius:radius + sliceOffset
