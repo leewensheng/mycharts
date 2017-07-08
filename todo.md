@@ -1,5 +1,5 @@
 #to do list 
-饼图单个时的移动端抖动和崩溃问题(hover事件click触突)
+connectLine应采用shape动画
 饼图支持百分比center,radius
 getShapePath应该提供原始path接口
 optionsManager 统一管理配置defaultOption,theme,数据分发

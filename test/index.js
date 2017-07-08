@@ -68,7 +68,7 @@ var option = {
             },
             connectLine:{
                 enabled:true,
-                leadLength:30,
+                leadLength:10,
                 lineStyle:{
                 }
             },

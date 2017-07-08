@@ -16,7 +16,7 @@ class  ConnectLine extends Component{
     render(){
         var {cx,cy,radius,midAngle,x,y,leadLength,lineStyle,textAlign} = this.props;
         var d = shape.getShapePath("pie_connect_line",{cx,cy,midAngle,radius,x,y,leadLength,textAlign}).toString();
-        return <PathElement d={d} fill="none" stroke={lineStyle.color} strokeWidth={lineStyle.width} />
+        return <PathElement d={d} fill="none" pathShape={{name:'pie_connect_line',config:{cx,cy,midAngle,radius,x,y,leadLength,textAlign}}} stroke={lineStyle.color} strokeWidth={lineStyle.width} />
     }
 }
 ConnectLine.defaultProps =  {

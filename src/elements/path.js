@@ -67,6 +67,9 @@ class  PathElement extends Component{
         this.animate(prevProps);
         this.setState({d,update})
     }
+    componentWillUnmount(){
+        $(findDOMNode(this)).stopTransition();
+    }
 }
 PathElement.defaultProps = {
     animation:true,
