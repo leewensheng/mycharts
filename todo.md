@@ -1,5 +1,6 @@
 #to do list 
 connectLine应采用shape动画
+legend支持内部左对齐排列即使在居中时也是这样
 饼图支持百分比center,radius
 getShapePath应该提供原始path接口
 optionsManager 统一管理配置defaultOption,theme,数据分发

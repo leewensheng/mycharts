@@ -40,7 +40,7 @@ class  Slice extends Component{
 				endAngle,
 				radius,
 				innerRadius
-			});
+			},true);
 		return (
 			<PathElement 
 				d={d}
@@ -85,7 +85,7 @@ class  Slice extends Component{
 			offsetX = offset.x;
 			offsetY = offset.y;
 		}
-		var d2 = shape.getShapePath('sector',{cx,cy,startAngle,endAngle,radius,innerRadius});
+		var d2 = shape.getShapePath('sector',{cx,cy,startAngle,endAngle,radius,innerRadius},true);
 		var pathEase = interpolatePath(d,d2);
 		var transformEase = interpolateTransform(transform,'translate('+offsetX+ ',' + offsetY + ')');
 		$el.attr('fill',color).stopTransition().transition({
@@ -110,7 +110,7 @@ class  Slice extends Component{
 			}
 			this.setState({update:false});
 		} else {
-			this.setState({update:true,isAnimating:true});
+			this.setState({update:true,isAnimating:nextProps.animation});
 		}
 
 	}
