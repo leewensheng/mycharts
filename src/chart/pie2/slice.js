@@ -25,7 +25,7 @@ class  Slice extends Component{
 		var {props,state} = this;
 		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset} = props;
 		var {color,borderColor,borderWidth} = props;
-		var {isHover} = state
+		var {isHover,isAnimating} = state
 		var that = this;
 		var offsetX = 0, offsetY = 0;
 		if(selected) {
@@ -67,6 +67,7 @@ class  Slice extends Component{
 		var {selected,cx,cy,startAngle,midAngle,
 			endAngle,radius,innerRadius,color,sliceOffset} = props;
 		if(state.isAnimating) {
+			this.setState({isHover:isHover})
 			return;
 		}
 		if(forceSelected) {

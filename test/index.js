@@ -216,5 +216,5 @@ setInterval(function(){
     count++;
     if(count > 500) return;
     btn.text(count);
-    btn.click();
+    //btn.click();
 },300)
