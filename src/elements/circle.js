@@ -14,16 +14,20 @@ class  Circle extends Component{
         var {style} = props;
         return <circle {...props} cx={cx} cy={cy} r={r} />
     }
-    animate(){
+    animate(prevProps){
         var {state,props} = this;
         var el = findDOMNode(this);
         var {animation,cx,cy,r} = props;
-        if(animation) {
+        var attrs = ['cx','cy','r'];
+        var changed = attrs.some(function(attr){
+            return props[attr]!==prevProps[attr];
+        });
+        if(animation&&changed) {
             $(el).stopTransition().transition({
                 cx:cx,
                 cy:cy,
                 r:r
-            },400,'easeout');
+            },400,'easeOut');
         } else {
             $(el).stopTransition().attr({cx,cy,r});
         }
@@ -34,11 +38,11 @@ class  Circle extends Component{
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;
     }
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
         var {props} = this;
         var {cx,cy,r} = props;
         var update = false;
-        this.animate();
+        this.animate(prevProps);
         this.setState({cx,cy,r,update})
     }
 }

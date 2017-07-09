@@ -291,6 +291,16 @@ class Legend extends Component {
     }
     componentDidMount(){
     	this.alignItems();
+    	//this.test();
+    }
+    test(){
+    	var that = this;
+    	setInterval(function(){
+    		that.props.chartEmitter.emit('legend',{
+    			seriesIndex:1,
+    			data:[Math.random>0.3,Math.random()>0.4,Math.random()>0.25,true]
+    		})
+    	},300)
     }
     componentWillReceiveProps(nextProps){
 		var state = this.state;

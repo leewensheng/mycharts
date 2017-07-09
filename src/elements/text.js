@@ -31,6 +31,9 @@ class  Text extends Component{
         var {state,props} = this;
         var el = findDOMNode(this);
         var {animation,x,y} = props;
+        if(x === prevProps.x && y === prevProps.y) {
+            return;
+        }
         if(animation&&prevProps.animation) {
             $(el).stopTransition().transition({
                 x:x,

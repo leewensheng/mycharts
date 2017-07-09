@@ -56,9 +56,9 @@ class  Slice extends Component{
 			/>
 		)
 	}
-	onAnimationEnd(){
+	onAnimationEnd(isAnimating){
 		this.setState({
-			isAnimating:false,
+			isAnimating:isAnimating,
 			update:false
 		})
 	}
@@ -110,7 +110,7 @@ class  Slice extends Component{
 			}
 			this.setState({update:false});
 		} else {
-			this.setState({update:true,isAnimating:nextProps.animation});
+			this.setState({update:true});
 		}
 
 	}

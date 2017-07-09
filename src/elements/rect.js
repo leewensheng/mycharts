@@ -12,13 +12,17 @@ class  Rect extends Component{
         var {x,y,width,height} = this.state;
         return <rect {...this.props} x={x} y={y} width={Math.abs(width)} height={Math.abs(height)} />
     }
-    animate(){
+    animate(prevProps){
         var {state,props} = this;
         var {animation,x,y,width,height} = props;
         width = Math.abs(width);
         height = Math.abs(height);
         var el = findDOMNode(this);
-        if(animation) {
+        var attrs = ['x','y','width','height'];
+        var changed = attrs.some(function(attr){
+            return props[attr] !== prevProps[attr];
+        });
+        if(animation&&changed) {
             $(el).stopTransition().transition({x,y,width,height},400,'easeout');        
         } else {
             $(el).stopTransition().attr({x,y,width,height});        
@@ -30,11 +34,11 @@ class  Rect extends Component{
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;
     }
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
         var {props} = this;
         var {x,y,width,height} = props;
         var update = false;
-        this.animate();
+        this.animate(prevProps);
         this.setState({x,y,width,height,update});
     }
 }

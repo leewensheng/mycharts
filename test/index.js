@@ -1,3 +1,4 @@
+
 import vchart from '../src/index.js'
 import $ from 'jquery'
 var el = document.getElementById("root");
@@ -213,6 +214,7 @@ var btn = $("<button>test2</button>").appendTo("body")
 var count = 0;
 setInterval(function(){
     count++;
-    document.title = count;
+    if(count > 500) return;
+    btn.text(count);
     btn.click();
 },300)

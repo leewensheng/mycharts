@@ -18,7 +18,11 @@ class  PathElement extends Component{
     animate(prevProps){
         var {state,props} = this;
         var el = findDOMNode(this);
-        var {animation,d,pathShape,onAnimationEnd} = props;
+        var {animation,d,pathShape,onAnimationChange} = props;
+        if(d.toString()=== prevProps.d.toString()) {
+            return;
+        }
+        onAnimationChange&&onAnimationChange(true)
         if(pathShape) {
             var prevConfig = prevProps.pathShape.config;
             var configInterpolate = interpolateObject(prevConfig,pathShape.config);
@@ -32,7 +36,7 @@ class  PathElement extends Component{
                     $(el).attr('d',d);
                 },
                 callback(){
-                    onAnimationEnd&&onAnimationEnd();
+                    onAnimationChange&&onAnimationChange(false);
                 }
             })
         } else {
@@ -49,7 +53,7 @@ class  PathElement extends Component{
                     $(el).attr('d',d);
                 },
                 callback(){
-                    onAnimationEnd&&onAnimationEnd();
+                    onAnimationChange&&onAnimationChange(false);
                 }
             });
         }

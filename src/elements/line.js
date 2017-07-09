@@ -2,42 +2,24 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
 import browser from 'cad/browser'
+import PathElement from './path'
+import Path from 'cad/path'
 //todo 多行支持tspan
 class  Line extends Component{
     constructor(props) {
         super(props);
-        var {x1,y1,x2,y2} = props;
-        this.state =  {x1,y1,x2,y2};
     }
     render(){
+        var {props} = this;
         var style = this.props.style||{color:"#333",width:1,type:'solid'};
         var className = this.props.className;
-        var {x1,y1,x2,y2} = this.state;
+        var {x1,y1,x2,y2} = this.props;
+        var d = new Path().M(x1,y1).L(x2,y2);
         var transform = "";
         if(browser.msie) {
             transform = 'translate(0.5,0.5)';
         }
-        return <line  transform={transform} style={{shapeRendering:"optimizeSpeed"}} x1={x1} y1={y1} x2={x2} y2={y2} stroke={style.color} fill="none" strokeWidth={style.width}/> 
-    }
-    animate(nextProps){
-        var el = findDOMNode(this);
-        var style = nextProps.style ||{};
-        var {animation,x1,y1,x2,y2} = nextProps;
-        $(el).attr('stroke',style.color).attr('stroke-width',style.width);
-        if(animation) {
-            $(el).stopTransition().transition({x1,y1,x2,y2},400,'easeout');        
-        } else {
-            $(el).stopTransition().attr({x1,y1,x2,y2})
-        }
-    }
-    componentWillReceiveProps(nextProps){
-        if(nextProps.update === false) {
-            return false;
-        }
-        this.animate(nextProps);
-    }
-    shouldComponentUpdate(nextProps,nextState){
-        return false;
+        return <PathElement  transform={transform} style={{shapeRendering:"optimizeSpeed"}} d={d} stroke={style.color} fill="none" strokeWidth={style.width}/> 
     }
 }
 Line.defaultProps = 

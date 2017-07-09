@@ -1,4 +1,9 @@
 #to do list 
+动画性能优化，如果前后没有变化，不动画
+rect line统统用path接口实现
+sector性能优化
+pie2 slice移动端崩溃优化
+animation优化，数量过多时关闭animation
 connectLine应采用shape动画
 legend支持内部左对齐排列即使在居中时也是这样
 饼图支持百分比center,radius
