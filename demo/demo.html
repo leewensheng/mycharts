@@ -16,6 +16,13 @@
 	</div>
 	<button class="btn-test" onclick="refresh()">refresh</button>
 <script>
+var data = [];
+for(var i = 0; i < 500; i++) {
+    data.push({
+        name:'series'+i,
+        value:Math.random()*100
+    })
+}
 var 
 option = {
 	backgroundColor:"gray",
@@ -33,13 +40,10 @@ option = {
             type: 'pie',
             radius : '55%',
             center: ['50%', '60%'],
-            data:[
-                {value:335, name:'直接访问'},
-                {value:310, name:'邮件营销'},
-                {value:234, name:'联盟广告'},
-                {value:135, name:'视频广告'},
-                {value:1548, name:'搜索引擎'}
-            ],
+            data:data,
+            labelLine:{
+                show:false,
+            },
             itemStyle: {
                 emphasis: {
                     shadowBlur: 10,
@@ -53,9 +57,13 @@ option = {
 var chart = echarts.init(document.querySelector("#root"));
 chart.setOption(option);
 function refresh(){
-	option.series[0].data.push({value:335,name:'test'});
+	option.series[0].data.push({value:Math.random()*100,name:'test'});
 	chart.setOption(option)
 }
+
+window.addEventListener('resize',function(){
+    chart.resize();
+})
 </script>
 </body>
 </html>

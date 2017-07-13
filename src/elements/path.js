@@ -22,6 +22,10 @@ class  PathElement extends Component{
         if(d.toString()=== prevProps.d.toString()) {
             return;
         }
+        if(!(prevProps.animation&&animation)){
+            $(el).attr('d',d.toString());
+            return;
+        }
         onAnimationChange&&onAnimationChange(true)
         if(pathShape) {
             var prevConfig = prevProps.pathShape.config;

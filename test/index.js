@@ -154,7 +154,7 @@ var option = {
         },
         gridLine:{
             lineStyle:{
-                color:'red'
+                color:'#333'
             }
         }
     },
@@ -162,7 +162,7 @@ var option = {
         {
             gridLine:{
                 lineStyle:{
-                    color:'red'
+                    color:'#333'
                 }
             }
         },
@@ -188,8 +188,9 @@ var option = {
     legend:{
         padding:5,
         margin:10,
-        align:'center',
+        align:'right',
         itemHeight:20,
+        itemWidth:90,
         borderWidth:0.5,
         borderRadius:5,
         background:"#fff",
@@ -208,13 +209,6 @@ document.title = t2 - t1 ;
 var btn = $("<button>test2</button>").appendTo("body")
 .on("click",function(){
     option.series[1].showInLegend = false;
-    option.series[1].data.push({name:'haha',value:Math.random()*50});
+    option.series[1].data.push({name:'haha',value:Math.random()*100+50});
     chart.setOption(option)
 })
-var count = 0;
-setInterval(function(){
-    count++;
-    if(count > 500) return;
-    btn.text(count);
-    //btn.click();
-},300)
