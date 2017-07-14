@@ -30,11 +30,11 @@ class  Pie extends Component{
 		var {props,state} = this;
 		var {width,height,series,option} = props;
 		var {points} = state;
-		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = series;
+		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset,visible} = series;
 		var {cx,cy,radius,innerRadius,selectedPointsMap,showPoints,updateType} = this.state;
 		var onSlice = this.onSlice;
 		return (
-			<g className="vcharts-series vcharts-pie-series">
+			<g className="vcharts-series vcharts-pie-series" style={{display:visible?'':'none'}}>
 				<g className="vcharts-points vcharts-pie-points">
 				{
 				points.map(function(point,index){

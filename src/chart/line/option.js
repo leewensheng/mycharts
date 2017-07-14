@@ -23,6 +23,6 @@ module.exports =
         offset:[0,0],
     },
     showInLegend:true,
-    selected:true
+    visible:true
 }
     

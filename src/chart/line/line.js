@@ -18,16 +18,16 @@ class Linechart extends Component {
         props.chartEmitter.on('legend.hoverChange',this.onLegendHover);
         this.state = {
             hasInited:false,
-            isGridReady:false
+            isGridReady:false,
+            visible:props.series.visible
         };
     }
     render(){
         var that = this;
-        var props = this.props;
-        var state = this.state;
+        var {props,state} = this;
         var {width,height,series,option,seriesIndex} = props;
         var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = series;
-        var {isGridReady,grid,legend,hasInited} = this.state;
+        var {isGridReady,grid,legend,hasInited,visible} = this.state;
         if(!isGridReady) {
             return <g></g>;
         }
@@ -44,7 +44,7 @@ class Linechart extends Component {
             points.push({x,y});
         });
         return (
-            <g className="vcharts-series vcharts-line-series" style={{display:legend&&legend.selected===false?'none':''}}>
+            <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
                 <Polyline className="vcharts-series-polyline" points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
@@ -93,7 +93,7 @@ class Linechart extends Component {
     }
     onLegendChange(msg){
         if(msg.seriesIndex == this.props.seriesIndex) {
-            this.setState({legend:msg.data});
+            this.setState({visible:msg.data});
         }
     }
     onGridChange(grid){

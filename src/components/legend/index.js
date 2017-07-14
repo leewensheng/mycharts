@@ -37,19 +37,19 @@ class Legend extends Component {
 					name:series.name|| ('series ' + seriesIndex),
 					color:series.color || chartOption.colors[seriesIndex%chartOption.colors.length],
 					icon:legend.icon,
-					selected:true,
+					selected:series.visible,
 					multiple:false,
 					seriesIndex:seriesIndex
 				})
 			} else {
-				series.data.map(function(val,subIndex){
+				series.data.map(function(point,subIndex){
 					items.push({
 						x:0,
 						y:0,
 						name:series.name||('series ' + subIndex),
 						color:series.color || chartOption.colors[subIndex%chartOption.colors.length],
 						icon:legend.icon,
-						selected:true,
+						selected:(typeof point.visible!=='undefined' && !point.visible)?false:true,
 						multiple:true,
 						index:subIndex,
 						seriesIndex:seriesIndex
