@@ -20,7 +20,10 @@ export function getRenderData(props,showPoints){
 			return val.value;
 		})
 		var sum = mathUtils.sum(arr_value);
-		var max_num = mathUtils.max(arr_value);
+		if(sum === 0) {
+			sum = 1e-6;
+		}
+		var max_num = mathUtils.max(arr_value)||1e-6;
 		var min_num = mathUtils.min(arr_value);
 		var mean_num = mathUtils.mean(arr_value);
 	    var cx = series.center[0]*width;
