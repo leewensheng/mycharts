@@ -20,9 +20,9 @@ module.exports =
 		leadLength:20,
 		lineColor:'',
 		lineWidth:1,
-		lineDash:'',
-		style:{
-			
+		lineDash:false,
+		lineStyle:{
+
 		}
 	},
 	roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同

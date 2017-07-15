@@ -23,7 +23,7 @@ var option = {
 			name:'a pie chart',
 			/*color:'#c23531',*/
 			data:[
-                {value:335, name:'直接访问'},
+                {value:335, name:'直接访问',visible:0},
                 {value:310, name:'邮件营销'},
                 {value:274, name:'联盟广告'},
                 {value:235, name:'视频广告'},
@@ -51,7 +51,8 @@ var option = {
 			},
             connectLine:{
                 enabled:true,
-                lineColor:''
+                lineColor:'',
+                lineWidth:1
             }
 		},
         {

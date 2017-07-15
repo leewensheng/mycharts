@@ -12,6 +12,11 @@ export function getRenderData(props,showPoints){
 			if(showPoints&&!showPoints[index]) {
 				return 0;
 			}
+			if(!showPoints) {
+				if(typeof val.visible!=='undefined' && !val.visible) {
+					return 0;
+				}
+			}
 			return val.value;
 		})
 		var sum = mathUtils.sum(arr_value);
@@ -30,11 +35,12 @@ export function getRenderData(props,showPoints){
 	    var totalAngle = endAngle - startAngle;
 	    var roseType = series.roseType;
 	    data.reduce(function(startAngle,curData,index){
-	    	var percent,endAngle;
+	    	var percent,endAngle,value;
+	    	value = arr_value[index];
 	    	if(showPoints&&!showPoints[index]) {
 	    		percent = 0;
 	    	} else {
-	    		percent = curData.value/sum;
+	    		percent = value/sum;
 	    	}
 	        if(roseType !== "area") {
 	       		endAngle = startAngle + percent*totalAngle;
@@ -54,7 +60,7 @@ export function getRenderData(props,showPoints){
 	        if(color) {
 	        	//颜色差以和平均值差对比
 	        	if(max_num - min_num > 0) {
-	        		obj.color = colorHelper.brighten(color,(curData.value - mean_num)/(max_num - min_num )*0.5);
+	        		obj.color = colorHelper.brighten(color,(value - mean_num)/(max_num - min_num )*0.5);
 	        	} else {
 	        		obj.color = color;
 	        	}
@@ -63,7 +69,7 @@ export function getRenderData(props,showPoints){
 	        }
 	        obj.radius = radius;
 	        if(roseType === "radius" || roseType === "area") {
-	        	obj.radius  = curData.value/max_num*radius;
+	        	obj.radius  = value/max_num*radius;
 	        } 
 	        points.push(obj);
 	        return endAngle;

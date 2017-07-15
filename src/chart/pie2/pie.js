@@ -38,7 +38,6 @@ class  Pie extends Component{
 				<g className="vcharts-points vcharts-pie-points">
 				{
 				points.map(function(point,index){
-					if(showPoints&&!showPoints[index]) return;
 					return <Slice
 							key={index}
 							animation={option.chart.animation}
@@ -64,7 +63,6 @@ class  Pie extends Component{
 				<g className="vcharts-labels">
 					{
 						points.map((p ,index) => {
-							if(showPoints&&!showPoints[index]) return;
 
 							var textPoint;
 							var hide  = false;
@@ -105,7 +103,7 @@ class  Pie extends Component{
 								textPoint.rotate(rotate,cx,cy);
 							};
 							return (
-							<g className="vcharts-pie-labels" key={index}>
+							<g className="vcharts-pie-labels" key={index} style={{display:showPoints&&!showPoints[index]?'none':''}}>
 								{
 									dataLabels.enabled
 									&&
