@@ -46,7 +46,7 @@ class Legend extends Component {
 					items.push({
 						x:0,
 						y:0,
-						name:series.name||('series ' + subIndex),
+						name:point.name||('series ' + subIndex),
 						color:series.color || chartOption.colors[subIndex%chartOption.colors.length],
 						icon:legend.icon,
 						selected:(typeof point.visible!=='undefined' && !point.visible)?false:true,

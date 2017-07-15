@@ -23,7 +23,7 @@ var option = {
 			name:'a pie chart',
 			/*color:'#c23531',*/
 			data:[
-                {value:335, name:'直接访问',visible:0},
+                {value:335, name:'直接访问'},
                 {value:310, name:'邮件营销'},
                 {value:274, name:'联盟广告'},
                 {value:235, name:'视频广告'},
@@ -44,7 +44,7 @@ var option = {
 				enabled:true,
                 color:"#fff",
 				inside:false,
-				distance:50,
+				distance:30,
 				style:{
 					fontSize:11
 				}
@@ -53,7 +53,8 @@ var option = {
                 enabled:true,
                 lineColor:'',
                 lineWidth:1
-            }
+            },
+            showInLegend:false
 		},
         {
 			type:"pie",
