@@ -18,10 +18,11 @@ module.exports =
 	connectLine:{
 		enabled:true,
 		leadLength:20,
-		lineStyle:{
-			color:"",
-			width:1,
-			dash:0
+		lineColor:'',
+		lineWidth:1,
+		lineDash:'',
+		style:{
+			
 		}
 	},
 	roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同

@@ -28,18 +28,20 @@
 	    },
 	    axisLine:{
 	        enabled:true,
-	        lineStyle:{
-	            color:"#333",
-	            width:1,
-	            type:"solid"
+	        lineColor:'blue',
+	        lineWidth:1,
+	        lineDash:false,
+	        style:{
+
 	        }
 	    },
 	    gridLine:{
 	    	enabled:true,
-	    	lineStyle:{
-	    		color:"#e6e6e6",
-	    		width:1,
-	    		type:'solid'
+	        lineColor:'red',
+	        lineWidth:1,
+	        lineDash:false,
+	    	style:{
+	    
 	    	}
 	    },
 	    axisTick:{
@@ -47,10 +49,11 @@
 	        interval:"auto",
 	        inside:false,
 	        length:5,
-	        lineStyle:{
-	            color:"#333",
-	            width:1,
-	            type:"solid",
+	        lineColor:'red',
+	        lineWidth:1,
+	        lineDash:false,
+	        style:{
+
 	        }
 	    },
 	    axisLabel:{

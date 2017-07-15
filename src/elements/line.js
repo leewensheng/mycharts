@@ -11,15 +11,9 @@ class  Line extends Component{
     }
     render(){
         var {props} = this;
-        var style = this.props.style||{color:"#333",width:1,type:'solid'};
-        var className = this.props.className;
-        var {x1,y1,x2,y2,animation} = props;
+        var {x1,y1,x2,y2} = props;
         var d = new Path().M(x1,y1).L(x2,y2);
-        var transform = "";
-        if(browser.msie) {
-            transform = 'translate(0.5,0.5)';
-        }
-        return <PathElement animation={animation} transform={transform} style={{shapeRendering:"optimizeSpeed"}} d={d} stroke={style.color} fill="none" strokeWidth={style.width}/> 
+        return <PathElement {...props} style={{shapeRendering:"optimizeSpeed"}} d={d} /> 
     }
 }
 Line.defaultProps = 
@@ -29,10 +23,7 @@ Line.defaultProps =
     y1:0,
     x2:0,
     y2:0,
-    style:{
-        color:'#333',
-        width:1,
-        type:'solid'
-    }
+    strokeWidth:1,
+    stroke:'#333'
 }
 module.exports = Line;

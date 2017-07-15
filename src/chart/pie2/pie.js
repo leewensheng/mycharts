@@ -136,11 +136,10 @@ class  Pie extends Component{
 										textAlign={textOption.textAlign}
 										updateType={p.updateType}
 										leadLength={connectLine.leadLength}
-										lineStyle={{
-											color:connectLine.lineStyle.color||p.color,
-											width:connectLine.lineStyle.width,
-											dash:connectLine.lineStyle.dash
-										}}
+										lineColor={connectLine.lineColor||p.color}
+										lineWidth={connectLine.lineWidth}
+										lineDash={connectLine.lineDash}
+										style={connectLine.style}
 									 />
 								}
 							</g>

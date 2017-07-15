@@ -51,9 +51,7 @@ var option = {
 			},
             connectLine:{
                 enabled:true,
-                lineStyle:{
-                    color:"#333"
-                }
+                lineColor:''
             }
 		},
         {
@@ -188,7 +186,7 @@ var option = {
     legend:{
         padding:5,
         margin:10,
-        align:'right',
+        align:'center',
         itemHeight:20,
         itemWidth:90,
         borderWidth:0.5,

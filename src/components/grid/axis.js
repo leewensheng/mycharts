@@ -152,7 +152,9 @@ class  Axis extends Component {
                         y1={y1} 
                         x2={x2} 
                         y2={y2} 
-                        style={axisLine.lineStyle} />                
+                        stroke={axisLine.lineColor}
+                        strokeWidth={axisLine.lineWidth}
+                        style={axisLine.style}/>                
                     }
 
                 <g className="vhcart-axis-gridline">
@@ -174,7 +176,10 @@ class  Axis extends Component {
                                     y1={y1} 
                                     x2={x2} 
                                     y2={y2} 
-                                    style={gridLine.lineStyle} />
+                                    stroke={gridLine.lineColor}
+                                    strokeWidth={gridLine.lineWidth}
+                                    style={gridLine.style}
+                                   />
                         })
                     }
                 </g>
@@ -207,7 +212,9 @@ class  Axis extends Component {
                                     y1={y1} 
                                     x2={x2} 
                                     y2={y2} 
-                                    style={axisTick.lineStyle} />
+                                    stroke={axisTick.lineColor}
+                                    strokeWidth={axisTick.lineWidth}
+                                    style={axisTick.style} />
                         })
                     }
                 </g>

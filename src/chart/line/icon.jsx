@@ -15,9 +15,9 @@ class LineIcon extends Component {
 		var end2 = cx + r;
 		return (
 			<g className="vcharts-legend-icon line-legend-icon" stroke={color} fill="none" strokeWidth="1">
-				<Line animation={animation} x1={x} y1={cy} x2={end1} y2={cy} />
+				<Line animation={animation} x1={x} y1={cy} x2={end1} y2={cy} stroke={color}/>
 				<Circle animation={animation} cx={cx} cy={cy} r={r} />
-				<Line animation={animation} x1={end2} y1={cy} x2={x+width} y2={cy} />
+				<Line animation={animation} x1={end2} y1={cy} x2={x+width} y2={cy} stroke={color}/>
 			</g>
 		)
 

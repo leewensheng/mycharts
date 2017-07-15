@@ -14,9 +14,11 @@ shape.defineShape("pie_connect_line",function(options){
 })
 class  ConnectLine extends Component{
     render(){
-        var {cx,cy,radius,midAngle,x,y,leadLength,lineStyle,textAlign} = this.props;
+        var {props} = this;
+        var {cx,cy,radius,midAngle,x,y,leadLength,lineStyle,textAlign} = props;
+        var {lineColor,lineWidth,lineDash,style} = props;
         var d = shape.getShapePath("pie_connect_line",{cx,cy,midAngle,radius,x,y,leadLength,textAlign},true);
-        return <PathElement d={d} fill="none" pathShape={{name:'pie_connect_line',config:{cx,cy,midAngle,radius,x,y,leadLength,textAlign}}} stroke={lineStyle.color} strokeWidth={lineStyle.width} />
+        return <PathElement d={d} fill="none" pathShape={{name:'pie_connect_line',config:{cx,cy,midAngle,radius,x,y,leadLength,textAlign}}} stroke={lineColor} strokeWidth={lineWidth} strokeDasharray={lineDash}/>
     }
 }
 ConnectLine.defaultProps =  {
@@ -29,10 +31,9 @@ ConnectLine.defaultProps =  {
     y:null,
     leadLength:20,
     textAlign:null,
-    lineStyle:{
-        color:null,
-        width:null,
-        dash:0
-    }
+    lineColor:'',
+    lineWidth:1,
+    lineDash:'',
+    style:null
 }
 module.exports = ConnectLine;
