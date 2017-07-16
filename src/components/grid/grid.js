@@ -119,7 +119,7 @@ class Grid extends Component {
 			axisBottom = bottom  - bottomLabelHeight,
 			axisWidth = axisRight - axisLeft,
 			axisHeight = axisBottom - axisTop;
-		$.each(includeSeries,function(serieIndex,xy){
+		$.each(includeSeries,function(seriesIndex,xy){
 			var xAxisIndex= xy.xAxis;
 			var yAxisIndex = xy.yAxis;
 			var xAxisData,yAxisData;
@@ -135,7 +135,7 @@ class Grid extends Component {
 			}
 			chartEmitter.emit('grid',
 				{	
-					index:serieIndex,
+					seriesIndex:seriesIndex,
 					top:axisTop,
 					left:axisLeft,
 					right:axisRight,

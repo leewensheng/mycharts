@@ -93,6 +93,10 @@ var option = {
             lineWidth:2,
             data:[5,30,58],
             yAxis:1
+        },
+        {
+            type:'bar',
+            data:[100,200,300]
         }
 	],
     grid:{
@@ -186,14 +190,14 @@ var option = {
             }
     }],
     legend:{
-        padding:5,
+        padding:0,
         margin:10,
         align:'center',
-        itemHeight:20,
-        itemWidth:90,
-        borderWidth:0.5,
+        itemHeight:15,
+        itemWidth:null,
+        borderWidth:0,
         borderRadius:5,
-        background:"#fff",
+        background:"transparent",
         layout:'horizontal',
         itemGap:10,
         itemStyle:{

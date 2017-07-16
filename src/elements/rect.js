@@ -44,7 +44,7 @@ class  Rect extends Component{
 }
 Rect.defaultProps =
  {
-    animatin:true,
+    animation:true,
     x:0,
     y:0,
     width:0,

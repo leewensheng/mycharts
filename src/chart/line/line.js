@@ -31,7 +31,7 @@ class Linechart extends Component {
         if(!isGridReady) {
             return <g></g>;
         }
-        var {left,top,right,bottom,width,height,width} = grid;
+        var {left,top,right,bottom,width,height} = grid;
         var points = [];
         var color = series.color||option.colors[seriesIndex];
         var xAxisData = grid.xAxis,yAxisData = grid.yAxis;
@@ -43,6 +43,9 @@ class Linechart extends Component {
             var y = bottom  - (val-min)/scale;
             points.push({x,y});
         });
+        if(typeof visible === 'undefined') {
+            visible = true;
+        }
         return (
             <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
                 <Polyline className="vcharts-series-polyline" points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
@@ -93,11 +96,11 @@ class Linechart extends Component {
     }
     onLegendChange(msg){
         if(msg.seriesIndex == this.props.seriesIndex) {
-            this.setState({visible:msg.data});
+            this.setState({visible:msg.data.selected});
         }
     }
     onGridChange(grid){
-        if(grid.index == this.props.seriesIndex) {
+        if(grid.seriesIndex == this.props.seriesIndex) {
             this.setState({grid,isGridReady:true,hasInited:true});
             this.forceUpdate();
         }
@@ -164,7 +167,8 @@ class Linechart extends Component {
 Linechart.defaultOption = defaultOption;
 Linechart.dependencies = {
     grid:{
-        must:true
+        must:true,
+        startOnTick:true
     },
     legend:{
         must:false,

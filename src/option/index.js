@@ -17,7 +17,9 @@ module.exports = {
         "#c4ccd3"
     ],
     plotOptions:{
-        series:{}
+        series:{
+            visible:true
+        }
     },
    	series:[]
 }

@@ -50,13 +50,13 @@ class  Slice extends Component{
 				transform={'translate('+offsetX + ',' + offsetY + ')'}
 				onClick={this.props.onSlice}
 				pathShape={{name:'sector',config:{cx,cy,startAngle,endAngle,radius,innerRadius}}}
-				onAnimationEnd={this.onAnimationEnd.bind(this)}
+				onAnimationChange={this.onAnimationChange.bind(this)}
 				onMouseOver={this.handleMouseOver.bind(this,true,false)}
 				onMouseOut={this.handleMouseOver.bind(this,false,false)}
 			/>
 		)
 	}
-	onAnimationEnd(isAnimating){
+	onAnimationChange(isAnimating){
 		this.setState({
 			isAnimating:isAnimating,
 			update:false
