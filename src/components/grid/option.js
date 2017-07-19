@@ -8,23 +8,25 @@
         containLabel:true
     },
     axis:{
+    	type:null,
         gridIndex:0,//所属网格区域
 	    min:null,
 	    max:null,//对于分类轴来说仍然是有意义的
 	    minRange:null,
 	    splitNumber:5,//分割段数
-	    data:[],//分类轴用到
+	    data:null,//分类轴用到
 	    opposite:false,
 	    inverse:false,//数值反转
 	    title:{
 	        enabled:true,
-	        align:"start",//start middle end
+	        align:"end",//start middle end
 	        margin:0,
 	        rotation:0,
 	        style:{
-	            color:"#666"
+	            color:"#666",
+	            fontSize:12
 	        },
-	        text:"",
+	        text:""
 	    },
 	    axisLine:{
 	        enabled:true,

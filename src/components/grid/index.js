@@ -45,17 +45,28 @@ class  Grids extends Component {
             xAxis = [xAxis]
         } 
         xAxis = xAxis.map(function(val,index){
-            val = $.extend(true,{type:'category'},defaultOption.axis,val);
+            val = $.extend(true,{},defaultOption.axis,val);
+            if(!val.type && !val.data) {
+                val.type = 'value';
+            } else {
+                val.type = val.type || 'category';
+            }
             var gridIndex = val.gridIndex;
             val.index = index;
             grids[gridIndex].xAxis.push(val);
+            
             return val;
         })
         if(!yAxis.length) {
             yAxis = [yAxis];
         }
         yAxis = yAxis.map(function(val,index){
-            val = $.extend(true,{type:'value'},defaultOption.axis,val);
+            val = $.extend(true,{},defaultOption.axis,val);
+            if(!val.type && !val.data) {
+                val.type = 'value';
+            } else {
+                val.type = val.type || 'value';
+            }
             var gridIndex = val.gridIndex;
             val.index = index;
             grids[gridIndex].yAxis.push(val);
@@ -102,11 +113,15 @@ class  Grids extends Component {
                 if(type === 'value') {
                     var dataRange = gridService.getValueRange(includeSeries);
                     axis.dataRange = dataRange;
+                } else if(type === 'category') {
+                    //如果未设置data，则从系列中获取
+                    if(!axis.data) {
+                        axis.data = gridService.getCategories(includeSeries);
+                    }
                 }
                 arr.map(function(index){
                    if(!grid.includeSeries[index]) {
-                        grid.includeSeries[index] = {
-                        }
+                        grid.includeSeries[index] = {};
                    } 
                    grid.includeSeries[index][key] = axis.index;
                 })

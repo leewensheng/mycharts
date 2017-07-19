@@ -188,8 +188,9 @@ class  Pie extends Component{
 							endAngle:startAngle + 1e-6
 						});
 		});
-		clip.attr("id","pie-clip"+seriesIndex);
-		group.attr("clip-path","url(#pie-clip"+ seriesIndex +")");
+		var clipId = 'pie-clip' + Math.random();
+		clip.attr("id",clipId);
+		group.attr("clip-path","url(#"+ clipId +")");
 		var path = clip.find("path");
 		$(el).find('.vcharts-labels').css("display","none");
 		path.transition({

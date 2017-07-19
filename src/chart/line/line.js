@@ -167,11 +167,9 @@ class Linechart extends Component {
 Linechart.defaultOption = defaultOption;
 Linechart.dependencies = {
     grid:{
-        must:true,
         startOnTick:true
     },
     legend:{
-        must:false,
         icon:LineIcon
     }
 };

@@ -38,5 +38,17 @@ module.exports = {
             data.push(realMin + tick*i);
         }
         return data;
+    },
+    getCategories(series){
+        var data = [];
+        if(series.length > 0) {
+            data = series[0].data.map(function(val,index){
+                if(Array.isArray(val)) {
+                    return val[0];
+                } else {
+                    return index;
+                }
+            })
+        }
     }
 }

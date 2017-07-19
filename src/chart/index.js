@@ -70,7 +70,7 @@ class Core extends Component {
                             chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
                            return (
                             <Chart
-                                key={index}
+                                key={type+index}
                                 option={option} 
                                 width={width}
                                 height={height}

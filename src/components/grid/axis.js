@@ -4,6 +4,7 @@ import {findDOMNode} from 'react-dom'
 import gridService from './gridService'
 import Text from '../../elements/text'
 import Line from '../../elements/line'
+import AxisTitle from './axis-title'
 class  Axis extends Component {
     constructor(props){
         super(props);
@@ -142,11 +143,11 @@ class  Axis extends Component {
         }
         return (
             <g className={className}>
+                <AxisTitle animation={isLabelAdjusted||!isFirstTime} axis={axis} axisOption={option} top={top} left={left} right={right} bottom={bottom} />
                 {
                 (!isFirstTime||!containLabel)&&axisLine.enabled
                 &&
-                <Line  
-                        update={updateType==='newProps'&&containLabel?false:true}
+                <Line   update={updateType==='newProps'&&containLabel?false:true}
                         className="vcharts-axis-line" 
                         x1={x1} 
                         y1={y1} 
@@ -155,7 +156,7 @@ class  Axis extends Component {
                         stroke={axisLine.lineColor}
                         strokeWidth={axisLine.lineWidth}
                         style={axisLine.style}/>                
-                    }
+                }
 
                 <g className="vhcart-axis-gridline">
                     {

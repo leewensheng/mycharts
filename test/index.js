@@ -168,6 +168,9 @@ var option = {
                 lineStyle:{
                     color:'#333'
                 }
+            },
+            title:{
+                text:'标题测试标题测试'
             }
         },
         {
