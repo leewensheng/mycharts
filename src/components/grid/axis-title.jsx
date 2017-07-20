@@ -8,35 +8,52 @@ class AxisTitle extends Component{
 	render(){
 		var {props} = this;
 		var {animation,axis,axisOption,top,left,right,bottom} = props;
+		var {gridTop,gridLeft,gridRight,gridBottom} = props;
 		var {title,opposite} = axisOption;
 		var {enabled,align,margin,rotation,style,text} = title;
 		var x,y,transform;
 		if(axis === 'x') {
 			y = opposite?top:bottom;
 			if(align === 'start') {
-				x = right;
+				x = gridLeft;
+				style.textAlign = 'right';
+				style.textBaseLine = 'middle';
+				x -= margin;
 			} else if(align === 'middle') {
 				x = (left + right) / 2;
-			} else {
-				x = right;
+				y = opposite ? gridTop : gridBottom;
+				style.textAlign = 'center';
+				style.textBaseLine = opposite?'bottom':'top';
+				opposite ? (y -= margin) : (y  += margin);
+			} else if(align === 'end'){
+				x = gridRight;
+				style.textAlign = 'left';
+				style.textBaseLine = 'middle';
+				x += margin;
 			}
-			style.textBaseLine = 'top';
-			style.textAlign = 'center';
 		} else if(axis === 'y') {
 			x = opposite?right:left;
 			if(align === 'start') {
-				y = bottom;
+				y = gridBottom;
+				style.textBaseLine = 'top';
+				y += margin;
+				style.textAlign = 'center';
 			} else if(align === 'middle') {
+				x = opposite ? gridRight : gridLeft;
+				opposite ? (x += margin) : (x  -= margin);
 				y= (top + bottom) / 2;
-			} else {
-				y = top;
+				style.textBaseLine = 'bottom';
+				style.textAlign = opposite?'left':'right';
+			} else if(align === 'end') {
+				y = gridTop;
+				style.textBaseLine = 'bottom';
+				y -= margin;
+				style.textAlign = 'center';
 			}
-			y -= 20;
-			style.textBaseLine = 'bottom';
-			style.textAlign = 'right';
 		}
+		transform = 'rotate(' + rotation + ',' + x+ ',' + y + ')';
 		return (
-			<Text className="vcharts-axis-title" animation={animation} x={x} y={y}  style={style}>{text||''}</Text>
+			<Text transform={transform} className="vcharts-axis-title" animation={animation} x={x} y={y}  style={style}>{text||''}</Text>
 		)
 	}
 }

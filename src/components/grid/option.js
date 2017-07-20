@@ -20,7 +20,8 @@
 	    title:{
 	        enabled:true,
 	        align:"end",//start middle end
-	        margin:0,
+	        //@margin start end是指距另一相邻轴线的距离,middle是指距当前轴线的距离
+	        margin:15,
 	        rotation:0,
 	        style:{
 	            color:"#666",

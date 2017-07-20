@@ -101,6 +101,7 @@ var option = {
 	],
     grid:{
         top:80,
+        right:80,
         containLabel:true
     },
     xAxis:{
@@ -114,13 +115,13 @@ var option = {
         inverse:false,//数值反转
         title:{
             show:true,
-            align:"start",//start middle end
-            margin:15,
+            align:"end",//start middle end
+            margin:-8,
             rotation:0,
             style:{
-                color:"#666"
+                color:"#000"
             },
-            text:"",
+            text:"时间轴",
         },
         axisLine:{
             show:true,
@@ -170,7 +171,13 @@ var option = {
                 }
             },
             title:{
-                text:'标题测试标题测试'
+                text:'金额(万)',
+                rotation:0,
+                align:'end',
+                margin:10,
+                style:{
+                    color:'red'
+                }
             }
         },
         {
@@ -184,8 +191,8 @@ var option = {
             },
             axisLabel:
             {
-                inside:true,
-                margin:30,
+                inside:false,
+                margin:8,
                 enabled:true
             },
             gridLine:{

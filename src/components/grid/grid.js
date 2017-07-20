@@ -41,6 +41,11 @@ class Grid extends Component {
 									containLabel={containLabel}
 									key={'xaxis'+index}
 									hasOpposite={yAxis.length>=2}
+									gridLeft={left}
+									gridRight={right}
+									gridBottom={bottom}
+									gridTop={top}
+									gridLeft={left}
 									left={axisLeft} 
 									right={axisRight} 
 									bottom={axisBottom}
@@ -60,6 +65,11 @@ class Grid extends Component {
 									containLabel={containLabel}
 									key={'yaxis'+index}
 									hasOpposite={xAxis.length>=2}
+									gridLeft={left}
+									gridRight={right}
+									gridBottom={bottom}
+									gridTop={top}
+									gridLeft={left}
 									left={axisLeft} 
 									right={axisRight} 
 									bottom={axisBottom}

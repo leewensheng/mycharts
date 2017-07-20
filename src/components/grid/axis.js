@@ -73,6 +73,7 @@ class  Axis extends Component {
         var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
         var state = this.state;
         var {isLabelAdjusted,points,start,end,other,isFirstTime} = state;
+        var {gridLeft,gridRight,gridTop,gridBottom} = props;
         var x1,y1,x2,y2;
         if(axis === 'x') {
             y1 = y2 = other;
@@ -143,7 +144,7 @@ class  Axis extends Component {
         }
         return (
             <g className={className}>
-                <AxisTitle animation={isLabelAdjusted||!isFirstTime} axis={axis} axisOption={option} top={top} left={left} right={right} bottom={bottom} />
+                <AxisTitle animation={isLabelAdjusted||!isFirstTime} axis={axis} axisOption={option} top={top} left={left} right={right} bottom={bottom} gridLeft={gridLeft} gridRight={gridRight} gridTop={gridTop} gridBottom={gridBottom}/>
                 {
                 (!isFirstTime||!containLabel)&&axisLine.enabled
                 &&
