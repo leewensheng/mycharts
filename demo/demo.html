@@ -17,7 +17,7 @@
 	<button class="btn-test" onclick="refresh()">refresh</button>
 <script>
 var data = [];
-for(var i = 0; i < 500; i++) {
+for(var i = 0; i < 5; i++) {
     data.push({
         name:'series'+i,
         value:Math.random()*100
@@ -32,7 +32,8 @@ option = {
         x:''
     },
     legend: {
-    	show:false,
+    	show:true,
+        data:['series1','series4','series2','series3']
     },
     series : [
         {
@@ -56,6 +57,9 @@ option = {
 };
 var chart = echarts.init(document.querySelector("#root"));
 chart.setOption(option);
+chart.on('legendselectchanged',function(e){
+    console.log(e)
+})
 function refresh(){
 	option.series[0].data.push({value:Math.random()*100,name:'test'});
 	chart.setOption(option)

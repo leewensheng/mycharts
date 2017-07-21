@@ -1,24 +1,45 @@
 import mathUtils from 'cad/math'
 import colorHelper from 'cad/color/index'
-
-export function getRenderData(props,showPoints){
+function getPieSeriesData(data) {
+	return data.map((point,index) => {
+		var name,value,visible,selected;
+		if(typeof point === 'object') {
+			name = point.name || ('slice' + index);
+			value = point.value ||point.y;
+			selected = point.selected
+			visible = typeof point.selected === 'undefined' ? true : point.visible;
+		} else if(!isNaN(point)) {
+			name = 'slice' + index;
+			value = point || 0 ;
+			visible = true;
+			selected = false;
+		} else {
+			name = 'slice' + index;
+			value = 0;
+			visible = true;
+			selected = false;
+		}
+		return {name,value,selected,visible};
+	})
+}
+export function getRenderData(props,oldState){
 		var {series,width,height,option} = props;
 		var colors = option.colors;
 		var {data,color} = series;
 		if(series.colors) {
 			colors = series.colors;
 		}
-		var arr_value = data.map(function(val,index){
-			if(showPoints&&!showPoints[index]) {
-				return 0;
-			}
-			if(!showPoints) {
-				if(typeof val.visible!=='undefined' && !val.visible) {
-					return 0;
-				}
-			}
-			return val.value;
+		data = getPieSeriesData(data);
+		data.map(function(point,index){
+			if(oldState&&oldState.points[index]) {
+				point.selected =  oldState.points[index].selected;
+				point.visible =  oldState.points[index].visible;
+			} 
 		})
+		var arr_value = data.map(function(point,index){
+			return point.visible?point.value:0;
+		})
+		
 		var sum = mathUtils.sum(arr_value);
 		if(sum === 0) {
 			sum = 1e-6;
@@ -40,7 +61,7 @@ export function getRenderData(props,showPoints){
 	    data.reduce(function(startAngle,curData,index){
 	    	var percent,endAngle,value;
 	    	value = arr_value[index];
-	    	if(showPoints&&!showPoints[index]) {
+	    	if(!curData.visible) {
 	    		percent = 0;
 	    	} else {
 	    		percent = value/sum;
@@ -58,7 +79,9 @@ export function getRenderData(props,showPoints){
 	        	name:curData.name,
 	        	x:curData.index,
 	        	y:curData.value,
-	        	percent:percent.toFixed(2)
+	        	percent:percent.toFixed(2),
+	        	visible:curData.visible,
+	        	selected:curData.selected
 	        };
 	        if(color) {
 	        	//颜色差以和平均值差对比
@@ -91,15 +114,3 @@ export function getRenderData(props,showPoints){
 	    	innerRadius:radius*innerSize
 	    }
 	}
-
-export function getSelectedPointsMap(props) {
-	var {series} = props;
-	var {data} = series;
-	var selectedPointsMap = {};
-	data.map(function(point,index){
-		if(typeof point.selected !== 'undefined') {
-			selectedPointsMap[index] = point.selected?true:false;
-		}
-	})
-	return  selectedPointsMap;
-}

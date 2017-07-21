@@ -37,7 +37,7 @@ class Legend extends Component {
 					name:series.name|| ('series ' + seriesIndex),
 					color:series.color || chartOption.colors[seriesIndex%chartOption.colors.length],
 					icon:legend.icon,
-					selected:series.visible,
+					visible:series.visible,
 					multiple:false,
 					seriesIndex:seriesIndex
 				})
@@ -49,7 +49,7 @@ class Legend extends Component {
 						name:point.name||('series ' + subIndex),
 						color:series.color || chartOption.colors[subIndex%chartOption.colors.length],
 						icon:legend.icon,
-						selected:(typeof point.visible!=='undefined' && !point.visible)?false:true,
+						visible:(typeof point.visible!=='undefined' && !point.visible)?false:true,
 						multiple:true,
 						index:subIndex,
 						seriesIndex:seriesIndex
@@ -64,10 +64,7 @@ class Legend extends Component {
 					item.x = oldItem.x;
 					item.y = oldItem.y;
 					item.width = oldItem.width;
-					//todo 需要检测前后是否同一个系列
-					if(props.updateType === 'newProps') {
-						item.selected = oldItem.selected;
-					}
+					item.visible = oldItem.visible;
 				}
 			})
 		}
@@ -101,7 +98,7 @@ class Legend extends Component {
 				{
 					items.map(function(item,index){
 						var Icon = item.icon;
-						var {x,y,color,width,selected} = item;
+						var {x,y,color,width,visible} = item;
 						var symbolHeight = symbol.height||itemStyle.fontSize;
 						var symbolY =  y + (itemHeight - symbolHeight)/2;
 						var textX = x + symbol.width + symbol.padding;
@@ -116,7 +113,7 @@ class Legend extends Component {
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
 								<Rect animation={animation} fill="transparent" x={x} y={y} width={width} height={itemHeight} stroke="none"/>
-								<Icon animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={selected!==false?color:'gray'}/>
+								<Icon animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={visible!==false?color:'gray'}/>
 								<Text animation={animation} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)
@@ -127,18 +124,27 @@ class Legend extends Component {
 	}
 	toggleItem(index){
 		var {props,state} = this;
-		var {items} = state;
+		var {chartEmitter} = props;
+		var {items,legendOption} = state;
 		var item = items[index];
-		item.selected = item.selected===false?true:false;
+		var visible = !item.visible;
+		var {selectMode} = legendOption;
+		item.visible = visible;
+		if(selectMode === 'single') {
+			items.map((item,idx) => {
+				if(visible && idx!== index) {
+					item.visible = false;
+				}
+			})
+		}
 		this.setState({items});
-		this.sendLegendData();
 	}
 	handleMouseEvent(index,isHover){
 		var {props,state} = this;
 		var {items} = state;
 		var {chartEmitter} = props;
 		var item = items[index];
-		if(item.selected) {
+		if(item.visible) {
 			chartEmitter.emit("legend.hoverChange",{
 				index:item.seriesIndex,
 				eventType:isHover?'mouseover':'mouseout',
@@ -153,16 +159,16 @@ class Legend extends Component {
     	var groupedItems = {};
  		var multipleItems = [];
     	items.map(function(item,index){
-    		var {seriesIndex,selected,multiple,index} = item;
+    		var {seriesIndex,visible,multiple,index} = item;
     		if(!multiple) {
-    			groupedItems[seriesIndex] = {selected:selected};
+    			groupedItems[seriesIndex] = {visible:visible};
     			multipleItems.push({
     				index:seriesIndex,
-    				selected:selected
+    				visible:visible
     			});
     		} else {
     			groupedItems[seriesIndex] = groupedItems[seriesIndex] || {};
-    			groupedItems[seriesIndex][index] = selected;
+    			groupedItems[seriesIndex][index] = visible;
     		}
     	})
     	for(let seriesIndex in groupedItems) {

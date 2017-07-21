@@ -113,7 +113,6 @@ class Bar extends Component {
 Bar.defaultOption = defaultOption;
 Bar.dependencies = {
     grid:{
-        must:true,
         startOnTick:false
     },
     legend:{

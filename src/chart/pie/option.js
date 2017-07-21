@@ -17,11 +17,12 @@ module.exports =
 	},
 	connectLine:{
 		enabled:true,
-		length2:20,
+		leadLength:20,
+		lineColor:'',
+		lineWidth:1,
+		lineDash:false,
 		lineStyle:{
-			color:"",
-			width:1,
-			dash:0
+
 		}
 	},
 	roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同
@@ -32,7 +33,7 @@ module.exports =
 	startAngle:0,//起始角度，以上向为0
 	endAngle:null,//不写则始终角差360，指定则按指定的来
 	sliceOffset:10,//选中时的偏移量
-	selected:true,
+	visible:true,
 	states:{
 		hover:{
 		}
