@@ -43,6 +43,7 @@ Chart.prototype = {
 		if(oldOption) {
 			var newOption = $.extend(true,oldOption,option);
 			this.option = newOption;
+			this.updateType = 'newProps';
 			this.debounceUpdate();
 		} else {
 			this.option = option;
@@ -60,8 +61,8 @@ Chart.prototype = {
 		var option = this.option;
 		var width = this.width;
 		var height = this.height;
-		var nextProps = {option,width,height};
-		this.vchart.props = nextProps;
+		var updateType = this.updateType;
+		var nextProps = {option,width,height,updateType};
 		this.vchart.setOption(nextProps);
 	},
 	resize(width,height){
@@ -70,6 +71,7 @@ Chart.prototype = {
 		var oldHeight = this.height;
 		this.width = width;
 		this.height = height;
+		this.updateType = 'resize';
 		this.debounceUpdate();
 	},
 	downloadImage(name){

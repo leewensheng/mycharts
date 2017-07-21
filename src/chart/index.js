@@ -98,7 +98,7 @@ class Core extends Component {
     setOption(nextProps){
         this.setState({
             props:nextProps,
-            updateType:'newProps'
+            updateType:nextProps.updateType||'newProps'
         })
     }
     componentWillReceiveProps(nextProps) {

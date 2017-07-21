@@ -64,7 +64,9 @@ class Legend extends Component {
 					item.x = oldItem.x;
 					item.y = oldItem.y;
 					item.width = oldItem.width;
-					item.visible = oldItem.visible;
+					if(props.updateType === 'resize') {
+						item.visible = oldItem.visible;
+					}
 				}
 			})
 		}

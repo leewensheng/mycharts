@@ -1,4 +1,4 @@
-import Pie from './pie2/pie'
+import Pie from './pie/pie'
 import Line from './line/line'
 import Bar from './bar/bar'
 module.exports = {
