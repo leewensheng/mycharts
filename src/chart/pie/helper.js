@@ -81,7 +81,9 @@ export function getRenderData(props,oldState){
 	        	y:curData.value,
 	        	percent:percent.toFixed(2),
 	        	visible:curData.visible,
-	        	selected:curData.selected
+	        	selected:curData.selected,
+	        	color:colors[index%colors.length],
+	        	radius:radius
 	        };
 	        if(color) {
 	        	//颜色差以和平均值差对比
@@ -90,13 +92,15 @@ export function getRenderData(props,oldState){
 	        	} else {
 	        		obj.color = color;
 	        	}
-	        } else {
-	        	obj.color = colors[index%colors.length];
 	        }
-	        obj.radius = radius;
 	        if(roseType === "radius" || roseType === "area") {
 	        	obj.radius  = value/max_num*radius;
 	        } 
+	        if(oldState) {
+	        	if(!oldState.points[index]) {
+	        		obj.isAdd = true;
+	        	}
+	        }
 	        points.push(obj);
 	        return endAngle;
 	    },startAngle);

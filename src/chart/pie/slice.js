@@ -18,20 +18,24 @@ class  Slice extends Component{
 		super(props);
 		this.state = {
 			isHover:false,
-			isAnimating:false
+			isAnimating:false,
+			hasAddAnimation:props.isAdd
 		}
 	}
 	render(){
 		var {props,state} = this;
-		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset} = props;
+		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset,isAdd} = props;
 		var {color,borderColor,borderWidth} = props;
-		var {isHover,isAnimating} = state
+		var {isHover,isAnimating,hasAddAnimation} = state
 		var that = this;
 		var offsetX = 0, offsetY = 0;
 		if(selected) {
 			var offset = Point(0,0).angleMoveTo(midAngle,sliceOffset);
 			offsetX = offset.x;
 			offsetY = offset.y;
+		}
+		if(isAdd&&hasAddAnimation) {
+			startAngle = endAngle;
 		}
 		var d = shape.getShapePath("sector" , {
 				cx,
@@ -103,6 +107,15 @@ class  Slice extends Component{
 	}
 	offset(selected){
 		this.handleMouseOver(this.state.isHover,true,selected);
+	}
+	componentDidMount(){
+		var {props,state} = this;
+		if(props.isAdd) {
+			this.setState({
+				hasAddAnimation:false,
+				update:true
+			})
+		}
 	}
 	componentWillReceiveProps(nextProps){
 	 	if(nextProps.updateType === 'select') {

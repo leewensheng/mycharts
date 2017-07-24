@@ -36,23 +36,25 @@ class  Pie extends Component{
 				<g className="vcharts-points vcharts-pie-points">
 				{
 				points.map(function(point,index){
+					var {startAngle,midAngle,endAngle,radius,color,selected,isAdd} = point;
 					return <Slice
 							key={index}
 							animation={option.chart.animation}
 							cx={cx}
 							cy={cy}
-							startAngle={point.startAngle}
-							endAngle={point.endAngle}
-							radius={point.radius}
+							startAngle={startAngle}
+							endAngle={endAngle}
+							radius={radius}
 							innerRadius={innerRadius}
-							midAngle={point.midAngle}
+							midAngle={midAngle}
 							borderWidth={borderWidth}
 							borderColor={borderColor}
-							color={point.color}
+							color={color}
 							index={index}
-							selected={point.selected}
+							selected={selected}
 							sliceOffset={sliceOffset}
 							onSlice={onSlice.bind(that,index)}
+							isAdd={isAdd}
 							updateType={updateType}
 						/>
 					})			
