@@ -30,14 +30,12 @@ export function getRenderData(props,oldState){
 			colors = series.colors;
 		}
 		data = getPieSeriesData(data);
-		if(props.updateType === 'resize') {
-			data.map(function(point,index){
-			if(oldState&&oldState.points[index]) {
-					point.selected =  oldState.points[index].selected;
-					point.visible =  oldState.points[index].visible;
-				} 
-			})
-		}
+		data.map(function(point,index){
+		if(oldState&&oldState.points[index]) {
+				point.selected =  oldState.points[index].selected;
+				point.visible =  oldState.points[index].visible;
+			} 
+		})
 		var arr_value = data.map(function(point,index){
 			return point.visible?point.value:0;
 		})

@@ -37,7 +37,7 @@ class Legend extends Component {
 					name:series.name|| ('series ' + seriesIndex),
 					color:series.color || chartOption.colors[seriesIndex%chartOption.colors.length],
 					icon:legend.icon,
-					visible:series.visible,
+					visible:typeof series.visible==='undefined'?true:series.visible,
 					multiple:false,
 					seriesIndex:seriesIndex
 				})
@@ -64,9 +64,8 @@ class Legend extends Component {
 					item.x = oldItem.x;
 					item.y = oldItem.y;
 					item.width = oldItem.width;
-					if(props.updateType === 'resize') {
-						item.visible = oldItem.visible;
-					}
+					//保留状态
+					item.visible = oldItem.visible;
 				}
 			})
 		}
@@ -129,7 +128,8 @@ class Legend extends Component {
 		var {chartEmitter} = props;
 		var {items,legendOption} = state;
 		var item = items[index];
-		var visible = !item.visible;
+		var {visible,seriesIndex,multiple} = item;
+		visible = !visible;
 		var {selectMode} = legendOption;
 		item.visible = visible;
 		if(selectMode === 'single') {
@@ -139,6 +139,24 @@ class Legend extends Component {
 				}
 			})
 		}
+		var visiblePoints = items.filter(function(item){
+				return item.seriesIndex === seriesIndex;
+			}).map(function(item){
+				return item.visible;
+			})
+		chartEmitter.emit('legendVisibleToggle',{
+			seriesIndex:seriesIndex,
+			visible:multiple?visiblePoints:visible
+		});
+		var visibleSeries = {};
+		items.map(function(item){
+			if(!item.multiple) {
+				visibleSeries[item.seriesIndex] = item.visible;
+			}
+		})
+		chartEmitter.emit('legendVisibleChange',{
+			visible:visibleSeries
+		})
 		this.setState({items});
 	}
 	handleMouseEvent(index,isHover){

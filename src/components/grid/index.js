@@ -8,14 +8,11 @@ import gridService from './gridService'
 class  Grids extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            grids:this.getRenderData(props,{}),
-            hideSeries:{}
-        };
+        this.state = this.getRenderData(props),
         this.onLegendChange = this.onLegendChange.bind(this);
-        props.chartEmitter.on("legend.all",this.onLegendChange);
+        props.chartEmitter.on("legendVisibleChange",this.onLegendChange);
     }
-    getRenderData(props,hideSeries){
+    getRenderData(props,oldState){
     	//todo 计算出grid的大小，和各axis的值范围
         var {chartWidth,chartHeight,chartOption} = props;
         var {grid,xAxis,yAxis,series} = chartOption;
@@ -82,8 +79,16 @@ class  Grids extends Component {
                 yAxis[1].opposite = !xAxis[0].opposite;
             }
         });
+        var visibleSeries  = {};
+        series.map(function(val,seriesIndex){
+            visibleSeries[seriesIndex] = typeof val.visible === 'undefined' ? true: val.visible;
+        })
+        if(oldState) {
+            $.extend(visibleSeries,oldState.visibleSeries);
+        }
         setAxisDataRange(xAxis,'xAxis');
         setAxisDataRange(yAxis,'yAxis');
+
         function setAxisDataRange(someAxis,key){
             someAxis.map(function(axis){
                 var type = axis.type;
@@ -92,7 +97,7 @@ class  Grids extends Component {
                 var grid = grids[gridIndex];
                 var arr = [];
                 var includeSeries = series.filter(function(serie,index){
-                    if(hideSeries[index]) {
+                    if(!visibleSeries[index]) {
                         return false;
                     }
                     var type = serie.type;
@@ -127,7 +132,7 @@ class  Grids extends Component {
                 })
             });
         }
-        return grids;
+        return {grids,visibleSeries};
     }
     render(){
         var props = this.props;
@@ -162,25 +167,21 @@ class  Grids extends Component {
     }
     onLegendChange(data){
         var {props,state} = this;
-        var hideSeries = {};
-        data.map(function(legend){
-            if(legend.selected === false) {
-                hideSeries[legend.index] = true;
-            }
-        })
-        var grids = this.getRenderData(this.props,hideSeries);
-        this.setState({grids,hideSeries});
+        var {visibleSeries} = state;
+        $.extend(visibleSeries,data.visible);
+        var nextState = this.getRenderData(props,state);
+        this.setState(nextState);
     }
     componentDidMount(){
         var {props,state} = this;
         var {chartEmitter} = props;
     }
     componentWillReceiveProps(nextProps){
-        var grids = this.getRenderData(nextProps,this.state.hideSeries);
-        this.setState({grids});
+        var nextState = this.getRenderData(nextProps,this.state);
+        this.setState(nextState);
     }
     componentWillUnmount(){
-        this.props.chartEmitter.removeListener('legend.all',this.onLegendChange);
+        this.props.chartEmitter.removeListener('legendVisibleChange',this.onLegendChange);
     }
 }
 Grids.defaultProps = {

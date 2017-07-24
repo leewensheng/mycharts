@@ -18,7 +18,7 @@ class  Pie extends Component{
 	constructor(props) {
 		super(props);
 		this.onLegendChange = this.onLegendChange.bind(this);
-		props.chartEmitter.on('legend',this.onLegendChange);
+		props.chartEmitter.on('legendVisibleToggle',this.onLegendChange);
 		var state = getRenderData(props);
 		this.state = state;
 	}
@@ -163,11 +163,13 @@ class  Pie extends Component{
 	}
 	onLegendChange(msg){
 		var {state,props} = this;
+		var {points} = state;
 		if(msg.seriesIndex == this.props.seriesIndex) {
-			var showPoints = msg.data;
-			var nextState = getRenderData(this.props,showPoints);
-			nextState.showPoints = showPoints;
-			nextState.updateType = 'legendChange';
+			var visiblePoints = msg.visible;
+			visiblePoints.map(function(visible,index){
+				points[index].visible = visible;
+			})
+			var nextState = getRenderData(props,state);
 			this.setState(nextState);
 		}
 	}
@@ -225,7 +227,7 @@ class  Pie extends Component{
 	}
 	componentWillUnmount(){
 		var {props,state} = this;
-		props.chartEmitter.removeListener('legend',this.onLegendChange);
+		props.chartEmitter.removeListener('legendVisibleToggle',this.onLegendChange);
 	}
 }
 Pie.defaultOption = defaultOption;
