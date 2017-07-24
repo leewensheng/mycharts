@@ -87,7 +87,7 @@ var option = {
         },{
             name:'系列',
             type:'line',
-            data:[5,30,58]
+            data:[5,330,58]
         },{
             type:'line',
             lineWidth:2,

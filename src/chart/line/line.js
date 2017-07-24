@@ -14,7 +14,7 @@ class Linechart extends Component {
         this.onGridChange = this.onGridChange.bind(this);
         this.onLegendHover = this.onLegendHover.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
-        props.chartEmitter.on('legend',this.onLegendChange);
+        props.chartEmitter.on('legendVisibleToggle',this.onLegendChange);
         props.chartEmitter.on('legend.hoverChange',this.onLegendHover);
         this.state = {
             hasInited:false,
@@ -96,7 +96,7 @@ class Linechart extends Component {
     }
     onLegendChange(msg){
         if(msg.seriesIndex == this.props.seriesIndex) {
-            this.setState({visible:msg.data.selected});
+            this.setState({visible:msg.visible});
         }
     }
     onGridChange(grid){
@@ -160,7 +160,7 @@ class Linechart extends Component {
     }
     componentWillUnmount(){
         var {props,state} = this;
-        props.chartEmitter.off('legend',this.onLegendChange);
+        props.chartEmitter.off('legendVisibleToggle',this.onLegendChange);
         props.chartEmitter.off('grid',this.onGridChange);
     }
 }
