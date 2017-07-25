@@ -172,6 +172,7 @@ class  Pie extends Component{
 				points[index].visible = visible;
 			})
 			var nextState = getRenderData(props,state);
+			nextState.updateType = 'visibleChange';
 			this.setState(nextState);
 		}
 	}
