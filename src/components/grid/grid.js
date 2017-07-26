@@ -133,6 +133,7 @@ class Grid extends Component {
 			var xAxisIndex= xy.xAxis;
 			var yAxisIndex = xy.yAxis;
 			var xAxisData,yAxisData;
+			var series = includeSeries[seriesIndex];
 			for(var i = 0; i < xAxis.length;i++) {
 				if(xAxis[i].index === xAxisIndex) {
 					xAxisData = xAxis[i];
@@ -146,6 +147,7 @@ class Grid extends Component {
 			chartEmitter.emit('grid',
 				{	
 					seriesIndex:seriesIndex,
+					stackedOnData:series.stackedOnData,
 					top:axisTop,
 					left:axisLeft,
 					right:axisRight,

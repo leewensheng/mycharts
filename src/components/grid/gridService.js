@@ -2,10 +2,10 @@ import mathUtils from 'cad/math'
 module.exports = {
     getValueRange(series){
         var mins = [],maxs = [];
-        series.map(function(val){
-            mins.push(mathUtils.min(val.data));
-            maxs.push(mathUtils.max(val.data));
-
+        series.map((val,index)=>{
+            var data = this.getStackedData(series,index)
+            mins.push(mathUtils.min(data));
+            maxs.push(mathUtils.max(data));
         });
         return {
             min:mathUtils.min(mins),
@@ -50,5 +50,38 @@ module.exports = {
                 }
             })
         }
+    },
+    getSeriesDataLength(series){
+        var len = 0;
+        series.map(function(val){
+            var data = val.data ||[];
+            len = Math.max(len,data.length);
+        });
+        return len;
+    },
+    getStackedData(series,index) {
+        var len = this.getSeriesDataLength(series);
+        var stackedData = new Array(len);
+        stackedData = stackedData.map(function(){
+            return null;
+        });
+        if(index < 0) {
+            return stackedData;
+        }
+        var stack = series[index].stack;
+        for(var i = 0; i <= index; i++) {
+            if(series[i].stack !== stack && i !== index) {
+                continue;
+            }
+            let data = series[i].data ||[];
+            data.map(function(val,index){
+                var y = stackedData[index]||0;
+                if(typeof val === 'number') {
+                    y += val;
+                }
+                stackedData[index] = y;
+            })
+        }
+        return stackedData;
     }
 }

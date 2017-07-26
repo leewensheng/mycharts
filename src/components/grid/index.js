@@ -124,11 +124,12 @@ class  Grids extends Component {
                         axis.data = gridService.getCategories(includeSeries);
                     }
                 }
-                arr.map(function(index){
-                   if(!grid.includeSeries[index]) {
-                        grid.includeSeries[index] = {};
+                arr.map(function(seriesIndex,index){
+                   if(!grid.includeSeries[seriesIndex]) {
+                        grid.includeSeries[seriesIndex] = {};
                    } 
-                   grid.includeSeries[index][key] = axis.index;
+                   grid.includeSeries[seriesIndex][key] = axis.index;
+                   grid.includeSeries[seriesIndex]['stackedOnData'] = gridService.getStackedData(includeSeries,index-1);
                 })
             });
         }

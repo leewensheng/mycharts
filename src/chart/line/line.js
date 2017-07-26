@@ -31,17 +31,23 @@ class Linechart extends Component {
         if(!isGridReady) {
             return <g></g>;
         }
-        var {left,top,right,bottom,width,height} = grid;
+        var {left,top,right,bottom,width,height,stackedOnData} = grid;
         var points = [];
         var color = series.color||option.colors[seriesIndex];
         var xAxisData = grid.xAxis,yAxisData = grid.yAxis;
         var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
         var scale = (max - min)/height;
         var len = xAxisData.data.length;
-        data.map(function(val,index){
+        points = data.map(function(val,index){
+            if(stackedOnData) {
+                if(typeof stackedOnData[index] === 'number') {
+                    val += stackedOnData[index];
+                }
+            }
             var x = left + index*width/(len-1);
             var y = bottom  - (val-min)/scale;
-            points.push({x,y});
+            var label = val;
+            return {x,y,label};
         });
         if(typeof visible === 'undefined') {
             visible = true;
@@ -53,15 +59,14 @@ class Linechart extends Component {
                     {
                         dataLabels.enabled
                         &&
-                        data.map(function(value,index){
-                            var x = points[index].x;
-                            var y = points[index].y;
+                        points.map(function(point,index){
+                            var {x,y,label} = point;
                             return <Text  
                                     key={index}
                                     x={x} 
                                     y={y - 10} 
                                     style={dataLabels.style} 
-                                    >{value}</Text>
+                                    >{label}</Text>
                         })
                     }
                 </g>
@@ -69,9 +74,8 @@ class Linechart extends Component {
                     {
                         marker.enabled
                         &&
-                        data.map(function(value,index){
-                            var x = points[index].x;
-                            var y = points[index].y;
+                        points.map(function(point,index){
+                            var {x,y,label} = point;
                             return <Circle  
                                         key={index}
                                         cx={x} 
@@ -137,14 +141,6 @@ class Linechart extends Component {
         paper.destroy();
     }
     componentDidMount(){
-        var el = findDOMNode(this);
-        var that = this;
-        setInterval(function(){
-           that.props.chartEmitter.emit('tooltip.showPoint',{
-                name:'test'
-            }); 
-        },1000)
-        
     }
     componentWillReceiveProps(){
         this.setState({isGridReady:false});

@@ -5,7 +5,7 @@ module.exports = {
 	layout:'horizontal',
 	align:'center',
 	verticlAlign:'top',
-	borderColor:'#999',//图例区域边框
+	borderColor:'transparent',//图例区域边框
 	borderWidth:1,//
 	borderRadius:0,
 	background:'transparent',//图例背景色
@@ -19,7 +19,8 @@ module.exports = {
 	itemHeight:16,
 	itemGap:10,
 	itemStyle:{
-		fontSize:12
+		fontSize:12,
+		textBaseLine:'middle'
 	},
 	symbol:{
 		width:20,
