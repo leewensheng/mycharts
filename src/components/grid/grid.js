@@ -129,11 +129,11 @@ class Grid extends Component {
 			axisBottom = bottom  - bottomLabelHeight,
 			axisWidth = axisRight - axisLeft,
 			axisHeight = axisBottom - axisTop;
-		$.each(includeSeries,function(seriesIndex,xy){
-			var xAxisIndex= xy.xAxis;
-			var yAxisIndex = xy.yAxis;
+		includeSeries.map(function(series){
+			var seriesIndex = series.seriesIndex;
+			var xAxisIndex= series.xAxis;
+			var yAxisIndex = series.yAxis;
 			var xAxisData,yAxisData;
-			var series = includeSeries[seriesIndex];
 			for(var i = 0; i < xAxis.length;i++) {
 				if(xAxis[i].index === xAxisIndex) {
 					xAxisData = xAxis[i];

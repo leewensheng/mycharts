@@ -35,17 +35,21 @@ class Linechart extends Component {
         var points = [];
         var color = series.color||option.colors[seriesIndex];
         var xAxisData = grid.xAxis,yAxisData = grid.yAxis, reversed = grid.reversed;
-        var min,max,scale;
+        var len,min,max,scale,start,end;
+        len = data.length;
         if(!reversed) {
-            min = yAxisData.data[0];
-            max = yAxisData.data[yAxisData.data.length-1];
-            scale = (max - min)/height;
+            min =  yAxisData.min;
+            max = yAxisData.max;
+            start = yAxisData.start;
+            end = yAxisData.end;
+            scale = (max - min) / height;
         } else {
-            min = xAxisData.data[0];
-            max = xAxisData.data[xAxisData.data.length-1];
-            scale = (max - min)/width;
+            min = xAxisData.min;
+            max = xAxisData.max;
+            start = xAxisData.start;
+            end = yAxisData.end;
+            scale  = (max - min) / width;
         }
-        var len = xAxisData.data.length;
         points = data.map(function(val,index){
             var x,y;
             if(stackedOnData) {
@@ -54,11 +58,11 @@ class Linechart extends Component {
                 }
             }
             if(!reversed) {
-                x = left + index*width/(len-1);
-                y = bottom  - (val-min)/scale;
+                x = xAxisData.start + (xAxisData.end - xAxisData.start)*index/(xAxisData.max - xAxisData.min);
+                y = yAxisData.start + (yAxisData.end - yAxisData.start)*(val - min)/(yAxisData.max - yAxisData.min);
             } else {
-                x = left + (val - min) /scale;
-                y = top + index*height/(len - 1);
+                x = xAxisData.start + (xAxisData.end - xAxisData.start)*(val - min)/(xAxisData.max - xAxisData.min);
+                y = yAxisData.start + (yAxisData.end - yAxisData.start)*index/(yAxisData.max - yAxisData.min);
             }
             var label = val;
             return {x,y,label};

@@ -27,14 +27,14 @@ class  Grids extends Component {
             yAxis = defaultOption.axis;
         };
         if(!grid.length) {
-            grids = [{option:grid,xAxis:[],yAxis:[],includeSeries:{}}];
+            grids = [{option:grid,xAxis:[],yAxis:[],includeSeries:[]}];
         } else {
             grids = grid.map(function(val){
                 return {
                     option:val,
                     xAxis:[],
                     yAxis:[],
-                    includeSeries:{}
+                    includeSeries:[]
                 }
             })
         };
@@ -116,12 +116,12 @@ class  Grids extends Component {
             } else if(xaxis.type === 'value' && yaxis.type === 'value') {
                 yaxis.dataRange = {min,max};
             }
-            
-            grids[gridIndex].includeSeries[seriesIndex] = {
+            grids[gridIndex].includeSeries.push({
+                seriesIndex:seriesIndex,
                 xAxis:xAxisIndex,
                 yAxis:yAxisIndex,
                 reversed : reversed
-            }
+            })
         });
         return {grids,visibleSeries};
     }

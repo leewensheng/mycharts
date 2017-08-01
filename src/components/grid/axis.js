@@ -24,13 +24,16 @@ class  Axis extends Component {
             other = opposite?right:left;
         }
         if(type === 'value') {
-            var axismin = typeof(min)==='number'?min:dataRange.min;
-            var axismax = typeof(max)==='number'?max:dataRange.max;
-            if(axismin === null||axismax === null) {
+            min = typeof(min)==='number'?min:dataRange.min;
+            max = typeof(max)==='number'?max:dataRange.max;
+            if(min === null||max === null) {
                 data = [];
             } else {
-                data = gridService.getSplitArray(axismin,axismax,splitNumber);
+                data = gridService.getSplitArray(min,max,splitNumber);
             }
+        } else {
+            min = typeof(min)==='number'?min:0;
+            max = typeof(max)==='number'?max:data.length-1;
         } 
         var points = [];
         var gap = end - start;
@@ -65,7 +68,7 @@ class  Axis extends Component {
             isLabelAdjusted = true;
         }
         var isFirstTime = !oldState;
-        return {isLabelAdjusted,points:points,start,end,other,isFirstTime};
+        return {isLabelAdjusted,points:points,start,end,other,min,max,isFirstTime};
     }
     render(){
         var props = this.props;
@@ -265,11 +268,9 @@ class  Axis extends Component {
                 } 
             }
         } 
-        var {points} = state;
+        var {points,start,end,other,min,max} = state;
         setAxisData(axis,indexInGrid,{
-            data:points.map(function(p){return p.value}),
-            index:index,
-            labelPlace:labelPlace
+            start,end,other,min,max,index,labelPlace
         })
     }
     componentDidMount(){
