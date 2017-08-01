@@ -86,53 +86,43 @@ class  Grids extends Component {
         if(oldState) {
             $.extend(visibleSeries,oldState.visibleSeries);
         }
-        setAxisDataRange(xAxis,'xAxis');
-        setAxisDataRange(yAxis,'yAxis');
-
-        function setAxisDataRange(someAxis,key){
-            someAxis.map(function(axis){
-                var type = axis.type;
-                var axisIndex = axis.index;
-                var gridIndex = axis.gridIndex;
-                var grid = grids[gridIndex];
-                var arr = [];
-                var includeSeries = series.filter(function(serie,index){
-                    if(!visibleSeries[index]) {
-                        return false;
-                    }
-                    var type = serie.type;
-                    var chart = charts[type];
-                    if(!type||!chart) {
-                        return;
-                    }
-                    var dependencies = chart.dependencies||{};
-                    if(!dependencies.grid) {
-                        return;
-                    }
-                    var isInclude = (serie[key]||0) === axisIndex;
-                    if(isInclude) {
-                        arr.push(index);
-                        return isInclude;
-                    }
-                });
-                if(type === 'value') {
-                    var dataRange = gridService.getValueRange(includeSeries);
-                    axis.dataRange = dataRange;
-                } else if(type === 'category') {
-                    //如果未设置data，则从系列中获取
-                    if(!axis.data) {
-                        axis.data = gridService.getCategories(includeSeries);
-                    }
-                }
-                arr.map(function(seriesIndex,index){
-                   if(!grid.includeSeries[seriesIndex]) {
-                        grid.includeSeries[seriesIndex] = {};
-                   } 
-                   grid.includeSeries[seriesIndex][key] = axis.index;
-                   grid.includeSeries[seriesIndex]['stackedOnData'] = gridService.getStackedData(includeSeries,index-1);
-                })
-            });
-        }
+        series.map(function(seriesConfig,seriesIndex){
+            var type =seriesConfig.type;
+            var chart = charts[type];
+            if(!chart) {
+                return;
+            }
+            var dependencies = chart.dependencies ||{};
+            if(!dependencies.grid) {
+                return;
+            }
+            var xAxisIndex = seriesConfig.xAxis || 0;
+            var yAxisIndex = seriesConfig.yAxis || 0;
+            var xaxis = xAxis[xAxisIndex]
+            var yaxis = yAxis[yAxisIndex];
+            var gridIndex = xaxis.gridIndex;
+            var max = null;
+            var min = null;
+            var reversed = false;
+            if(!(xaxis.type === 'category' && yaxis.type === 'category')) {
+                min = 0;
+                max = 5;
+            }
+            if(xaxis.type === 'category' && yaxis.type === 'value') {
+                yaxis.dataRange = {min,max}
+            } else if(xaxis.type === 'value' && yaxis.type === 'category') {
+                xaxis.dataRange = {min,max};
+                reversed = true;
+            } else if(xaxis.type === 'value' && yaxis.type === 'value') {
+                yaxis.dataRange = {min,max};
+            }
+            
+            grids[gridIndex].includeSeries[seriesIndex] = {
+                xAxis:xAxisIndex,
+                yAxis:yAxisIndex,
+                reversed : reversed
+            }
+        });
         return {grids,visibleSeries};
     }
     render(){

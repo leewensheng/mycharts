@@ -9,7 +9,10 @@ var option = {
 		containLabel:false
 	},
 	xAxis:{
-		data:['甲','乙','丙']
+		data:['甲','乙','丙'],
+		gridLine:{
+			enabled:false
+		}
 	},
 	yAxis:{
 		min:0

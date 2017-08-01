@@ -148,6 +148,7 @@ class Grid extends Component {
 				{	
 					seriesIndex:seriesIndex,
 					stackedOnData:series.stackedOnData,
+					reversed:series.reversed,
 					top:axisTop,
 					left:axisLeft,
 					right:axisRight,

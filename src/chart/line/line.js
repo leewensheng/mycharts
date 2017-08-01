@@ -34,18 +34,32 @@ class Linechart extends Component {
         var {left,top,right,bottom,width,height,stackedOnData} = grid;
         var points = [];
         var color = series.color||option.colors[seriesIndex];
-        var xAxisData = grid.xAxis,yAxisData = grid.yAxis;
-        var min = yAxisData.data[0],max = yAxisData.data[yAxisData.data.length-1];
-        var scale = (max - min)/height;
+        var xAxisData = grid.xAxis,yAxisData = grid.yAxis, reversed = grid.reversed;
+        var min,max,scale;
+        if(!reversed) {
+            min = yAxisData.data[0];
+            max = yAxisData.data[yAxisData.data.length-1];
+            scale = (max - min)/height;
+        } else {
+            min = xAxisData.data[0];
+            max = xAxisData.data[xAxisData.data.length-1];
+            scale = (max - min)/width;
+        }
         var len = xAxisData.data.length;
         points = data.map(function(val,index){
+            var x,y;
             if(stackedOnData) {
                 if(typeof stackedOnData[index] === 'number') {
                     val += stackedOnData[index];
                 }
             }
-            var x = left + index*width/(len-1);
-            var y = bottom  - (val-min)/scale;
+            if(!reversed) {
+                x = left + index*width/(len-1);
+                y = bottom  - (val-min)/scale;
+            } else {
+                x = left + (val - min) /scale;
+                y = top + index*height/(len - 1);
+            }
             var label = val;
             return {x,y,label};
         });
@@ -142,7 +156,7 @@ class Linechart extends Component {
     }
     componentDidMount(){
     }
-    componentWillReceiveProps(){
+    componentWillReceiveProps(nextProps){
         this.setState({isGridReady:false});
     }
     shouldComponentUpdate(nextProps,nextState){
@@ -163,7 +177,8 @@ class Linechart extends Component {
 Linechart.defaultOption = defaultOption;
 Linechart.dependencies = {
     grid:{
-        startOnTick:true
+        startOnTick:true,
+        stackAble:true
     },
     legend:{
         icon:LineIcon

@@ -31,7 +31,7 @@ class  Axis extends Component {
             } else {
                 data = gridService.getSplitArray(axismin,axismax,splitNumber);
             }
-        }
+        } 
         var points = [];
         var gap = end - start;
         /*
