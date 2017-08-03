@@ -1,9 +1,9 @@
 import mathUtils from 'cad/math'
 module.exports = {
-    getValueRange(series){
+    getStackedExtreme(series,axis){
         var mins = [],maxs = [];
         series.map((val,index)=>{
-            var data = this.getStackedData(series,index)
+            var data = this.getStackedData(series,index,axis);
             mins.push(mathUtils.min(data));
             maxs.push(mathUtils.max(data));
         });
@@ -51,37 +51,39 @@ module.exports = {
             })
         }
     },
-    getSeriesDataLength(series){
-        var len = 0;
-        series.map(function(val){
-            var data = val.data ||[];
-            len = Math.max(len,data.length);
-        });
-        return len;
+    getValues(series){
+        var data = series.data;
+        return data.map(function(point){
+            if(typeof point === 'number') {
+                return point;
+            } else if(point instanceof Array) {
+                return point[1]; 
+            } if(typeof point === 'object') {
+                return point.y || point.value;
+            } else {
+                return null;
+            }
+        })
     },
-    getStackedData(series,index) {
-        var len = this.getSeriesDataLength(series);
-        var stackedData = new Array(len);
-        stackedData = stackedData.map(function(){
-            return null;
-        });
-        if(index < 0) {
-            return stackedData;
+    getStackedData(series,index,axis){
+        var currentSeries = series[index];
+        var stack = currentSeries.stack;
+        var currentData = this.getValues(currentSeries);
+        if(!stack) {
+            return currentData;
         }
-        var stack = series[index].stack;
-        for(var i = 0; i <= index; i++) {
-            if(series[i].stack !== stack && i !== index) {
+        for(var i = 0; i < index ; i++) {
+            let stackSeries = series[i];
+            if(stackSeries.stack !== stack) {
                 continue;
             }
-            let data = series[i].data ||[];
-            data.map(function(val,index){
-                var y = stackedData[index]||0;
-                if(typeof val === 'number') {
-                    y += val;
-                }
-                stackedData[index] = y;
+            let stackData = this.getValues(stackSeries);
+            stackData.map(function(num,index){
+                var y = currentData[index]||0;
+                y += num;
+                currentData[index] = y;
             })
         }
-        return stackedData;
+        return currentData;
     }
 }

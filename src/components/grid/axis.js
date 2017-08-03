@@ -73,7 +73,7 @@ class  Axis extends Component {
     render(){
         var props = this.props;
         var {hasOpposite,top,left,right,bottom,width,height,axis,min,max,option,containLabel,updateType} = props;
-        var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick} = option;
+        var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick,includeSeries} = option;
         var state = this.state;
         var {isLabelAdjusted,points,start,end,other,isFirstTime} = state;
         var {gridLeft,gridRight,gridTop,gridBottom} = props;
@@ -99,6 +99,9 @@ class  Axis extends Component {
             labelFlag *= -1;
             tickFlag *= -1;
             gridFlag *= -1;
+        }
+        if(!includeSeries.length) {
+            points = [];
         }
         points.map(function(point,index){
             var {x,y,value} = point;

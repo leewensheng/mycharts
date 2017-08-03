@@ -6,7 +6,8 @@ var option = {
 	grid:{
 		top:50,
 		left:80,
-		containLabel:false
+		containLabel:false,
+		background:'#ddd'
 	},
 	xAxis:{
 		data:['甲','乙','丙'],
@@ -21,7 +22,7 @@ var option = {
 	{
 		type:'line',
 		data:[1,2,3],
-		stack:0
+		stack:1
 	},{
 		type:'line',
 		data:[2,3,5],

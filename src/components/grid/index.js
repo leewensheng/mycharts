@@ -50,6 +50,7 @@ class  Grids extends Component {
             }
             var gridIndex = val.gridIndex;
             val.index = index;
+            val.includeSeries = [];
             grids[gridIndex].xAxis.push(val);
             
             return val;
@@ -66,6 +67,7 @@ class  Grids extends Component {
             }
             var gridIndex = val.gridIndex;
             val.index = index;
+            val.includeSeries = [];
             grids[gridIndex].yAxis.push(val);
             return val;
         });
@@ -79,15 +81,18 @@ class  Grids extends Component {
                 yAxis[1].opposite = !xAxis[0].opposite;
             }
         });
-        var visibleSeries  = {};
+        var visibleSeriesIndex  = {}, visibleSeries;
         series.map(function(val,seriesIndex){
-            visibleSeries[seriesIndex] = typeof val.visible === 'undefined' ? true: val.visible;
+            visibleSeriesIndex[seriesIndex] = typeof val.visible === 'undefined' ? true: val.visible;
         })
         if(oldState) {
-            $.extend(visibleSeries,oldState.visibleSeries);
+            $.extend(visibleSeriesIndex,oldState.visibleSeriesIndex);
         }
-        series.map(function(seriesConfig,seriesIndex){
-            var type =seriesConfig.type;
+        visibleSeries = series.filter(function(val,seriesIndex){
+            return visibleSeriesIndex[seriesIndex];
+        });
+        series.map(function(currentSeries,seriesIndex){
+            var type =currentSeries.type;
             var chart = charts[type];
             if(!chart) {
                 return;
@@ -96,26 +101,22 @@ class  Grids extends Component {
             if(!dependencies.grid) {
                 return;
             }
-            var xAxisIndex = seriesConfig.xAxis || 0;
-            var yAxisIndex = seriesConfig.yAxis || 0;
+            if(!visibleSeriesIndex[seriesIndex]) {
+                return;
+            }
+            var xAxisIndex = currentSeries.xAxis || 0;
+            var yAxisIndex = currentSeries.yAxis || 0;
             var xaxis = xAxis[xAxisIndex]
             var yaxis = yAxis[yAxisIndex];
             var gridIndex = xaxis.gridIndex;
-            var max = null;
-            var min = null;
             var reversed = false;
-            if(!(xaxis.type === 'category' && yaxis.type === 'category')) {
-                min = 0;
-                max = 5;
-            }
-            if(xaxis.type === 'category' && yaxis.type === 'value') {
-                yaxis.dataRange = {min,max}
-            } else if(xaxis.type === 'value' && yaxis.type === 'category') {
-                xaxis.dataRange = {min,max};
+            if(xaxis.type === 'value' && yaxis.type === 'category') {
                 reversed = true;
-            } else if(xaxis.type === 'value' && yaxis.type === 'value') {
-                yaxis.dataRange = {min,max};
             }
+            xaxis.reversed = yaxis.reversed = reversed;
+
+            xaxis.includeSeries.push(seriesIndex);
+            yaxis.includeSeries.push(seriesIndex);
             grids[gridIndex].includeSeries.push({
                 seriesIndex:seriesIndex,
                 xAxis:xAxisIndex,
@@ -123,7 +124,29 @@ class  Grids extends Component {
                 reversed : reversed
             })
         });
-        return {grids,visibleSeries};
+        xAxis.map(function(axis){
+            var {type,reversed,includeSeries} = axis;
+            includeSeries = includeSeries.map(function(seriesIndex){
+                return series[seriesIndex];
+            })
+            if(type === 'value') {
+                if(reversed) {
+                    axis.dataRange = gridService.getStackedExtreme(includeSeries,'y');
+                } else {
+                    axis.dataRange = gridService.getStackedExtreme(includeSeries,'x');
+                }
+            } 
+        })
+        yAxis.map(function(axis){
+            var {type,reversed,includeSeries} = axis;
+            includeSeries = includeSeries.map(function(seriesIndex){
+                return series[seriesIndex];
+            })
+            if(type === 'value') {
+                axis.dataRange = gridService.getStackedExtreme(includeSeries,'y');
+            }
+        })
+        return {grids,visibleSeriesIndex};
     }
     render(){
         var props = this.props;
@@ -158,8 +181,8 @@ class  Grids extends Component {
     }
     onLegendChange(data){
         var {props,state} = this;
-        var {visibleSeries} = state;
-        $.extend(visibleSeries,data.visible);
+        var {visibleSeriesIndex} = state;
+        $.extend(visibleSeriesIndex,data.visible);
         var nextState = this.getRenderData(props,state);
         this.setState(nextState);
     }
