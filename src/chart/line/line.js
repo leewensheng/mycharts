@@ -5,7 +5,6 @@ import Paper from 'cad/paper/index'
 import Text from '../../elements/text'
 import Polyline from '../../elements/polyline'
 import Circle from '../../elements/circle'
-import defaultOption from './option'
 import LineIcon from './icon';
 class Linechart extends Component {
     constructor(props){
@@ -19,21 +18,22 @@ class Linechart extends Component {
         this.state = {
             hasInited:false,
             isGridReady:false,
-            visible:props.series.visible
+            visible:props.seriesModel.visible
         };
     }
     render(){
         var that = this;
         var {props,state} = this;
-        var {width,height,series,option,seriesIndex} = props;
-        var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = series;
+        var {width,height,seriesModel} = props;
+        var seriesOpt = seriesModel.getOption();
+        var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
         var {isGridReady,grid,legend,hasInited,visible} = this.state;
         if(!isGridReady) {
             return <g></g>;
         }
         var {left,top,right,bottom,width,height,stackedOnData} = grid;
         var points = [];
-        var color = series.color||option.colors[seriesIndex];
+        var color = seriesModel.seriesColor;
         var xAxisData = grid.xAxis,yAxisData = grid.yAxis, reversed = grid.reversed;
         var len,min,max,scale,start,end;
         len = data.length;
@@ -50,7 +50,10 @@ class Linechart extends Component {
             end = yAxisData.end;
             scale  = (max - min) / width;
         }
-        points = data.map(function(val,index){
+        points = data.map(function(point){
+            var label = point.y;
+            var val = point.y;
+            var index = point.x;
             var x,y;
             if(stackedOnData) {
                 if(typeof stackedOnData[index] === 'number') {
@@ -64,12 +67,8 @@ class Linechart extends Component {
                 x = xAxisData.start + (xAxisData.end - xAxisData.start)*(val - min)/(xAxisData.max - xAxisData.min);
                 y = yAxisData.start + (yAxisData.end - yAxisData.start)*index/(yAxisData.max - yAxisData.min);
             }
-            var label = val;
             return {x,y,label};
         });
-        if(typeof visible === 'undefined') {
-            visible = true;
-        }
         return (
             <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
                 <Polyline className="vcharts-series-polyline" points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
@@ -178,7 +177,6 @@ class Linechart extends Component {
         props.chartEmitter.off('grid',this.onGridChange);
     }
 }
-Linechart.defaultOption = defaultOption;
 Linechart.dependencies = {
     grid:{
         startOnTick:true,

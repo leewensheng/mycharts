@@ -1,7 +1,6 @@
 import $ from 'jquery'
 import 'cad/dom'
-import default_option from './option/index'
-import Core from './chart/index'
+import Core from './chart/core'
 import Paper from 'cad/paper/index'
 import React from 'react'
 import {render} from 'react-dom'
@@ -29,11 +28,7 @@ Chart.prototype = {
 		this.height = height;
 	},
 	render(){
-		var option = $.extend(true,{},default_option,this.option);
-		this.option = option;
-		var container = this.container;
-		var width = this.width;
-		var height = this.height;
+		var {option,container,width,height} = this;
 		var vchart = <Core chart={this} option={option} width={width} height={height} />;
 		render(vchart,$(container)[0]);
 		this.componentDidMount();

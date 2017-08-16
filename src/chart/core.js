@@ -6,13 +6,17 @@ import Vcomponents from '../components/index'
 import $ from 'jquery'
 import EventEmitter  from 'events'
 import Tooltip from '../components/tooltip/index'
+import ChartModel from '../model/chartModel'
+import ChartSeriesModels  from './models'
 class Core extends Component {
     constructor(props){
         super(props);
         this.chartEmitter = new EventEmitter();
+        var dependencies = this.getDependcies(props);
         this.state = {
-            props:props
-        }
+            props:props,
+            dependencies:dependencies
+        };
     }
     getDependcies(props){
         var {option} = props;
@@ -35,9 +39,10 @@ class Core extends Component {
         var state = this.state;
         var props = this.state.props;
         var {width,height,option} = props;
+        var chartModel = new ChartModel(width,height,option);
+        var option = chartModel.getOption();
         var {chart,colors,series} = option;
-        var {updateType} = this.state;
-        var dependencies = this.getDependcies(props);
+        var {updateType,dependencies} = this.state;
         var components = [];
         var chartEmitter = this.chartEmitter;
         for(var dependence in dependencies) {
@@ -56,28 +61,35 @@ class Core extends Component {
                                 return;
                             }
                             return (
-                                <Vcomponent key={name} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} updateType={updateType}/>
+                                <Vcomponent
+                                     key={name} 
+                                     chartEmitter={chartEmitter} 
+                                     chartModel = {chartModel}
+                                     chartWidth={width} 
+                                     chartHeight={height} 
+                                     chartOption={option} 
+                                     updateType={updateType}/>
                             )
                         })
                     }
                     {
-                         series.map(function(chartOption,index){
-                            var type = chartOption.type;
+                         chartModel.mapSeries(function(seriesModel){
+                            var seriesIndex = seriesModel.seriesIndex;
+                            var type = seriesModel.type;
                             if(!type) {return;}
                             var Chart = charts[type];
                             if(!Chart) {return;}
-                            var defaultOption = Chart.defaultOption;
-                            chartOption = $.extend(true,{},defaultOption,option.plotOptions.series,option.plotOptions[type],chartOption);
                            return (
                             <Chart
-                                key={type+index}
+                                key={type+seriesIndex}
                                 option={option} 
                                 width={width}
                                 height={height}
-                                series={chartOption}
-                                seriesIndex={index}
+                                seriesIndex={seriesIndex}
                                 updateType={updateType}
                                 chartEmitter={chartEmitter}
+                                chartModel={chartModel}
+                                seriesModel={seriesModel}
                             />
                             )
                         })
@@ -96,8 +108,10 @@ class Core extends Component {
         this.props.chart = null;
     }
     setOption(nextProps){
+        var dependencies = this.getDependcies(nextProps);
         this.setState({
             props:nextProps,
+            dependencies:dependencies,
             updateType:nextProps.updateType||'newProps'
         })
     }

@@ -9,26 +9,25 @@ import mathUtils from 'cad/math'
 import Text from '../../elements/text'
 import ConnectLine from './connect-line'
 
-import defaultOption from './option'
 import Slice from './slice'
 import Icon from './icon'
 
-import {getRenderData} from './helper'
 class  Pie extends Component{
 	constructor(props) {
 		super(props);
 		this.onLegendChange = this.onLegendChange.bind(this);
 		props.chartEmitter.on('legendVisibleToggle',this.onLegendChange);
-		var state = getRenderData(props);
+		var state = props.seriesModel.getRenderData(props.width,props.height);
 		this.state = state;
 	}
 
 	render(){
 		var that = this;
 		var {props,state} = this;
-		var {width,height,series,option} = props;
+		var {width,height,seriesModel,option} = props;
+		var seriesOpt = seriesModel.getOption();
 		var {points} = state;
-		var {center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset,visible} = series;
+		var {animation,center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset,visible} = seriesOpt;
 		var {cx,cy,radius,innerRadius,selectedPointsMap,updateType} = this.state;
 		var onSlice = this.onSlice;
 		return (
@@ -39,7 +38,7 @@ class  Pie extends Component{
 					var {startAngle,midAngle,endAngle,radius,color,selected,isAdd} = point;
 					return <Slice
 							key={index}
-							animation={option.chart.animation}
+							animation={animation}
 							cx={cx}
 							cy={cy}
 							startAngle={startAngle}
@@ -108,7 +107,7 @@ class  Pie extends Component{
 									dataLabels.enabled
 									&&
 									<Text 
-									animation={option.chart.animation}
+									animation={animation}
 									x={textPoint.x + dx}
 									y={textPoint.y}
 									style={{
@@ -124,7 +123,7 @@ class  Pie extends Component{
 									connectLine.enabled && !dataLabels.inside && dataLabels.distance>0
 									&&
 									<ConnectLine
-										animation={option.chart.animation}
+										animation={animation}
 										cx={cx}
 										cy={cy}
 										radius={p.radius}
@@ -171,14 +170,16 @@ class  Pie extends Component{
 			visiblePoints.map(function(visible,index){
 				points[index].visible = visible;
 			})
-			var nextState = getRenderData(props,state);
+			var nextState = props.seriesModel.getRenderData(props.width,props.height,state);
 			nextState.updateType = 'visibleChange';
 			this.setState(nextState);
 		}
 	}
 	animate(){
-		var {width,height,option,series,seriesIndex} = this.props;
-		var sliceOffset = series.sliceOffset;
+		var {width,height,seriesModel} = this.props;
+		var seriesIndex = seriesModel.seriesIndex;
+		var seriesOpt = seriesModel.getOption();
+		var {sliceOffset} = seriesOpt;
 		var {cx,cy,radius,startAngle,endAngle} = this.state;
 		var el = findDOMNode(this);
 		var svg = $(el).closest("svg").get(0);
@@ -224,7 +225,8 @@ class  Pie extends Component{
 		this.animate();
 	}
 	componentWillReceiveProps(nextProps){
-		var state = getRenderData(nextProps,this.state);
+		var {width,height} = nextProps;
+		var state = nextProps.seriesModel.getRenderData(width,height,this.state);
 		state.updateType = 'newProps';
 		this.setState(state);
 	}
@@ -233,7 +235,6 @@ class  Pie extends Component{
 		props.chartEmitter.removeListener('legendVisibleToggle',this.onLegendChange);
 	}
 }
-Pie.defaultOption = defaultOption;
 Pie.dependencies = {
 	legend:{
 		must:false,

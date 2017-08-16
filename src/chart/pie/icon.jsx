@@ -8,7 +8,6 @@ class PieIcon extends Component {
 		return (
 			<Rect animation={animation} fill={color} x={x} y={y} width={width} height={height} rx={5} ry={5}/>
 		)
-
 	}
 }
 PieIcon.defaultProps = {

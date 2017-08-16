@@ -37,7 +37,7 @@ class Legend extends Component {
 					name:series.name|| ('series ' + seriesIndex),
 					color:series.color || chartOption.colors[seriesIndex%chartOption.colors.length],
 					icon:legend.icon,
-					visible:typeof series.visible==='undefined'?true:series.visible,
+					visible:series.visible,
 					multiple:false,
 					seriesIndex:seriesIndex
 				})

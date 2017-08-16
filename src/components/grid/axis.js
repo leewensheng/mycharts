@@ -271,7 +271,8 @@ class  Axis extends Component {
                 } 
             }
         } 
-        var {points,start,end,other,min,max} = state;
+        //应当使用轴的极值
+        var {points,start,end,other,min,max,data} = state;
         setAxisData(axis,indexInGrid,{
             start,end,other,min,max,index,labelPlace
         })

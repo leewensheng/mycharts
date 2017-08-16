@@ -14,8 +14,9 @@ class  Grids extends Component {
     }
     getRenderData(props,oldState){
     	//todo 计算出grid的大小，和各axis的值范围
-        var {chartWidth,chartHeight,chartOption} = props;
-        var {grid,xAxis,yAxis,series} = chartOption;
+        var {chartModel} = props;
+        var option = chartModel.getOption();
+        var {grid,xAxis,yAxis,series} = option;
         var grids = [];
         if(!grid) {
             grid = defaultOption.grid;
@@ -121,7 +122,8 @@ class  Grids extends Component {
                 seriesIndex:seriesIndex,
                 xAxis:xAxisIndex,
                 yAxis:yAxisIndex,
-                reversed : reversed
+                reversed : reversed,
+                stackedOnData:gridService.getStackedOnData(series,seriesIndex)
             })
         });
         xAxis.map(function(axis){

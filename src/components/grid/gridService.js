@@ -1,6 +1,7 @@
 import mathUtils from 'cad/math'
 module.exports = {
     getStackedExtreme(series,axis){
+        //获取所有series的极值
         var mins = [],maxs = [];
         series.map((val,index)=>{
             var data = this.getStackedData(series,index,axis);
@@ -85,5 +86,24 @@ module.exports = {
             })
         }
         return currentData;
+    },
+    getStackedOnData(series,seriesIndex){
+        var currentSeries = series[seriesIndex];
+        var stack = currentSeries.stack;
+        if(!stack) {
+            return false;
+        }
+        var stackedOnData = [];
+        for(var i = 0 ;i < seriesIndex;i++) {
+            let stackSeries = series[i];
+            if(stackSeries.stack === stack) {
+                stackSeries.data.map(function(num,index){
+                    var y = stackedOnData[index] || 0;
+                    y += num;
+                    stackedOnData[index] = y;
+                })
+            }
+        }
+        return stackedOnData;
     }
 }
