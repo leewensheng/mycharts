@@ -1,9 +1,10 @@
 import mathUtils from 'cad/math'
 import $ from 'jquery'
 import BaseModel from './baseModel'
-class SeriesModel extends BaseModel {
-	constructor(seriesOpt){
+export default class SeriesModel extends BaseModel {
+	constructor(chartModel,seriesOpt){
 		super();
+		this.chartModel = chartModel;
 		this.type = seriesOpt.type;
 		this.option = seriesOpt;
 		this.seriesIndex = seriesOpt.seriesIndex;
@@ -92,4 +93,3 @@ class SeriesModel extends BaseModel {
 		})
 	}
 }
-module.exports = SeriesModel;

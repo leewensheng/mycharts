@@ -1,8 +1,8 @@
 import SeriesModel from '../../model/seriesModel'
 import BarIcon from './icon'
 class BarModel extends SeriesModel {
-	constructor(seriesOpt){
-		super(seriesOpt);
+	constructor(chartModel,seriesOpt){
+		super(chartModel,seriesOpt);
 		this.initOption();
 	}
 	//依赖

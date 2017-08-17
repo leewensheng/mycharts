@@ -4,8 +4,8 @@ import mathUtils from 'cad/math'
 import $ from 'jquery'
 class PieModel extends SeriesModel {
 	//默认配置
-	constructor(seriesOpt){
-		super(seriesOpt);
+	constructor(chartModel,seriesOpt){
+		super(chartModel,seriesOpt);
 		this.initOption();
 	}
 	defaultOption =  {

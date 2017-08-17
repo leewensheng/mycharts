@@ -7,7 +7,6 @@ import $ from 'jquery'
 import EventEmitter  from 'events'
 import Tooltip from '../components/tooltip/index'
 import ChartModel from '../model/chartModel'
-import ChartSeriesModels  from './models'
 class Core extends Component {
     constructor(props){
         super(props);

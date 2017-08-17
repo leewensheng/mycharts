@@ -1,6 +1,6 @@
 import $ from 'jquery'
 import seriesModels from '../chart/models'
-class ChartModel {
+export default class ChartModel {
 	constructor(width,height,option){
         this.width = width;
         this.height = height;
@@ -57,12 +57,13 @@ class ChartModel {
         return this.option;
 	}
     initSeriesModels() {
+        var that = this;
         var option = this.getOption();
         var {series} = option;
         var models = series.map(function(seriesOpt,seriesIndex){
             var {type} = seriesOpt;
             var Model = seriesModels[type];
-            var seriesModel =  new Model(seriesOpt);
+            var seriesModel =  new Model(that,seriesOpt);
             series[seriesIndex] = seriesModel.getOption();
             return seriesModel;
         })
@@ -103,4 +104,3 @@ class ChartModel {
         
     }
 }
-module.exports = ChartModel;
