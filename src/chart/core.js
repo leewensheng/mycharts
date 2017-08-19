@@ -7,54 +7,39 @@ import $ from 'jquery'
 import EventEmitter  from 'events'
 import Tooltip from '../components/tooltip/index'
 import ChartModel from '../model/chartModel'
-class Core extends Component {
+export default class Core extends Component {
     constructor(props){
         super(props);
-        this.chartEmitter = new EventEmitter();
-        var dependencies = this.getDependcies(props);
-        this.state = {
-            props:props,
-            dependencies:dependencies
-        };
-    }
-    getDependcies(props){
-        var {option} = props;
-        var {series} = option;
-        var dependencies = {};
-        series.map(function(chartOption,index){
-            var type = chartOption.type;
-            var Chart = charts[type];
-            if(!Chart) {
-                return;
-            }
-            var chartDependencies = Chart.dependencies||{};
-            for(var key in chartDependencies) {
-                dependencies[key] = false;
-            }
-        });
-        return dependencies;
-    }
-    render(){
-        var state = this.state;
-        var props = this.state.props;
+        var chartEmitter = new EventEmitter();
         var {width,height,option} = props;
         var chartModel = new ChartModel(width,height,option);
-        var option = chartModel.getOption();
-        var {chart,colors,series} = option;
-        var {updateType,dependencies} = this.state;
-        var components = [];
+        this.onLegendVisibleToggle = this.onLegendVisibleToggle.bind(this);
+        this.chartEmitter = chartEmitter;
+        this.state = {chartModel};
+        this.initEvents();
+    }
+    static defaultProps = {
+        width:600,
+        height:400,
+        option:null       
+    };
+
+    render(){
+        var state = this.state;
+        var {chartModel} = state;
+        var width = chartModel.getWidth();
+        var height = chartModel.getHeight();
         var chartEmitter = this.chartEmitter;
-        for(var dependence in dependencies) {
-            components.push(dependence);
-        };
+        var option = chartModel.getOption();
         return (
             <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
-                <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} updateType={updateType}/>
+                <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} />
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
                     <defs></defs>
-                    <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={chart.background}/>
+                    <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={option.chart.background}/>
                     {
-                        components.map(function(name){
+                        chartModel.components.map(function(component){
+                            var name = component.type;
                             var Vcomponent = Vcomponents[name];
                             if(!Vcomponent) {
                                 return;
@@ -64,10 +49,7 @@ class Core extends Component {
                                      key={name} 
                                      chartEmitter={chartEmitter} 
                                      chartModel = {chartModel}
-                                     chartWidth={width} 
-                                     chartHeight={height} 
-                                     chartOption={option} 
-                                     updateType={updateType}/>
+                                />
                             )
                         })
                     }
@@ -85,7 +67,6 @@ class Core extends Component {
                                 width={width}
                                 height={height}
                                 seriesIndex={seriesIndex}
-                                updateType={updateType}
                                 chartEmitter={chartEmitter}
                                 chartModel={chartModel}
                                 seriesModel={seriesModel}
@@ -107,20 +88,38 @@ class Core extends Component {
         this.props.chart = null;
     }
     setOption(nextProps){
-        var dependencies = this.getDependcies(nextProps);
-        this.setState({
-            props:nextProps,
-            dependencies:dependencies,
-            updateType:nextProps.updateType||'newProps'
-        })
+        var {width,height,option} = nextProps;
+        var chartModel = new ChartModel(width,height,option);
+        this.setState({chartModel});
+    }
+    resize(width,height){
+        
+    }
+    onLegendVisibleToggle(msg){
+        var {chartModel} = this.state;
+        var {seriesIndex,dataIndex} = msg;
+       var seriesModel = chartModel.getSeriesByIndex(seriesIndex);
+       if(!seriesModel.multipleLegend) {
+            seriesModel.visible = !(seriesModel.visible)
+       } else {
+            var data = seriesModel.getOption().data[dataIndex];
+            data.visible = !data.visible;
+       }
+       this.setState({chartModel});
     }
     componentWillReceiveProps(nextProps) {
         this.setOption(nextProps);
     }
+    initEvents() {
+        this.chartEmitter.on('legendVisibileToggle',this.onLegendVisibleToggle);
+    }
+    componentWillUnmount(){
+        this.chartEmitter.removeAllListeners();
+    }
+    resize(width,height){
+        var {chartModel} = this.state;
+        chartModel.width =  width;
+        chartModel.height = height;
+        this.setState({chartModel});
+    }
 }
-Core.defaultProps = {
-    width:600,
-    height:400,
-    option:null       
-}
-module.exports = Core;

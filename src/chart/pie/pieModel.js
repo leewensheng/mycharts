@@ -2,12 +2,16 @@ import SeriesModel from '../../model/seriesModel'
 import colorHelper from 'cad/color/index'
 import mathUtils from 'cad/math'
 import $ from 'jquery'
+import PieIcon from './pieIcon'
 class PieModel extends SeriesModel {
 	//默认配置
 	constructor(chartModel,seriesOpt){
 		super(chartModel,seriesOpt);
 		this.initOption();
 	}
+	icon = PieIcon;
+	dependencies=['legend'];
+	multipleLegend = true;
 	defaultOption =  {
 		color:null,//主色
 		colors:null,//系列色
@@ -91,7 +95,6 @@ class PieModel extends SeriesModel {
 		data.map(function(point,index){
 		if(oldState&&oldState.points[index]) {
 				point.selected =  oldState.points[index].selected;
-				point.visible =  oldState.points[index].visible;
 			} 
 		})
 		var arr_value = data.map(function(point,index){

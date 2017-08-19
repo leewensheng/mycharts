@@ -1,10 +1,13 @@
 import $ from 'jquery'
 import seriesModels from '../chart/models'
+import componentModels from '../components/models'
 export default class ChartModel {
 	constructor(width,height,option){
         this.width = width;
         this.height = height;
 		this.option = option;
+        this.series = [];// series models;
+        this.components = []; //components models;
 		this.init();
 	}
     defaultOption = {
@@ -35,6 +38,7 @@ export default class ChartModel {
 	init(){
         this.mergetDefaultOption();
         this.initSeriesModels();
+        this.initComponentsModels();
 	}
     mergetDefaultOption(){
         var that = this;
@@ -69,10 +73,63 @@ export default class ChartModel {
         })
         this.series = models;
     }
+    initComponentsModels(){
+        var components = [];
+        this.eachSeries(function(seriesModel){
+            var dependencies = seriesModel.dependencies;
+            dependencies.map(function(type){
+                if(components.indexOf(type)=== -1) {
+                    components.push(type);
+                }
+            })
+        });
+        var that = this;
+        var models = [];
+        for(var i = 0; i < components.length;i++) {
+            var type = components[i];
+            var Model = componentModels[type];
+            if(Model) {
+                var component = new Model(that);
+                var {dependencies} = component;
+                dependencies.map(function(type){
+                    if(components.indexOf(type) === -1) {
+                        components.push(type);
+                    }
+                })
+                models.push(component);
+            } 
+        }
+        this.components = models;
+    }
+    getWidth(){
+        return this.width;
+    }
+    getHeight(){
+        return this.height;
+    }
+
     getColorByIndex(index){
         var option = this.getOption();
         var {colors} = option;
         return colors[index % colors.length];
+    }
+    getSeriesByIndex(index){
+        var ret = null;
+        this.mapSeries(function(seriesModel){
+            if(seriesModel.seriesIndex === index) {
+                ret = seriesModel
+            }
+        })
+        return ret;
+    }
+    getComponent(type) {
+        var component = null;
+        this.components.map(function(model){
+            if(model && model.type === type) {
+                component = model;
+            }
+        })
+        return component;
     }
 	eachSeries(callback) {
         var {series} = this;
@@ -87,7 +144,7 @@ export default class ChartModel {
     eachSeriesByDependency(name,callback){
         var {series} = this;
         series.map(function(seriesModel){
-            if(seriesModel.dependencies[name]) {
+            if(seriesModel.dependencies.indexOf(name)!==-1) {
                 callback.call(null,seriesModel);
             }
         });

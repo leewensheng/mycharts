@@ -10,13 +10,10 @@ import Text from '../../elements/text'
 import ConnectLine from './connect-line'
 
 import Slice from './slice'
-import Icon from './icon'
 
-class  Pie extends Component{
+export default class  Pie extends Component{
 	constructor(props) {
 		super(props);
-		this.onLegendChange = this.onLegendChange.bind(this);
-		props.chartEmitter.on('legendVisibleToggle',this.onLegendChange);
 		var state = props.seriesModel.getRenderData(props.width,props.height);
 		this.state = state;
 	}
@@ -26,8 +23,9 @@ class  Pie extends Component{
 		var {props,state} = this;
 		var {width,height,seriesModel,option} = props;
 		var seriesOpt = seriesModel.getOption();
+		var {visible} = seriesModel
 		var {points} = state;
-		var {animation,center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset,visible} = seriesOpt;
+		var {animation,center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = seriesOpt;
 		var {cx,cy,radius,innerRadius,selectedPointsMap,updateType} = this.state;
 		var onSlice = this.onSlice;
 		return (
@@ -162,19 +160,6 @@ class  Pie extends Component{
 		}
 		this.setState({points,updateType:'select'});
 	}
-	onLegendChange(msg){
-		var {state,props} = this;
-		var {points} = state;
-		if(msg.seriesIndex == this.props.seriesIndex) {
-			var visiblePoints = msg.visible;
-			visiblePoints.map(function(visible,index){
-				points[index].visible = visible;
-			})
-			var nextState = props.seriesModel.getRenderData(props.width,props.height,state);
-			nextState.updateType = 'visibleChange';
-			this.setState(nextState);
-		}
-	}
 	animate(){
 		var {width,height,seriesModel} = this.props;
 		var seriesIndex = seriesModel.seriesIndex;
@@ -230,16 +215,4 @@ class  Pie extends Component{
 		state.updateType = 'newProps';
 		this.setState(state);
 	}
-	componentWillUnmount(){
-		var {props,state} = this;
-		props.chartEmitter.removeListener('legendVisibleToggle',this.onLegendChange);
-	}
 }
-Pie.dependencies = {
-	legend:{
-		must:false,
-		multiple:true,
-		icon:Icon
-	}
-}
-module.exports = Pie;

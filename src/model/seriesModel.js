@@ -9,12 +9,15 @@ export default class SeriesModel extends BaseModel {
 		this.option = seriesOpt;
 		this.seriesIndex = seriesOpt.seriesIndex;
 		this.seriesColor = seriesOpt.seriesColor;
+		this.seriesName = seriesOpt.seriesName;
 		this.visible = seriesOpt.visible;
 	}
+	icon = null;
 	userHTML = false;
 	defaultOption = null;
 	zIndex = 0;
-	dependencies = {};
+	dependencies = [];
+	multipleLegend = false;
 	initOption(){
 		this.mergetDefaultOption();
 		this.normalLizeData();
@@ -49,8 +52,8 @@ export default class SeriesModel extends BaseModel {
 		})
 		option.data = data;
 	}
-	getStackedPoints(){
-
+	getStackedOnData(){
+		return null;
 	}
 	getMin(){
 		var extreme = this.getExtreme();
@@ -70,19 +73,24 @@ export default class SeriesModel extends BaseModel {
 		var option = this.getOption();
 		var {data} = option;
 		var x = [],y = [];
-		var minx,miny,maxx = null,maxy = null;
+		var minx,miny,maxx,maxy;
 		data.map(function(point){
 			x.push(point.x);
 			y.push(point.y);
 		});
 		minx = mathUtils.min(x);
-		miny = mathUtils.max(y);
+		miny = mathUtils.min(y);
 		maxx = mathUtils.max(x);
 		maxy = mathUtils.max(y);
 		return {
 			x:[minx,maxx],
 			y:[miny,maxy]
 		}
+	}
+	mapData(callback) {
+		var option = this.getOption();
+		var {data} = option;
+		return data.map(callback);
 	}
 	getPercentWith(num){
 		var option = this.getOption();
@@ -91,5 +99,23 @@ export default class SeriesModel extends BaseModel {
 			var y = point.y || 0;
 			return y/num;
 		})
+	}
+	getPointsOnGrid(grid) {
+		var that = this;
+		var option = this.getOption();
+		var {data} = option;
+		var {top,left,right,bottom,width,height,xAxis,yAxis,visibleSeries} = grid;
+		if(!visibleSeries.length) {
+			return [];
+		}
+		return data.map(function(point){
+			var x = that.getPositionOnAxis(point.x,left,right,xAxis);
+			var y = that.getPositionOnAxis(point.y,bottom,top,yAxis);
+			return {x,y};
+		});
+	}
+	getPositionOnAxis(value,start,end,axis) {
+		var {min,max} = axis;
+		return start + (end-start)*(value - min)/(max - min);
 	}
 }

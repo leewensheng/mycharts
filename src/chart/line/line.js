@@ -5,20 +5,14 @@ import Paper from 'cad/paper/index'
 import Text from '../../elements/text'
 import Polyline from '../../elements/polyline'
 import Circle from '../../elements/circle'
-import LineIcon from './icon';
-class Linechart extends Component {
+export default class Linechart extends Component {
     constructor(props){
         super(props);
-        this.onLegendChange = this.onLegendChange.bind(this);
         this.onGridChange = this.onGridChange.bind(this);
-        this.onLegendHover = this.onLegendHover.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
-        props.chartEmitter.on('legendVisibleToggle',this.onLegendChange);
-        props.chartEmitter.on('legend.hoverChange',this.onLegendHover);
         this.state = {
             hasInited:false,
-            isGridReady:false,
-            visible:props.seriesModel.visible
+            isGridReady:false
         };
     }
     render(){
@@ -27,51 +21,15 @@ class Linechart extends Component {
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
         var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
-        var {isGridReady,grid,legend,hasInited,visible} = this.state;
-        if(!isGridReady) {
+        var {isGridReady,grid,hasInited} = this.state;
+        var {seriesColor,visible} = seriesModel;
+        if(!hasInited) {
             return <g></g>;
         }
-        var {left,top,right,bottom,width,height,stackedOnData} = grid;
-        var points = [];
-        var color = seriesModel.seriesColor;
-        var xAxisData = grid.xAxis,yAxisData = grid.yAxis, reversed = grid.reversed;
-        var len,min,max,scale,start,end;
-        len = data.length;
-        if(!reversed) {
-            min =  yAxisData.min;
-            max = yAxisData.max;
-            start = yAxisData.start;
-            end = yAxisData.end;
-            scale = (max - min) / height;
-        } else {
-            min = xAxisData.min;
-            max = xAxisData.max;
-            start = xAxisData.start;
-            end = yAxisData.end;
-            scale  = (max - min) / width;
-        }
-        points = data.map(function(point){
-            var label = point.y;
-            var val = point.y;
-            var index = point.x;
-            var x,y;
-            if(stackedOnData) {
-                if(typeof stackedOnData[index] === 'number') {
-                    val += stackedOnData[index];
-                }
-            }
-            if(!reversed) {
-                x = xAxisData.start + (xAxisData.end - xAxisData.start)*index/(xAxisData.max - xAxisData.min);
-                y = yAxisData.start + (yAxisData.end - yAxisData.start)*(val - min)/(yAxisData.max - yAxisData.min);
-            } else {
-                x = xAxisData.start + (xAxisData.end - xAxisData.start)*(val - min)/(xAxisData.max - xAxisData.min);
-                y = yAxisData.start + (yAxisData.end - yAxisData.start)*index/(yAxisData.max - yAxisData.min);
-            }
-            return {x,y,label};
-        });
+        var points = seriesModel.getPointsOnGrid(grid);
         return (
             <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
-                <Polyline className="vcharts-series-polyline" points={points}  stroke={color} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline className="vcharts-series-polyline" points={points}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
@@ -98,7 +56,7 @@ class Linechart extends Component {
                                         cx={x} 
                                         cy={y} r={4} 
                                         fill="#fff" 
-                                        stroke={color} 
+                                        stroke={seriesColor} 
                                         strokeWidth="1" 
                                         onMouseOver={that.animateSymbol}
                                         onMouseOut={that.animateSymbol} />
@@ -115,23 +73,11 @@ class Linechart extends Component {
         }
         $(e.target).stopTransition().transition({r:r},400,'elasticOut');
     }
-    onLegendChange(msg){
-        if(msg.seriesIndex == this.props.seriesIndex) {
-            this.setState({visible:msg.visible});
-        }
-    }
     onGridChange(grid){
+        var that = this;
         if(grid.seriesIndex == this.props.seriesIndex) {
             this.setState({grid,isGridReady:true,hasInited:true});
             this.forceUpdate();
-        }
-    }
-    onLegendHover(msg){
-        var {index,eventType} = msg;
-        if(index === this.props.seriesIndex) {
-            if(eventType === 'mouseover') {
-            } else {
-            }
         }
     }
     animate(){
@@ -163,7 +109,7 @@ class Linechart extends Component {
         this.setState({isGridReady:false});
     }
     shouldComponentUpdate(nextProps,nextState){
-        return nextState.isGridReady?true:false;
+        return false;
     }
     componentDidUpdate(prevProps,prevState){
         var {props,state} = this;
@@ -173,17 +119,6 @@ class Linechart extends Component {
     }
     componentWillUnmount(){
         var {props,state} = this;
-        props.chartEmitter.off('legendVisibleToggle',this.onLegendChange);
         props.chartEmitter.off('grid',this.onGridChange);
     }
 }
-Linechart.dependencies = {
-    grid:{
-        startOnTick:true,
-        stackAble:true
-    },
-    legend:{
-        icon:LineIcon
-    }
-};
-module.exports = Linechart;

@@ -6,26 +6,35 @@ var option = {
 	grid:{
 		top:50,
 		left:80,
-		containLabel:false,
+		containLabel:true,
 		background:'#ddd'
 	},
 	xAxis:{
-		data:['甲','乙','丙'],
+		categories:['甲','乙','丙'],
 		gridLine:{
 			enabled:false
+		},
+		title:{
+			text:'haha'
 		}
 	},
 	yAxis:{
-		min:0
+		min:0,
+		title:{
+			text:'liws',
+			style:{
+				color:'red'
+			}
+		}
 	},
 	series:[
 	{
-		type:'line',
+		type:'bar',
 		data:[1,2,3],
 		stack:1
 	},{
 		type:'line',
-		data:[2,3,5],
+		data:[2,3,6],
 		stack:1
 	}]
 }

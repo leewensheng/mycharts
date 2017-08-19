@@ -1,62 +1,50 @@
 import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import defaultOption from './option'
 import Vcharts from '../../chart/charts'
 import Text from '../../elements/text'
 import Rect from '../../elements/rect'
 import mathUtils from 'cad/math'
-class Legend extends Component {
+export default class Legend extends Component {
 	constructor(props){
 		super(props);
 		this.state = this.getRenderData(props);
 	}
-	getRenderData(props,oldState){
-		var {chartWidth,chartHeight,chartOption} = props;
-		var {series,legend} = chartOption;
-		legend = $.extend(true,{},defaultOption,legend);
+	getRenderData(props,oldState){ 
+		var {chartModel} = props;
+		var chartOption = chartModel.getOption();
+		var {legend} = chartOption;
 		var items = [];
-		series.map(function(series,seriesIndex){
-			var type = series.type;
-			var Chart = Vcharts[type];
-			if(!Chart) {
-				return;
-			}
-			var dependencies = Chart.dependencies||{};
-			var legend = dependencies.legend;
-			if(!legend) {
-				return;
-			}
-			if(series.showInLegend===false) {
-				return;
-			}
-			if(!legend.multiple) {
+		chartModel.eachSeriesByDependency('legend',function(seriesModel){
+			var {visible,icon,seriesColor,seriesIndex,seriesName,multipleLegend} = seriesModel;
+			if(!multipleLegend) {
 				items.push({
 					x:0,
 					y:0,
-					name:series.name|| ('series ' + seriesIndex),
-					color:series.color || chartOption.colors[seriesIndex%chartOption.colors.length],
-					icon:legend.icon,
-					visible:series.visible,
+					name:seriesName,
+					color:seriesColor,
+					icon:icon,
+					visible:visible,
 					multiple:false,
 					seriesIndex:seriesIndex
 				})
 			} else {
-				series.data.map(function(point,subIndex){
+				seriesModel.mapData(function(point,dataIndex){
 					items.push({
 						x:0,
 						y:0,
-						name:point.name||('series ' + subIndex),
-						color:series.color || chartOption.colors[subIndex%chartOption.colors.length],
-						icon:legend.icon,
-						visible:(typeof point.visible!=='undefined' && !point.visible)?false:true,
+						name:point.name,
+						color:point.color,
+						icon:icon,
+						visible:point.visible,
 						multiple:true,
-						index:subIndex,
-						seriesIndex:seriesIndex
+						seriesIndex:seriesIndex,
+						dataIndex:dataIndex
 					})
-				});
+				})
 			}
-		});
+			
+		})
 		if(oldState) {
 			items.map(function(item,index){
 				var oldItem = oldState.items[index];
@@ -64,8 +52,6 @@ class Legend extends Component {
 					item.x = oldItem.x;
 					item.y = oldItem.y;
 					item.width = oldItem.width;
-					//保留状态
-					item.visible = oldItem.visible;
 				}
 			})
 		}
@@ -80,14 +66,15 @@ class Legend extends Component {
 	render(){
 		var that = this;
 		var {props,state} = this;
+		var {chartModel} = props;
 		var {hasInited,isAdjusted,items,legendOption,legendX,legendY,legendWidth,legendHeight} = state;
-		var {chartOption,chartWidth,chartHeight} = props;
+		var chartOption = chartModel.getOption();
 		var {legend} = chartOption;
 		var {
 			enabled,animation,layout,align,verticlAlign,borderColor,
 			borderWidth,borderRadius,background,formatter,
 			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
-		} = legendOption;
+		} = legend;
 		if(!enabled) return <g></g>;
 		animation = animation&&hasInited;
 		itemStyle.userSelect = 'none';
@@ -126,83 +113,22 @@ class Legend extends Component {
 	toggleItem(index){
 		var {props,state} = this;
 		var {chartEmitter} = props;
-		var {items,legendOption} = state;
-		var item = items[index];
-		var {visible,seriesIndex,multiple} = item;
-		visible = !visible;
-		var {selectMode} = legendOption;
-		item.visible = visible;
-		if(selectMode === 'single') {
-			items.map((item,idx) => {
-				if(visible && idx!== index) {
-					item.visible = false;
-				}
-			})
-		}
-		var visiblePoints = items.filter(function(item){
-				return item.seriesIndex === seriesIndex;
-			}).map(function(item){
-				return item.visible;
-			})
-		chartEmitter.emit('legendVisibleToggle',{
-			seriesIndex:seriesIndex,
-			visible:multiple?visiblePoints:visible
+		var item = state.items[index];
+		var {seriesIndex,dataIndex} = item;
+		chartEmitter.emit('legendVisibileToggle',{
+			seriesIndex,dataIndex
 		});
-		var visibleSeries = {};
-		items.map(function(item){
-			if(!item.multiple) {
-				visibleSeries[item.seriesIndex] = item.visible;
-			}
-		})
-		chartEmitter.emit('legendVisibleChange',{
-			visible:visibleSeries
-		})
-		this.setState({items});
 	}
 	handleMouseEvent(index,isHover){
-		var {props,state} = this;
-		var {items} = state;
-		var {chartEmitter} = props;
-		var item = items[index];
-		if(item.visible) {
-			chartEmitter.emit("legend.hoverChange",{
-				index:item.seriesIndex,
-				eventType:isHover?'mouseover':'mouseout',
-				data:item
-			});
-		}
+
 	}
-	sendLegendData(){
-    	var {props,state} = this;
-    	var {chartEmitter} = props;
-    	var {items} = this.state;
-    	var groupedItems = {};
- 		var multipleItems = [];
-    	items.map(function(item,index){
-    		var {seriesIndex,visible,multiple,index} = item;
-    		if(!multiple) {
-    			groupedItems[seriesIndex] = {visible:visible};
-    			multipleItems.push({
-    				index:seriesIndex,
-    				visible:visible
-    			});
-    		} else {
-    			groupedItems[seriesIndex] = groupedItems[seriesIndex] || {};
-    			groupedItems[seriesIndex][index] = visible;
-    		}
-    	})
-    	for(let seriesIndex in groupedItems) {
-    		chartEmitter.emit('legend',{
-    			seriesIndex:seriesIndex,
-    			data:groupedItems[seriesIndex]
-    		})
-    	}
-    	chartEmitter.emit('legend.all',multipleItems);
-    }
     alignItems(){
     	var {props,state} = this;
     	var {isAdjusted,items,legendOption} = state;
-		var {chartOption,chartWidth,chartHeight} = props;
+		var {chartModel} = props;
+		var chartOption = chartModel.getOption();
+		var chartWidth = chartModel.getWidth();
+		var chartHeight = chartModel.getHeight();
 		var {legend} = chartOption;
 		var {
 			layout,align,verticlAlign,formatter,
@@ -317,16 +243,6 @@ class Legend extends Component {
     }
     componentDidMount(){
     	this.alignItems();
-    	//this.test();
-    }
-    test(){
-    	var that = this;
-    	setInterval(function(){
-    		that.props.chartEmitter.emit('legend',{
-    			seriesIndex:1,
-    			data:[Math.random>0.3,Math.random()>0.4,Math.random()>0.25,true]
-    		})
-    	},300)
     }
     componentWillReceiveProps(nextProps){
 		var state = this.state;
@@ -339,5 +255,3 @@ class Legend extends Component {
     	}
     }
 }
-
-module.exports = Legend;

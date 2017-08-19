@@ -1,5 +1,4 @@
 import React,{Component} from 'react'
-import defaultOption  from './option'
 class Tooltip extends Component {
 	constructor(props){
 		super(props);

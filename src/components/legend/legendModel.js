@@ -2,7 +2,7 @@ import ComponentModel from '../../model/componentModel'
 import $  from 'jquery'
 export default class LegendModel extends ComponentModel {
 	constructor(chartModel){
-		super();
+		super(chartModel);
 		this.initOption();
 	}
 	type = 'legend';
@@ -36,10 +36,7 @@ export default class LegendModel extends ComponentModel {
 			radius:5
 		}
 	};
-	initOption() {
-		var {chartModel,defaultOption} = this;
-		var option = chartModel.getOption();
-		var legend = $.extend(true,{},defaultOption,option.legend);
-		option.lengend = legend;
+	getRenderData(){
+
 	}
 }

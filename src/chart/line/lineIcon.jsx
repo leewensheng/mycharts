@@ -4,7 +4,14 @@ import $ from 'jquery'
 import Line from '../../elements/line'
 import Circle from '../../elements/circle'
 
-class LineIcon extends Component {
+export default class LineIcon extends Component {
+	static defaultProps = {
+		x:null,
+		y:null,
+		width:100,
+		height:100,
+		color:'#333'
+	};
 	render(){
 		var {props,state} = this;
 		var {x,y,width,height,color,animation} = props;
@@ -23,11 +30,3 @@ class LineIcon extends Component {
 
 	}
 }
-LineIcon.defaultProps = {
-	x:null,
-	y:null,
-	width:100,
-	height:100,
-	color:'#333'
-}
-module.exports = LineIcon;

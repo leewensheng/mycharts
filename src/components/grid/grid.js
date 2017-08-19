@@ -1,9 +1,9 @@
 import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import Axis from './axis'
+import Axis from '../axis/axisView'
 import Rect from '../../elements/rect'
-class Grid extends Component {
+export default class Grid extends Component {
 	constructor(props){
 		super(props);
 		var {xAxis,yAxis,containLabel} = props;
@@ -36,7 +36,7 @@ class Grid extends Component {
 					<Rect  className="vcharts-grid-backgrould" x={axisLeft} y={axisTop} width={axisWidth} height={axisHeight} fill={background}/>
 				}
 				{
-					xAxis.map(function(axis,index){
+					xAxis.concat(yAxis).map(function(axis,index){
 						return <Axis 	
 									containLabel={containLabel}
 									key={'xaxis'+index}
@@ -52,33 +52,7 @@ class Grid extends Component {
 									top={axisTop}
 									width={axisWidth}
 									height={axisHeight}
-									option={axis}
-									axis="x"
-									indexInGrid={index}
-									setAxisData={setAxisData}
-									updateType={updateType}
-									/>
-					})
-				}{
-					yAxis.map(function(axis,index){
-						return <Axis 	
-									containLabel={containLabel}
-									key={'yaxis'+index}
-									hasOpposite={xAxis.length>=2}
-									gridLeft={left}
-									gridRight={right}
-									gridBottom={bottom}
-									gridTop={top}
-									gridLeft={left}
-									left={axisLeft} 
-									right={axisRight} 
-									bottom={axisBottom}
-									top={axisTop}
-									width={axisWidth}
-									height={axisHeight}
-									option={axis}
-									axis="y"
-									indexInGrid={index}
+									axisData={axis}
 									setAxisData={setAxisData}
 									updateType={updateType}
 									/>
@@ -89,7 +63,7 @@ class Grid extends Component {
 	}
 	setAxisData(axis,index,data){
 		var {xAxis,yAxis} = this.state;
-		if(axis==='x') {
+		if(axis==='xAxis') {
 			xAxis[index] = data;
 		} else {
 			yAxis[index] = data;
@@ -156,7 +130,10 @@ class Grid extends Component {
 					width:axisWidth,
 					height:axisHeight,
 					xAxis:xAxisData,
-					yAxis:yAxisData
+					yAxis:yAxisData,
+					visibleSeries:includeSeries.filter(function(series){
+						return series.visible;
+					})
 				}
 			)
 		})
@@ -178,18 +155,3 @@ class Grid extends Component {
 		return updateType === 'newProps' || updateType === 'adjust';
 	}
 }
-Grid.defaultProps = {
-	left:null,
-	top:null,
-	bottom:null,
-	right:null,
-	width:null,
-	height:null,
-	background:'transparent',
-	containLabel:true,
-	xAxis:[],
-	yAxis:[],
-	includeSeries:[],
-	chartEmitter:null
-}
-module.exports = Grid;

@@ -1,19 +1,21 @@
 import ComponentModel from '../../model/componentModel'
 import $  from 'jquery'
+import mathUtils from 'cad/math'
+
 export default class Axis extends ComponentModel {
 	constructor(chartModel){
-		super();
+		super(chartModel);
 		this.initOption();
 	}
 	type = 'axis';
 	defaultOption = {
     	type:null,//value category time log
-        gridIndex:0,//所属网格区域
+        grid:0,//所属网格区域
 	    min:null,
 	    max:null,//对于分类轴来说仍然是有意义的
 	    minRange:null,
 	    splitNumber:5,//分割段数
-	    data:null,//分类轴用到
+	    categories:null,//分类轴用到
 	    opposite:false,
 	    inverse:false,//数值反转
 	    title:{
@@ -81,16 +83,169 @@ export default class Axis extends ComponentModel {
 		var {xAxis,yAxis} = option;
 		xAxis = this.normalLizeToArray(xAxis);
 		yAxis = this.normalLizeToArray(yAxis);
-		xAxis = xAxis.map(function(axisOption){
-			return $.extend(true,{},defaultOption,axisOption);
+		xAxis = xAxis.map(function(axisOpt,index){
+			var option = $.extend(true,{},defaultOption,axisOpt);
+			option.index = index;
+			if(option.categories) {
+				option.type = 'category';
+			} else {
+				option.type = 'value';
+			}
+			return option;
 		})
-		yAxis = yAxis.map(function(axisOption){
-			return $.extend(true,{},defaultOption,axisOption);
+		yAxis = yAxis.map(function(axisOpt,index){
+			var option = $.extend(true,{},defaultOption,axisOpt);
+			option.index = index;
+			if(option.categories) {
+				option.type = 'category';
+			} else {
+				option.type = 'value';
+			}
+			return option;
+		})
+		var grids = [];
+		xAxis.map(function(axisOpt){
+			var gridIndex = axisOpt.grid;
+			if(!grids[gridIndex]) {
+				grids[gridIndex] = {
+					xAxis:[],
+					yAxis:[]
+				}
+			}
+			grids[gridIndex].xAxis.push(axisOpt);
+		})
+		yAxis.map(function(axisOpt){
+			var gridIndex = axisOpt.grid;
+			if(!grids[gridIndex]) {
+				grids[gridIndex] = {
+					xAxis:[],
+					yAxis:[]
+				}
+			}
+			grids[gridIndex].yAxis.push(axisOpt);
+		})
+		grids.map(function(grid){
+			var {xAxis,yAxis} = grid;
+			if(xAxis.length > 1) {
+				xAxis[1].opposite = !xAxis[0].opposite;
+			}
+			if(yAxis.length > 1) {
+				yAxis[1].opposite = !yAxis[0].opposite;
+			}
+		})
+		chartModel.eachSeriesByDependency('grid',function(seriesModel){
+			var option = seriesModel.getOption();
+			var xAxisIndex = option.xAxis;
+			var yAxisIndex = option.yAxis;
+			if(xAxis[xAxisIndex].type === 'value' && yAxis[yAxisIndex].type === 'category') {
+				xAxis[xAxisIndex].reversed = true;
+				yAxis[yAxisIndex].reversed = true;
+			}
 		})
 		option.xAxis = xAxis;
 		option.yAxis = yAxis;
 	}
-	getSeriesByAxis(type,index) {
-		
+	getAxisDataByGrid(axis,gridIndex) {
+		var that = this;
+		var option = this.chartModel.getOption();
+		return option[axis].filter(function(axisOpt){
+			return axisOpt.grid == gridIndex;
+		}).map(function(axisOpt,indexInGrid){
+			var {index} = axisOpt;
+			var includeSeries = that.getSeriesByAxis(axis,index);
+			var extremes = includeSeries.map(function(seriesModel){
+				return seriesModel.getExtreme();
+			})
+			var minX = mathUtils.min(extremes.map(function(extreme){
+				return extreme.x[0];
+			}));
+			var maxX = mathUtils.max(extremes.map(function(extreme){
+				return extreme.x[1];
+			}));
+			var minY = mathUtils.min(extremes.map(function(extreme){
+				return extreme.y[0];
+			}));
+			var maxY = mathUtils.max(extremes.map(function(extreme){
+				return extreme.y[1];
+			}));
+			var reversed = axisOpt.reversed,min,max
+			if(axis === 'xAxis') {
+				if(reversed) {
+					min = minY;
+					max = maxY;
+				} else {
+					min = minX;
+					max = maxX;
+				}
+			} else {
+				if(reversed) {
+					min = minX;
+					max = maxX;
+				} else {
+					min = minY;
+					max = maxY;
+				}
+			}
+			min = typeof axisOpt.min === 'number' ? axisOpt.min : min;
+			max = typeof axisOpt.max === 'number' ? axisOpt.max : max;
+			var {type} =  axisOpt;
+			if(type === 'value') {
+				var splitData = that.getSplitArray(min,max,axisOpt.splitNumber);
+				min = splitData[0];
+				max = splitData[splitData.length-1];
+			}
+			return {
+				option:axisOpt,
+				min:min,
+				max:max,
+				axis:axis,
+				indexInGrid:indexInGrid,
+				splitData:splitData,
+				includeSeries:includeSeries.map(function(seriesModel){
+					return {
+						type:seriesModel.type,
+						seriesIndex:seriesModel.seriesIndex
+					}
+				})
+			}
+		})
 	}
+	getSeriesByAxis(axis,index) {
+		var {chartModel} = this;
+		var series = [];
+		chartModel.eachSeriesByDependency('grid',function(seriesModel){
+			var option = seriesModel.getOption();
+			 if(option[axis] == index && seriesModel.visible) {
+			 	series.push(seriesModel);
+			 }
+		})
+		return series;
+	}
+	getSplitArray(min,max,splitNumber) {
+        if(min === max) {
+            return [max];
+        }
+        var gap =  max - min;
+        var data = [];
+        var realMax,realMin;
+        var tick = gap /(splitNumber-1);
+        var k = Math.ceil(Math.log(tick)/Math.log(10));
+        var minTick = 0.25*Math.pow(10,k);
+        var n   = Math.log(tick/minTick)/Math.log(2);
+        n = Math.round(n);
+        tick = Math.pow(2,n)*minTick;
+        realMax = Math.round(max/tick)*tick;
+        realMin = Math.round(min/tick)*tick;
+        if(realMax < max) {
+            realMax += tick;
+        } 
+        if(realMin > min) {
+            realMin -= tick;
+        }
+        splitNumber = (realMax - realMin) / tick +1;
+        for(var i = 0;i < splitNumber; i++){
+            data.push(realMin + tick*i);
+        }
+        return data;
+    }
 }

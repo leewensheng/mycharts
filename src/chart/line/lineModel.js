@@ -1,21 +1,14 @@
 import SeriesModel from '../../model/seriesModel'
-import LineIcon from './icon'
-class LineModel extends SeriesModel {
+import LineIcon from './lineIcon'
+export default class LineModel extends SeriesModel {
 	constructor(chartModel,seriesOpt){
 		super(chartModel,seriesOpt);
 		this.initOption();
 	}
 	//依赖
-	dependencies = {
-	    grid:{
-	        startOnTick:true,
-	        stackAble:true
-	    },
-	    legend:{
-	        icon:LineIcon
-	    }
-	};
+	dependencies = ['grid','legend'];
 	//默认配置
+	icon  = LineIcon;
 	defaultOption =  {
 	    animation:true,
 	    color:null,//主色
@@ -43,4 +36,3 @@ class LineModel extends SeriesModel {
 	    visible:true
 	}
 }
-module.exports = LineModel;

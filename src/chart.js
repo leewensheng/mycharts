@@ -58,12 +58,13 @@ Chart.prototype = {
 		var height = this.height;
 		var updateType = this.updateType;
 		var nextProps = {option,width,height,updateType};
-		this.vchart.setOption(nextProps);
+		if(updateType === 'resize') {
+			this.vchart.resize(width,height);
+		} else {
+			this.vchart.setOption(nextProps);
+		}
 	},
 	resize(width,height){
-		var that = this;
-		var oldWidth = this.width;
-		var oldHeight = this.height;
 		this.width = width;
 		this.height = height;
 		this.updateType = 'resize';

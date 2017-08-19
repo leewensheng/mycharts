@@ -1,49 +1,44 @@
 import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import gridService from './gridService'
 import Text from '../../elements/text'
 import Line from '../../elements/line'
 import AxisTitle from './axis-title'
-class  Axis extends Component {
+export default class  Axis extends Component {
     constructor(props){
         super(props);
         this.state = this.getRenderData(props);      
     }
     getRenderData(props,oldState){
-        var {top,left,right,bottom,width,height,axis,option,containLabel} = props;
-        var {opposite,type,min,max,dataRange,minRange,splitNumber,data,inverse,title,axisLabel,axisTick} = option;
+        var {top,left,right,bottom,width,height,axisData,containLabel,updateType} = props;
+        var {axis,option,includeSeries,min,max,splitData} = axisData;
+        var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var start,end,other;
-        if(axis === 'x') {
+        if(axis === 'xAxis') {
             start = left;
             end = right;
             other = opposite?top:bottom;
-        } else if(axis === 'y') {
+        } else if(axis === 'yAxis') {
             start = bottom;
             end = top;
             other = opposite?right:left;
         }
-        if(type === 'value') {
-            min = typeof(min)==='number'?min:dataRange.min;
-            max = typeof(max)==='number'?max:dataRange.max;
-            if(min === null||max === null) {
-                data = [];
-            } else {
-                data = gridService.getSplitArray(min,max,splitNumber);
-            }
-        } else {
-            min = typeof(min)==='number'?min:0;
-            max = typeof(max)==='number'?max:data.length-1;
-        } 
+
         var points = [];
         var gap = end - start;
+        var data = [];
+        if(type === 'category') {
+            data = categories;
+        } else {
+            data = splitData;
+        }
         /*
             需要计算数字宽度时，会连续更新两次，导致动画失效，在前一次保持状态
          */
         var keepState = oldState && containLabel&&props.updateType!='adjust';
         data.map(function(value,index){
            var x,y,text;
-           if(axis === 'x') {
+           if(axis === 'xAxis') {
                 x = start + gap*index/(data.length-1);
                 y = other;
            } else {
@@ -71,14 +66,14 @@ class  Axis extends Component {
         return {isLabelAdjusted,points:points,start,end,other,min,max,isFirstTime};
     }
     render(){
-        var props = this.props;
-        var {hasOpposite,top,left,right,bottom,width,height,axis,min,max,option,containLabel,updateType} = props;
-        var {opposite,type,min,max,dataRange,minRange,splitNumber,inverse,title,axisLine,gridLine,axisLabel,axisTick,includeSeries} = option;
-        var state = this.state;
+        var {props,state} = this;
+        var {top,left,right,bottom,width,height,axisData,containLabel,updateType,hasOpposite} = props;
+        var {axis,option,includeSeries,min,max,splitData} = axisData;
+        var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var {isLabelAdjusted,points,start,end,other,isFirstTime} = state;
         var {gridLeft,gridRight,gridTop,gridBottom} = props;
         var x1,y1,x2,y2;
-        if(axis === 'x') {
+        if(axis === 'xAxis') {
             y1 = y2 = other;
             x1 = start;
             x2 = end;
@@ -100,20 +95,20 @@ class  Axis extends Component {
             tickFlag *= -1;
             gridFlag *= -1;
         }
-        if(!includeSeries.length) {
+        if(!includeSeries.length&&type === 'value') {
             points = [];
         }
         points.map(function(point,index){
             var {x,y,value} = point;
             var x1,x2,y1,y2;
             var tickStart,tickEnd;
-            if(axis === 'x') {
+            if(axis === 'xAxis') {
                 y = other + axisLabel.margin*labelFlag;
             } else {
                 x = other - axisLabel.margin*labelFlag;
             }
             labels.push({x,y,value});
-            if(axis === 'x') {
+            if(axis === 'xAxis') {
                 x1  = x2 = x;
                 y1 = other;
                 y2 = other + axisTick.length*tickFlag;
@@ -123,7 +118,7 @@ class  Axis extends Component {
                 x2 = other - axisTick.length*tickFlag;
             }
             ticks.push({x1,x2,y1,y2});
-            if(axis === 'x') {
+            if(axis === 'xAxis') {
                 x1  = x2 = x;
                 y1 = other;
                 y2 = other - height*gridFlag;
@@ -135,7 +130,7 @@ class  Axis extends Component {
             gridLines.push({x1,y1,x2,y2});
         })
         var className = 'vcharts-grid-axis';
-        if(axis === 'x') {
+        if(axis === 'xAxis') {
             axisLabel.style.textBaseLine = labelFlag==1 ? 'top':'bottom';
             axisLabel.style.textAlign ='center';
             className += ' xAxis';
@@ -197,7 +192,6 @@ class  Axis extends Component {
                     &&
                     labels.map(function(label,index){
                         return <Text 
-                                    update={updateType==='newProps'&&containLabel?false:true}
                                     animation={isLabelAdjusted||!isFirstTime}
                                     key={index} 
                                     x={label.x} 
@@ -236,9 +230,9 @@ class  Axis extends Component {
     }
     sendAxisData(){
         var {props,state} = this;
-        var {option} = props;
-        var {setAxisData,axis,indexInGrid,labelRoation} = props;
-        var {index,opposite,axisLabel,rotation} = option;
+        var {setAxisData,top,left,right,bottom,width,height,axisData,containLabel,updateType} = props;
+        var {indexInGrid,axis,option,includeSeries,min,max,splitData} = axisData;
+        var {index,opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var labelSize;
         var el = findDOMNode(this);
         if(axisLabel.inside||!axisLabel.enabled) {
@@ -257,7 +251,7 @@ class  Axis extends Component {
             bottom:0
         };
         if(!axisLabel.inside) {
-            if(axis === "x") {
+            if(axis === "xAxis") {
                 if(!opposite) {
                     labelPlace.bottom = axisLabel.style.fontSize + axisLabel.margin;
                 } else {
@@ -273,9 +267,10 @@ class  Axis extends Component {
         } 
         //应当使用轴的极值
         var {points,start,end,other,min,max,data} = state;
+        //需要考虑axis
         setAxisData(axis,indexInGrid,{
-            start,end,other,min,max,index,labelPlace
-        })
+            min,max,index,labelPlace
+        });
     }
     componentDidMount(){
         this.sendAxisData();
@@ -286,17 +281,3 @@ class  Axis extends Component {
         }
     }
 }
-Axis.defaultProps = {
-    hasOpposite:false,
-    top:null,
-    left:null,
-    right:null,
-    bottom:null,
-    width:null,
-    height:null,
-    axis:'x',
-    labelRoation:0,
-    indexInGrid:null,
-    option:null
-} 
-module.exports = Axis;

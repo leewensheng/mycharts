@@ -12,7 +12,7 @@ class AxisTitle extends Component{
 		var {title,opposite} = axisOption;
 		var {enabled,align,margin,rotation,style,text} = title;
 		var x,y,transform;
-		if(axis === 'x') {
+		if(axis === 'xAxis') {
 			y = opposite?top:bottom;
 			if(align === 'start') {
 				x = gridLeft;
@@ -31,7 +31,7 @@ class AxisTitle extends Component{
 				style.textBaseLine = 'middle';
 				x += margin;
 			}
-		} else if(axis === 'y') {
+		} else if(axis === 'yAxis') {
 			x = opposite?right:left;
 			if(align === 'start') {
 				y = gridBottom;
