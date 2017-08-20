@@ -4,12 +4,24 @@ import $ from 'jquery'
 var el = document.querySelector('#root');
 var option = {
 	colors:[{
-		type:'linearGradient',
+		type:'radialGradient',
+		stops:[
+			[0,'lightgreen'],
+			[1,'blue']
+		]
+	},{
+		type:'radialGradient',
 		stops:[
 			[0,'red'],
-			[1,'darkred']
+			[1,'blue']
 		]
-	},'red'],
+	},{
+		type:'radialGradient',
+		stops:[
+			[0,'red'],
+			[1,'green']
+		]
+	}],
 	grid:{
 		top:50,
 		left:80,
@@ -47,7 +59,10 @@ var option = {
 		data:[2,3,5],
 		stack:1,
 		innerSize:0.5,
-		roseType:'radius'
+		roseType:'radius',
+		itemStyle:{
+			filter:'url(#shadow)'
+		}
 	}]
 }
 

@@ -44,29 +44,54 @@ export default class ChartModel {
         this.mergetDefaultOption();
         this.initSeriesModels();
         this.initComponentsModels();
+        this.initGradients();
 	}
-    initGradients(colors){
-        var gradients = [];
-        var {chartId} = this;
+    initGradients(){
+        var that = this;
+        var option = this.getOption();
+        var {colors} = option;
         colors = colors.map(function(color){
-            if(typeof color === 'object') {
-                var id = chartId + '-gradient-' + gradients.length;
-                color.id = id;
-                gradients.push(color);
-                return 'url(#' + id + ')';
-            }
-            return color;
+            return that.addGradientColor(color);
         })
-        this.gradients = gradients;
-        return colors;
+        option.colors = colors;
+        this.eachSeries(function(seriesModel){
+           var seriesColor = that.addGradientColor(seriesModel.seriesColor);
+            var seriesOpt = seriesModel.getOption();
+            seriesOpt.seriesColor = seriesColor;
+            if(seriesOpt.color) {
+                seriesOpt.color = that.addGradientColor(seriesOpt.color);
+            }
+            seriesModel.mapData(function(point){
+                if(point.color) {
+                    point.color = that.addGradientColor(point.color);
+                }
+            })
+        })
+    }
+    addGradientColor(color){
+        var {gradients,chartId} = this;
+        if(typeof color !== 'object') {
+            return color;
+        }
+        var index = gradients.indexOf(color);
+        if( index === -1) {
+            gradients.push(color);
+            index = gradients.length - 1;
+            this.gradients = gradients;
+            return 'url(#' + this.getGradientId(index) + ')';
+        } else {
+            return 'url(#' + this.getGradientId(index) + ')';
+        }
+    }
+    getGradientId(index){
+        var chartId = this.chartId;
+        return chartId + '-gradient-' + index;
     }
     mergetDefaultOption(){
         var that = this;
         var {option,defaultOption} = this;
         option = $.extend(true,{},defaultOption,option);
         var {plotOptions,series,colors} = option;
-        colors = this.initGradients(colors);
-        option.colors = colors;
         var components = {};
         series = series.map(function(seriesOpt,seriesIndex){
             seriesOpt.seriesIndex = seriesIndex;

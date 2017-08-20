@@ -18,6 +18,9 @@ class PieModel extends SeriesModel {
 		center:[0.5,0.5],//中心位置
 		borderColor:"#fff",//描边颜色
 		borderWidth:0,//描边
+		itemStyle:{
+
+		},
 		data:[], //数据{name:'slcie1',value:1,color:'#fff',selected:true}
 		dataLabels:{
 			enabled:true,

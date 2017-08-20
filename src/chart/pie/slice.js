@@ -47,6 +47,7 @@ class  Slice extends Component{
 			},true);
 		return (
 			<PathElement 
+				filter="url(#shadow)"
 				d={d}
 				fill={color}
 				stroke={borderColor}
@@ -103,6 +104,7 @@ class  Slice extends Component{
 				$el.attr('transform',transformEase(k));
 			}
 		});
+		$el.attr('filter',isHover?'url(#shadow)':'');
 		this.setState({isHover:isHover,update:false});
 	}
 	offset(selected){

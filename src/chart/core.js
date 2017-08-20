@@ -8,6 +8,8 @@ import EventEmitter  from 'events'
 import Tooltip from '../components/tooltip/index'
 import ChartModel from '../model/chartModel'
 import Gradient from '../elements/gradient'
+import Paper from 'cad/paper/index'
+
 export default class Core extends Component {
     constructor(props){
         super(props);
@@ -39,8 +41,8 @@ export default class Core extends Component {
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
                     <defs>
                         {
-                            gradients.map(function(gradient){
-                                return <Gradient key={gradient.id} {...gradient} />
+                            gradients.map(function(gradient,index){
+                                return <Gradient key={'gradient'+index} id={chartModel.getGradientId(index)} {...gradient} />
                             })
                         }
                     </defs>
@@ -89,7 +91,14 @@ export default class Core extends Component {
     componentDidMount(){
         this.props.chart.vchart = this;
         var el = findDOMNode(this);
-        $(el).find('svg').addSVGNamespace();
+        var $svg = $(el).find('svg');
+        $svg.addSVGNamespace();
+        var paper = new Paper($svg[0]);
+        paper.importDefs('shadow',{
+            blur:2,
+            offsetX:2,
+            offsetY:2
+        });
     }
     componentWillUnmount(){
         this.props.chart.vchart = null;

@@ -25,7 +25,7 @@ export default class  Pie extends Component{
 		var seriesOpt = seriesModel.getOption();
 		var {visible} = seriesModel
 		var {points} = state;
-		var {animation,center,size,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = seriesOpt;
+		var {animation,center,size,itemStyle,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = seriesOpt;
 		var {cx,cy,radius,innerRadius,selectedPointsMap,updateType} = this.state;
 		var onSlice = this.onSlice;
 		return (
@@ -35,6 +35,7 @@ export default class  Pie extends Component{
 				points.map(function(point,index){
 					var {startAngle,midAngle,endAngle,radius,color,selected,isAdd} = point;
 					return <Slice
+							style={itemStyle}
 							key={index}
 							animation={animation}
 							cx={cx}
