@@ -112,6 +112,7 @@ class PieModel extends SeriesModel {
 	    var cy = center[1]*height;
 	    var radius = Math.min(width,height)*size/2;
 	    radius = Math.max(radius,minSize);
+	    var innerRadius = radius*innerSize ;
 	    var startAngle = startAngle - 90;
 	    var points = [];
 	    var endAngle = endAngle?(endAngle - 90):(startAngle+360);
@@ -152,7 +153,7 @@ class PieModel extends SeriesModel {
 	        	}
 	        }
 	        if(roseType === "radius" || roseType === "area") {
-	        	obj.radius  = value/max_num*radius;
+	        	obj.radius  = innerRadius +  value/max_num*(radius - innerRadius);
 	        } 
 	        if(oldState) {
 	        	if(!oldState.points[index]) {
@@ -173,7 +174,7 @@ class PieModel extends SeriesModel {
 	    	radius:radius,
 	    	startAngle:startAngle,
 	    	endAngle:endAngle,
-	    	innerRadius:radius*innerSize
+	    	innerRadius:innerRadius
 	    }
 	}
 

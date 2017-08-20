@@ -40,19 +40,32 @@ export default class BarModel extends SeriesModel {
 			}
 		}
 	};
-	getBars(grid,oldState){
+	getBars(grid){
+		var {chartModel,seriesIndex} = this;
 		var option = this.getOption();
 		var visible = this.visible;
 		var {barWidth} = option;
-		var {bottom} = grid;
+		var {xAxis,yAxis,width,height,reversed} = grid;
 		var points = this.getPointsOnGrid(grid);
-		barWidth = visible?barWidth:0;
-		return points.map(function(point){
-			var {x,y} = point;
-			var barHeight = y - bottom;
-			return {
-				x,y,barWidth,barHeight
-			}
+		var categoryAxis = reversed?yAxis:xAxis;
+		var groupBars = categoryAxis.axisData.includeSeries.filter(function(series){
+			return series.type === 'bar';
 		})
+		//需要考虑stack
+		var groupNumber = groupBars.length;
+		var groupIndex = 0 ;
+		var groupWidth = 100;
+		var groupPadding = 20;
+		var barWidth = 20;
+		groupBars.map(function(series,index){
+			if(series.seriesIndex === seriesIndex) {
+				groupIndex = index;
+			}
+		});
+		return []
+		return  this.mapData(function(point){
+
+		})
+		
 	}
 }
