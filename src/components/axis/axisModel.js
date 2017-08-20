@@ -225,7 +225,11 @@ export default class Axis extends ComponentModel {
 	}
 	getSplitArray(min,max,splitNumber) {
         if(min === max) {
-            return [max];
+        	if(min === null) {
+            	return [];
+        	} else {
+        		return [min];
+        	}
         }
         var gap =  max - min;
         var data = [];

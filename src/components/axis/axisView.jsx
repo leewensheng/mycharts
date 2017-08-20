@@ -52,14 +52,14 @@ export default class  Axis extends Component {
             isLabelAdjusted = true;
         }
         var isFirstTime = !oldState;
-        return {isLabelAdjusted,points:points,start,end,other,isFirstTime};
+        return {isLabelAdjusted,points,isFirstTime};
     }
     render(){
         var {props,state} = this;
-        var {axisData,zeroPoisition,containLabel,updateType,hasOpposite,top,left,right,bottom,width,height} = props;
+        var {axisData,start,end,other,zeroPoisition,containLabel,updateType,hasOpposite,top,left,right,bottom,width,height} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
         var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
-        var {isLabelAdjusted,points,start,end,other,isFirstTime} = state;
+        var {isLabelAdjusted,points,isFirstTime} = state;
         var x1,y1,x2,y2;
         if(axis === 'xAxis') {
             y1 = y2 = other;
@@ -88,11 +88,10 @@ export default class  Axis extends Component {
         points.map(function(point,index){
             var {x,y,value} = point;
             var x1,x2,y1,y2;
-            var tickStart,tickEnd;
             if(axis === 'xAxis') {
-                y = other + axisLabel.margin*labelFlag;
+                y = (opposite?top:bottom) + axisLabel.margin*labelFlag;
             } else {
-                x = other - axisLabel.margin*labelFlag;
+                x = (opposite?right:left) - axisLabel.margin*labelFlag;
             }
             labels.push({x,y,value});
             if(axis === 'xAxis') {

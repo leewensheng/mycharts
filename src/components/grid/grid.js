@@ -28,10 +28,13 @@ export default class Grid extends Component {
 	            end = top;
 	            other = opposite?right:left;
 	        }
+	        if(option.inverse) {
+	        	var tempVar =  start;
+	        	start = end;
+	        	end = tempVar;
+	        }
 	       if(type === 'value' && min * max < 0) {
 	       		zeroPoisition = start + (0 - min)/(max - min)*(end  - start);
-	       }
-	       if(!start) {
 	       }
 	       return {
 	       		start,end,other,zeroPoisition,axisData:axis,labelPlace:{}

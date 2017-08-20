@@ -46,6 +46,7 @@ export default class BarModel extends SeriesModel {
 		var {barWidth} = option;
 		var {bottom} = grid;
 		var points = this.getPointsOnGrid(grid);
+		barWidth = visible?barWidth:0;
 		return points.map(function(point){
 			var {x,y} = point;
 			var barHeight = y - bottom;

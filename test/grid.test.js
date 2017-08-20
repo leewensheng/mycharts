@@ -14,6 +14,7 @@ var option = {
 		gridLine:{
 			enabled:false
 		},
+		opposite:0,
 		title:{
 			text:'haha'
 		}
@@ -24,14 +25,16 @@ var option = {
 			style:{
 				color:'red'
 			}
+		},
+		axisTick:{
+			inside:true
 		}
 	},
 	series:[
 	{
-		type:'bar',
+		type:'line',
 		data:[1,2,3],
-		stack:1,
-		showInLegend:false
+		stack:1
 	},{
 		type:'line',
 		data:[2,-3,5],
