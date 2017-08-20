@@ -6,152 +6,177 @@ import Rect from '../../elements/rect'
 export default class Grid extends Component {
 	constructor(props){
 		super(props);
-		var {xAxis,yAxis,containLabel} = props;
+		var {left,top,right,bottom,width,height} = props;
+		this.setAxisData = this.setAxisData.bind(this);
+		var gridAxis = this.getGridAxis(props,left,top,right,bottom);
 		this.state =  {
-			hasInited:containLabel?false:true,
-			leftLabelWidth:0,
-			rightLabelWidth:0,
-			bottomLabelHeight:0,
-			topLabelHeight:0,
-			xAxis:xAxis.map(function(){}),
-			yAxis:yAxis.map(function(){})
+			top,left,right,bottom,width,height,gridAxis
 		}
 	}
+	getGridAxis(props,left,top,right,bottom){
+		var {xAxis,yAxis,includeSeries} = props;
+		var gridAxis = xAxis.concat(yAxis).map(function(axis,indexInGrid){
+			var {min,max,type,option,includeSeries} = axis;
+			var {opposite,axisLine,index}  = option;
+			var start ,end , other,zeroPoisition = null;
+			if(axis.axis === 'xAxis') {
+	            start = left;
+	            end = right;
+	            other = opposite?top:bottom;
+	        } else if(axis.axis === 'yAxis') {
+	            start = bottom;
+	            end = top;
+	            other = opposite?right:left;
+	        }
+	       if(type === 'value' && min * max < 0) {
+	       		zeroPoisition = start + (0 - min)/(max - min)*(end  - start);
+	       }
+	       if(!start) {
+	       }
+	       return {
+	       		start,end,other,zeroPoisition,axisData:axis,labelPlace:{}
+	       }
+		})
+		includeSeries.map(function(series){
+			var xAxisIndex = series.xAxis;
+			var yAxisIndex = series.yAxis;
+			var xAxisData = gridAxis.filter(function(axis){
+				var {axisData} = axis;
+				return axisData.option.index === xAxisIndex && axisData.axis === 'xAxis';
+			})[0];
+			var yAxisData = gridAxis.filter(function(axis){
+				var {axisData} = axis;
+				return axisData.option.index === yAxisIndex && axisData.axis === 'yAxis';
+			})[0];
+			if(xAxisData.axisData.type === 'value' && yAxisData.axisData.option.axisLine.onZero) {
+				if(xAxisData.zeroPoisition !== null) {
+					yAxisData.other = xAxisData.zeroPoisition;
+				}
+			}
+			if(yAxisData.axisData.type === 'value' && xAxisData.axisData.option.axisLine.onZero) {
+				if(yAxisData.zeroPoisition !== null) {
+					xAxisData.other = yAxisData.zeroPoisition;
+				}
+			}
+		})
+		return gridAxis;
+	}
 	render(){
-		var props = this.props;
-		var setAxisData = this.setAxisData.bind(this);
-		var {top,left,right,bottom,width,height,background,xAxis,yAxis,containLabel} = props;
-		var {leftLabelWidth,rightLabelWidth,bottomLabelHeight,topLabelHeight,hasInited,updateType} = this.state;
-		var axisLeft = left + leftLabelWidth,
-			axisTop = top +  topLabelHeight,
-			axisRight = right - rightLabelWidth,
-			axisBottom = bottom  - bottomLabelHeight,
-			axisWidth = axisRight - axisLeft,
-			axisHeight = axisBottom - axisTop;
+		var {props,state} = this;
+		var setAxisData = this.setAxisData;
+		var {background,xAxis,yAxis,containLabel} = props;
+		var {gridAxis,updateType,left,top,right,bottom,width,height,hasInited}  = state;
 		return (
 			<g className="vcharts-grid">
 				{
-					hasInited
-					&&
-					<Rect  className="vcharts-grid-backgrould" x={axisLeft} y={axisTop} width={axisWidth} height={axisHeight} fill={background}/>
+                    hasInited
+                    &&
+                    <Rect update={containLabel?updateType==='adjust':true} className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
 				}
 				{
-					xAxis.concat(yAxis).map(function(axis,index){
+					gridAxis.map(function(axis,gridAxisIndex){
+						var hasOpposite;
+						var {start,end,other,axisData,zeroPoisition} = axis;
 						return <Axis 	
+									key={'xaxis'+gridAxisIndex}
+									start = {start}
+									end={end}
+									other={other}
+									top={top}
+									left={left}
+									right={right}
+									bottom={bottom}
+									axisData={axisData}
 									containLabel={containLabel}
-									key={'xaxis'+index}
-									hasOpposite={yAxis.length>=2}
-									gridLeft={left}
-									gridRight={right}
-									gridBottom={bottom}
-									gridTop={top}
-									gridLeft={left}
-									left={axisLeft} 
-									right={axisRight} 
-									bottom={axisBottom}
-									top={axisTop}
-									width={axisWidth}
-									height={axisHeight}
-									axisData={axis}
+									hasOpposite={false}
 									setAxisData={setAxisData}
 									updateType={updateType}
+									gridAxisIndex={gridAxisIndex}
+									zeroPoisition={zeroPoisition}
 									/>
 					})
 				}
 			</g>
 		)
 	}
-	setAxisData(axis,index,data){
-		var {xAxis,yAxis} = this.state;
-		if(axis==='xAxis') {
-			xAxis[index] = data;
-		} else {
-			yAxis[index] = data;
-		}
-		var isReady = true;
-		xAxis.map(function(val){
-			if(!val) isReady = false;
+	setAxisData(index,data){
+		var {gridAxis} = this.state;
+		var axis = gridAxis[index];
+		axis.computed = true;
+		axis.labelPlace = data;
+		var isNotReady = gridAxis.some(function(axis){
+			return !axis.computed;
 		})
-		yAxis.map(function(val){
-			if(!val) isReady = false;
-		})
-		if(isReady) {
+		if(!isNotReady) {
 			this.onAxisReady();
 		}
 	}
 	onAxisReady(){
+		var that = this;
 		var {props,state} = this;
-		var {containLabel} = props;
-		var {chartEmitter,includeSeries,top,left,right,bottom,width,height} = props;
-		var {xAxis,yAxis} = state;
-		var  
-		topLabelHeight=0,
-		bottomLabelHeight=0,
-		rightLabelWidth=0,
-		leftLabelWidth=0;
+		var {top,left,right,bottom,width,height,containLabel} = props;
+		var {gridAxis} = state;
+		var 
+			leftLabelWidth = 0,
+			rightLabelWidth = 0,
+			bottomLabelHeight = 0,
+			topLabelHeight = 0;
 		if(containLabel) {
-			xAxis.concat(yAxis).map(function(axis){
-			 	topLabelHeight += axis.labelPlace.top;
-			 	bottomLabelHeight += axis.labelPlace.bottom;
-			 	rightLabelWidth += axis.labelPlace.right;
-			 	leftLabelWidth += axis.labelPlace.left;
-			 });		
-		}
-		var axisLeft = left + leftLabelWidth,
-			axisTop = top +  topLabelHeight,
-			axisRight = right - rightLabelWidth,
-			axisBottom = bottom  - bottomLabelHeight,
-			axisWidth = axisRight - axisLeft,
-			axisHeight = axisBottom - axisTop;
-		includeSeries.map(function(series){
-			var seriesIndex = series.seriesIndex;
-			var xAxisIndex= series.xAxis;
+            gridAxis.map(function(axis){
+		        topLabelHeight += axis.labelPlace.top;
+		        bottomLabelHeight += axis.labelPlace.bottom;
+		        rightLabelWidth += axis.labelPlace.right;
+		        leftLabelWidth += axis.labelPlace.left;
+		    });        
+        }
+        left += leftLabelWidth,
+        top +=  topLabelHeight,
+        right -= rightLabelWidth,
+        bottom  -= bottomLabelHeight,
+        width = right - left;
+        height = bottom - top;
+        gridAxis = that.getGridAxis(props,left,top,right,bottom);
+        var updateType = 'adjust';
+        var hasInited  = true;
+        this.setState({left,right,top,bottom,width,height,gridAxis,updateType,hasInited});
+	}
+	sendGridInfo(){
+		var {props,state} = this;
+		var {includeSeries,chartEmitter} = props;
+		var {top,left,right,bottom,width,height,gridAxis} = state;
+		includeSeries.map(function(series) {
+			var  {seriesIndex} = series;
+			var xAxisIndex = series.xAxis;
 			var yAxisIndex = series.yAxis;
-			var xAxisData,yAxisData;
-			for(var i = 0; i < xAxis.length;i++) {
-				if(xAxis[i].index === xAxisIndex) {
-					xAxisData = xAxis[i];
-				}
-			}
-			for(var i = 0; i < yAxis.length;i++) {
-				if(yAxis[i].index === yAxisIndex) {
-					yAxisData = yAxis[i];
-				}
-			}
-			chartEmitter.emit('grid',
-				{	
-					seriesIndex:seriesIndex,
-					stackedOnData:series.stackedOnData,
-					reversed:series.reversed,
-					top:axisTop,
-					left:axisLeft,
-					right:axisRight,
-					bottom:axisBottom,
-					width:axisWidth,
-					height:axisHeight,
-					xAxis:xAxisData,
-					yAxis:yAxisData,
-					visibleSeries:includeSeries.filter(function(series){
-						return series.visible;
-					})
-				}
-			)
+			var xAxisData = gridAxis.filter(function(axis){
+				return axis.axisData.option.index === xAxisIndex && axis.axisData.axis === 'xAxis';
+			})[0];
+			var yAxisData = gridAxis.filter(function(axis){
+				return axis.axisData.option.index === yAxisIndex && axis.axisData.axis === 'yAxis';
+			})[0];
+			var visibleSeries = includeSeries.filter(function(series){
+				return series.visible;
+			});
+			var isEmpty = !visibleSeries.length
+			chartEmitter.emit('grid',{
+				seriesIndex:seriesIndex,
+				xAxis:xAxisData,
+				yAxis:yAxisData,
+				top,left,right,
+				bottom,width,height,
+				isEmpty
+			});
 		})
-		if(containLabel) {
-			var updateType = 'adjust';
-			var hasInited = true;
-			this.setState({hasInited,topLabelHeight,bottomLabelHeight,rightLabelWidth,leftLabelWidth,updateType});
-		}
 	}
 	componentWillReceiveProps(nextProps){
-		var {xAxis,yAxis,containLabel} = nextProps;
-		xAxis = xAxis.map(function(){}),
-		yAxis = yAxis.map(function(){})
+		var {left,top,right,bottom} = nextProps;
+		var gridAxis = this.getGridAxis(nextProps,left,top,right,bottom);
 		var updateType = 'newProps';
-		this.setState({xAxis,yAxis,updateType});
+		this.setState({updateType,gridAxis});
 	}
-	shouldComponentUpdate(nextProps,nextState){
-		var {updateType} = nextState;
-		return updateType === 'newProps' || updateType === 'adjust';
+	componentDidUpdate(){
+		if(this.state.updateType === 'adjust') {
+			this.sendGridInfo();
+		}
 	}
 }

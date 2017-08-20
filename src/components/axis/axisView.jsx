@@ -10,20 +10,9 @@ export default class  Axis extends Component {
         this.state = this.getRenderData(props);      
     }
     getRenderData(props,oldState){
-        var {top,left,right,bottom,width,height,axisData,containLabel,updateType} = props;
+        var {start,end,other,axisData,containLabel,updateType} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
         var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
-        var start,end,other;
-        if(axis === 'xAxis') {
-            start = left;
-            end = right;
-            other = opposite?top:bottom;
-        } else if(axis === 'yAxis') {
-            start = bottom;
-            end = top;
-            other = opposite?right:left;
-        }
-
         var points = [];
         var gap = end - start;
         var data = [];
@@ -35,7 +24,7 @@ export default class  Axis extends Component {
         /*
             需要计算数字宽度时，会连续更新两次，导致动画失效，在前一次保持状态
          */
-        var keepState = oldState && containLabel&&props.updateType!='adjust';
+        var keepState = oldState&&props.updateType!='adjust';
         data.map(function(value,index){
            var x,y,text;
            if(axis === 'xAxis') {
@@ -59,19 +48,18 @@ export default class  Axis extends Component {
             other = oldState.other;
         }
         var isLabelAdjusted = false;
-        if(!containLabel||props.updateType==='adjust') {
+        if(props.updateType==='adjust') {
             isLabelAdjusted = true;
         }
         var isFirstTime = !oldState;
-        return {isLabelAdjusted,points:points,start,end,other,min,max,isFirstTime};
+        return {isLabelAdjusted,points:points,start,end,other,isFirstTime};
     }
     render(){
         var {props,state} = this;
-        var {top,left,right,bottom,width,height,axisData,containLabel,updateType,hasOpposite} = props;
+        var {axisData,zeroPoisition,containLabel,updateType,hasOpposite,top,left,right,bottom,width,height} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
         var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var {isLabelAdjusted,points,start,end,other,isFirstTime} = state;
-        var {gridLeft,gridRight,gridTop,gridBottom} = props;
         var x1,y1,x2,y2;
         if(axis === 'xAxis') {
             y1 = y2 = other;
@@ -83,7 +71,7 @@ export default class  Axis extends Component {
             y2 = end;
         };
         var labels = [],ticks = [],gridLines = [];
-        var labelFlag = 1,tickFlag = 1,gridFlag = 1;
+        var labelFlag = 1,tickFlag = 1;
         if(axisLabel.inside) {
             labelFlag *= -1;
         }
@@ -93,7 +81,6 @@ export default class  Axis extends Component {
         if(opposite) {
             labelFlag *= -1;
             tickFlag *= -1;
-            gridFlag *= -1;
         }
         if(!includeSeries.length&&type === 'value') {
             points = [];
@@ -120,12 +107,12 @@ export default class  Axis extends Component {
             ticks.push({x1,x2,y1,y2});
             if(axis === 'xAxis') {
                 x1  = x2 = x;
-                y1 = other;
-                y2 = other - height*gridFlag;
+                y1 = top;
+                y2 = bottom;
             } else {
                 y1 = y2 = y;
-                x1 = other;
-                x2 = other + width*gridFlag;
+                x1 = left;
+                x2 = right;
             }
             gridLines.push({x1,y1,x2,y2});
         })
@@ -145,7 +132,6 @@ export default class  Axis extends Component {
         }
         return (
             <g className={className}>
-                <AxisTitle animation={isLabelAdjusted||!isFirstTime} axis={axis} axisOption={option} top={top} left={left} right={right} bottom={bottom} gridLeft={gridLeft} gridRight={gridRight} gridTop={gridTop} gridBottom={gridBottom}/>
                 {
                 (!isFirstTime||!containLabel)&&axisLine.enabled
                 &&
@@ -169,11 +155,16 @@ export default class  Axis extends Component {
                             if(index === 0) {
                                 return;
                             }
+                            if(axis === 'xAxis' && zeroPoisition === x1) {
+                                return;
+                            }
+                            if(axis === 'yAxis' && zeroPoisition === y1) {
+                                return;
+                            }
                             if(index === gridLines.length-1&&hasOpposite) {
                                 return;
                             }
-                            return <Line  
-                                    update={updateType==='newProps'&&containLabel?false:true}
+                            return <Line   
                                     key={index} 
                                     x1={x1} 
                                     y1={y1} 
@@ -230,8 +221,8 @@ export default class  Axis extends Component {
     }
     sendAxisData(){
         var {props,state} = this;
-        var {setAxisData,top,left,right,bottom,width,height,axisData,containLabel,updateType} = props;
-        var {indexInGrid,axis,option,includeSeries,min,max,splitData} = axisData;
+        var {setAxisData,axisData,containLabel,updateType,gridAxisIndex} = props;
+        var {axis,option,includeSeries,min,max,splitData} = axisData;
         var {index,opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var labelSize;
         var el = findDOMNode(this);
@@ -266,11 +257,7 @@ export default class  Axis extends Component {
             }
         } 
         //应当使用轴的极值
-        var {points,start,end,other,min,max,data} = state;
-        //需要考虑axis
-        setAxisData(axis,indexInGrid,{
-            min,max,index,labelPlace
-        });
+        setAxisData(gridAxisIndex,labelPlace);
     }
     componentDidMount(){
         this.sendAxisData();

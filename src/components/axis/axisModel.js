@@ -31,6 +31,7 @@ export default class Axis extends ComponentModel {
 	        text:""
 	    },
 	    axisLine:{
+	    	onZero:true,
 	        enabled:true,
 	        lineColor:'blue',
 	        lineWidth:1,
@@ -195,6 +196,7 @@ export default class Axis extends ComponentModel {
 				max = splitData[splitData.length-1];
 			}
 			return {
+				type:axisOpt.type,
 				option:axisOpt,
 				min:min,
 				max:max,

@@ -18,18 +18,14 @@ class  Rect extends Component{
         width = Math.abs(width);
         height = Math.abs(height);
         var el = findDOMNode(this);
-        var attrs = ['x','y','width','height'];
-        var changed = attrs.some(function(attr){
-            return props[attr] !== prevProps[attr];
-        });
-        if(animation&&changed) {
-            $(el).stopTransition().transition({x,y,width,height},400,'easeout');        
+        if(animation) {
+            $(el).stopTransition().transition({x,y,width,height},400,'easeOut');        
         } else {
             $(el).stopTransition().attr({x,y,width,height});        
         }
     }
     componentWillReceiveProps(nextProps){
-        this.setState({update:true})
+        this.setState({update:nextProps.update!==false});
     }
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;

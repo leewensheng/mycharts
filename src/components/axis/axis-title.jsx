@@ -6,6 +6,7 @@ class AxisTitle extends Component{
 		super(props);
 	}
 	render(){
+		return <g></g>
 		var {props} = this;
 		var {animation,axis,axisOption,top,left,right,bottom} = props;
 		var {gridTop,gridLeft,gridRight,gridBottom} = props;

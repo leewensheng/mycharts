@@ -35,4 +35,14 @@ export default class LineModel extends SeriesModel {
 	    showInLegend:true,
 	    visible:true
 	}
+	getLinePoints(grid){
+		var points = this.getPointsOnGrid(grid);
+		var name = this.seriesName;
+		return this.mapData(function(point,dataIndex){
+			var {x,y,color} = point;
+			var plotX = points[dataIndex].x;
+			var plotY = points[dataIndex].y; 
+			return {x,y,plotX,plotY,color};
+		})
+	}
 }

@@ -6,7 +6,7 @@ var option = {
 	grid:{
 		top:50,
 		left:80,
-		containLabel:true,
+		containLabel:1,
 		background:'#ddd'
 	},
 	xAxis:{
@@ -19,7 +19,6 @@ var option = {
 		}
 	},
 	yAxis:{
-		min:0,
 		title:{
 			text:'liws',
 			style:{
@@ -31,10 +30,11 @@ var option = {
 	{
 		type:'bar',
 		data:[1,2,3],
-		stack:1
+		stack:1,
+		showInLegend:false
 	},{
 		type:'line',
-		data:[2,3,6],
+		data:[2,-3,5],
 		stack:1
 	}]
 }

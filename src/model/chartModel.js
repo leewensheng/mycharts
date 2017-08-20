@@ -30,7 +30,8 @@ export default class ChartModel {
         ],
         plotOptions:{
             series:{
-                visible:true
+                visible:true,
+                showInLegend:true
             }
         },
         series:[]

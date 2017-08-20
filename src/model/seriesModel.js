@@ -104,18 +104,19 @@ export default class SeriesModel extends BaseModel {
 		var that = this;
 		var option = this.getOption();
 		var {data} = option;
-		var {top,left,right,bottom,width,height,xAxis,yAxis,visibleSeries} = grid;
-		if(!visibleSeries.length) {
+		var {xAxis,yAxis,isEmpty} = grid;
+		if(isEmpty) {
 			return [];
 		}
 		return data.map(function(point){
-			var x = that.getPositionOnAxis(point.x,left,right,xAxis);
-			var y = that.getPositionOnAxis(point.y,bottom,top,yAxis);
+			var x = that.getPositionOnAxis(point.x,xAxis);
+			var y = that.getPositionOnAxis(point.y,yAxis);
 			return {x,y};
 		});
 	}
-	getPositionOnAxis(value,start,end,axis) {
-		var {min,max} = axis;
+	getPositionOnAxis(value,axis) {
+		var {start,end,axisData} = axis;
+		var {min,max} = axisData;
 		return start + (end-start)*(value - min)/(max - min);
 	}
 }

@@ -63,7 +63,9 @@ class  PathElement extends Component{
         }
     }
     componentWillReceiveProps(nextProps){
-        this.setState({update:true})
+        this.setState({
+            update:nextProps.update!==false
+        })
     }
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;

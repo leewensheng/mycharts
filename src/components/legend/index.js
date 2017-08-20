@@ -17,6 +17,9 @@ export default class Legend extends Component {
 		var items = [];
 		chartModel.eachSeriesByDependency('legend',function(seriesModel){
 			var {visible,icon,seriesColor,seriesIndex,seriesName,multipleLegend} = seriesModel;
+			if(!seriesModel.getOption().showInLegend) {
+				return;
+			}
 			if(!multipleLegend) {
 				items.push({
 					x:0,

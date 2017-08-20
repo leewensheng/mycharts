@@ -24,11 +24,8 @@ export default class Bar extends Component {
         if(!hasInited) {
             return <g></g>;
         }
-        var barWidth = 30;
-        if(!visible) {
-            barWidth = 0;
-        }
-        var bars = seriesModel.getBars(grid,barWidth);
+
+        var bars = seriesModel.getBars(grid);
         return (
             <g className="vcharts-series vcharts-bar-series">
                 <g>

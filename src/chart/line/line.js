@@ -41,7 +41,7 @@ export default class Linechart extends Component {
                                     x={x} 
                                     y={y - 10} 
                                     style={dataLabels.style} 
-                                    >{label}</Text>
+                                    >{333}</Text>
                         })
                     }
                 </g>
