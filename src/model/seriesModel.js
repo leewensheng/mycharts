@@ -1,3 +1,4 @@
+
 import mathUtils from 'cad/math'
 import $ from 'jquery'
 import BaseModel from './baseModel'
@@ -19,13 +20,13 @@ export default class SeriesModel extends BaseModel {
 	dependencies = [];
 	multipleLegend = false;
 	initOption(){
-		this.mergetDefaultOption();
+		this.mergeDefaultOption();
 		this.normalLizeData();
 	}
 	getOption(){
 		return this.option;
 	}
-	mergetDefaultOption(){
+	mergeDefaultOption(){
 		var {option,defaultOption} = this;
 		this.option = $.extend(true,{},defaultOption,option);
 	}
@@ -104,13 +105,13 @@ export default class SeriesModel extends BaseModel {
 		var that = this;
 		var option = this.getOption();
 		var {data} = option;
-		var {xAxis,yAxis,isEmpty} = grid;
+		var {xAxis,yAxis,isEmpty,reversed} = grid;
 		if(isEmpty) {
 			return [];
 		}
 		return data.map(function(point){
-			var x = that.getPositionOnAxis(point.x,xAxis);
-			var y = that.getPositionOnAxis(point.y,yAxis);
+			var x = that.getPositionOnAxis(reversed?point.y:point.x,xAxis);
+			var y = that.getPositionOnAxis(reversed?point.x:point.y,yAxis);
 			return {x,y};
 		});
 	}

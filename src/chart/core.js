@@ -7,6 +7,7 @@ import $ from 'jquery'
 import EventEmitter  from 'events'
 import Tooltip from '../components/tooltip/index'
 import ChartModel from '../model/chartModel'
+import Gradient from '../elements/gradient'
 export default class Core extends Component {
     constructor(props){
         super(props);
@@ -31,11 +32,18 @@ export default class Core extends Component {
         var height = chartModel.getHeight();
         var chartEmitter = this.chartEmitter;
         var option = chartModel.getOption();
+        var {gradients} = chartModel;
         return (
             <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
                 <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} />
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
-                    <defs></defs>
+                    <defs>
+                        {
+                            gradients.map(function(gradient){
+                                return <Gradient key={gradient.id} {...gradient} />
+                            })
+                        }
+                    </defs>
                     <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={option.chart.background}/>
                     {
                         chartModel.components.map(function(component){

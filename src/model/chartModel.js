@@ -8,8 +8,12 @@ export default class ChartModel {
 		this.option = option;
         this.series = [];// series models;
         this.components = []; //components models;
+        this.gradients = [];
+        this.constructor.chartId++;
+        this.chartId = this.constructor.chartId;
 		this.init();
 	}
+    static chartId = 0;
     defaultOption = {
         chart:{
             background:'transparent',
@@ -41,12 +45,28 @@ export default class ChartModel {
         this.initSeriesModels();
         this.initComponentsModels();
 	}
+    initGradients(colors){
+        var gradients = [];
+        var {chartId} = this;
+        colors = colors.map(function(color){
+            if(typeof color === 'object') {
+                var id = chartId + '-gradient-' + gradients.length;
+                color.id = id;
+                gradients.push(color);
+                return 'url(#' + id + ')';
+            }
+            return color;
+        })
+        this.gradients = gradients;
+        return colors;
+    }
     mergetDefaultOption(){
         var that = this;
         var {option,defaultOption} = this;
         option = $.extend(true,{},defaultOption,option);
-        this.option = option;
         var {plotOptions,series,colors} = option;
+        colors = this.initGradients(colors);
+        option.colors = colors;
         var components = {};
         series = series.map(function(seriesOpt,seriesIndex){
             seriesOpt.seriesIndex = seriesIndex;

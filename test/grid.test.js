@@ -3,6 +3,13 @@ import $ from 'jquery'
 
 var el = document.querySelector('#root');
 var option = {
+	colors:[{
+		type:'linearGradient',
+		stops:[
+			[0,'red'],
+			[1,'darkred']
+		]
+	},'red'],
 	grid:{
 		top:50,
 		left:80,
@@ -33,12 +40,14 @@ var option = {
 	series:[
 	{
 		type:'line',
-		data:[1,2,3],
+		data:[1,-2,3],
 		stack:1
 	},{
-		type:'line',
-		data:[2,-3,5],
-		stack:1
+		type:'pie',
+		data:[2,3,5],
+		stack:1,
+		innerSize:0.5,
+		roseType:'radius'
 	}]
 }
 

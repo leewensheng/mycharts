@@ -17,8 +17,8 @@ export default class Grid extends Component {
 		var {xAxis,yAxis,includeSeries} = props;
 		var gridAxis = xAxis.concat(yAxis).map(function(axis,indexInGrid){
 			var {min,max,type,option,includeSeries} = axis;
-			var {opposite,axisLine,index}  = option;
-			var start ,end , other,zeroPoisition = null;
+			var {opposite}  = option;
+			var start ,end , other,interval,zeroPoisition = null;
 			if(axis.axis === 'xAxis') {
 	            start = left;
 	            end = right;
@@ -160,13 +160,18 @@ export default class Grid extends Component {
 			var visibleSeries = includeSeries.filter(function(series){
 				return series.visible;
 			});
-			var isEmpty = !visibleSeries.length
+			var isEmpty = !visibleSeries.length;
+			var reversed = false;
+			if(xAxisData.axisData.type === 'value' && yAxisData.axisData.type === 'category') {
+				reversed = true;
+			}
 			chartEmitter.emit('grid',{
 				seriesIndex:seriesIndex,
 				xAxis:xAxisData,
 				yAxis:yAxisData,
 				top,left,right,
 				bottom,width,height,
+				reversed,
 				isEmpty
 			});
 		})
