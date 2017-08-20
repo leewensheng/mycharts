@@ -58,6 +58,7 @@ export default class ChartModel {
            var seriesColor = that.addGradientColor(seriesModel.seriesColor);
             var seriesOpt = seriesModel.getOption();
             seriesOpt.seriesColor = seriesColor;
+            seriesModel.seriesColor = seriesColor;
             if(seriesOpt.color) {
                 seriesOpt.color = that.addGradientColor(seriesOpt.color);
             }
