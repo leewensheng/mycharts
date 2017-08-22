@@ -161,7 +161,7 @@ export default class  Axis extends Component {
                         &&
                         gridLines.map(function(grid,index){
                             var {x1,y1,x2,y2} = grid;
-                            if(index === 0) {
+                            if(index === 0 && !zeroPoisition) {
                                 return;
                             }
                             if(axis === 'xAxis' && zeroPoisition === x1) {
