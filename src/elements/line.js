@@ -15,11 +15,10 @@ class  Line extends Component{
         var d = new Path().M(x1,y1).L(x2,y2);
         //  https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering
         //  auto | optimizeSpeed | crispEdges | geometricPrecision | inherit
-        var transform = '';
-        if(browser.msie) {
-            transform = 'translate(0.5,0.5)';
+        if(browser.msie&& x1===x2 || y1===y2) {
+            return <PathElement transform='translate(0.5,0.5)' {...props} style={{shapeRendering:"optimizeSpeed "}} d={d} /> 
         }
-        return <PathElement transform={transform} {...props} style={{shapeRendering:"optimizeSpeed "}} d={d} /> 
+        return <PathElement {...props} style={{shapeRendering:"optimizeSpeed "}} d={d} /> 
     }
 }
 Line.defaultProps = 
