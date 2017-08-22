@@ -154,21 +154,21 @@ export default class Axis extends ComponentModel {
 		}).map(function(axisOpt,indexInGrid){
 			var {index} = axisOpt;
 			var includeSeries = that.getSeriesByAxis(axis,index);
-			var extremes = includeSeries.map(function(seriesModel){
-				return seriesModel.getExtreme();
+			var stackedData = includeSeries.map(function(seriesModel){
+				return seriesModel.getStackedData();
 			})
-			var minX = mathUtils.min(extremes.map(function(extreme){
-				return extreme.x[0];
-			}));
-			var maxX = mathUtils.max(extremes.map(function(extreme){
-				return extreme.x[1];
-			}));
-			var minY = mathUtils.min(extremes.map(function(extreme){
-				return extreme.y[0];
-			}));
-			var maxY = mathUtils.max(extremes.map(function(extreme){
-				return extreme.y[1];
-			}));
+			var stackedX = [],stackedY = [];
+			stackedData.map(function(data){
+				data.map(function(point){
+					var {x,y} = point;
+					stackedX.push(x);
+					stackedY.push(y);
+				})
+			});
+			var minX = mathUtils.min(stackedX);
+			var maxX = mathUtils.max(stackedX);
+			var minY = mathUtils.min(stackedY);
+			var maxY = mathUtils.max(stackedY);
 			var reversed = axisOpt.reversed,min,max
 			if(axis === 'xAxis') {
 				if(reversed) {

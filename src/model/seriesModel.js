@@ -53,8 +53,42 @@ export default class SeriesModel extends BaseModel {
 		})
 		option.data = data;
 	}
-	getStackedOnData(){
-		return null;
+	getStackedData(){
+		var data = this.getData;
+		var option = this.getOption();
+		var {stack} = option;
+		if(!stack) {
+			return data;
+		}
+		var seriesIndex = this.seriesIndex;
+		var type = this.type;
+		var stackOnData = [];
+		this.chartModel.eachSeriesByType(type,function(seriesModel){
+			var seriesOpt = seriesModel.getOption();
+			if(seriesOpt.stack === stack && seriesModel.seriesIndex < seriesIndex && seriesModel.visible) {
+				stackOnData.push(seriesModel.getData());
+			}
+		});
+		return this.mapData(function(point,dataIndex){
+			var {x,y} = point;
+			stackOnData.map(function(data){
+				if(data[dataIndex]) {
+					var stackedY = data[dataIndex].y;
+					if(!isNaN(stackedY)) {
+						if(!isNaN(y)) {
+							y += stackedY;
+						} else {
+							y = stackedY;
+						}
+					}
+				}
+			});
+			return  {x,y};
+		})
+	}
+	getData(){
+		var {option} = this;
+		return option.data;
 	}
 	getMin(){
 		var extreme = this.getExtreme();
@@ -103,8 +137,7 @@ export default class SeriesModel extends BaseModel {
 	}
 	getPointsOnGrid(grid) {
 		var that = this;
-		var option = this.getOption();
-		var {data} = option;
+		var data = this.getStackedData();
 		var {xAxis,yAxis,isEmpty,reversed} = grid;
 		if(isEmpty) {
 			return [];
@@ -118,6 +151,9 @@ export default class SeriesModel extends BaseModel {
 	getPositionOnAxis(value,axis) {
 		var {start,end,axisData} = axis;
 		var {min,max} = axisData;
+		if(min === max) {
+			return (start + end) / 2;
+		}
 		return start + (end-start)*(value - min)/(max - min);
 	}
 }

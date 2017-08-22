@@ -28,10 +28,20 @@ export default class  Axis extends Component {
         data.map(function(value,index){
            var x,y,text;
            if(axis === 'xAxis') {
-                x = start + gap*index/(data.length-1);
+                if(data.length > 1) {
+                    x = start + gap*index/(data.length-1);
+                } else {
+                    x  = (start + end) / 2;
+                }
+
                 y = other;
            } else {
-                y = start + gap*index/(data.length-1);
+                if(data.length > 1) {
+                    y = start + gap*index/(data.length-1);
+                } else {
+                    y = (start + end ) / 2;
+                }
+                
                 x = other;
            }
            if(oldState&&oldState.points[index]) {
@@ -41,7 +51,7 @@ export default class  Axis extends Component {
                 }
            }
            points.push({x,y,value});
-        });
+        })
         if(keepState) {
             start = oldState.start;
             end = oldState.end;

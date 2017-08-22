@@ -32,8 +32,7 @@ export default class GridModel extends ComponentModel {
 			var seriesOpt = seriesModel.getOption();
 			var {seriesIndex,visible} = seriesModel;
 			var {type,xAxis,yAxis} = seriesOpt;
-			var stackedOnData = seriesModel.getStackedOnData();
-			var series =  {type,seriesIndex,xAxis,yAxis,visible,stackedOnData}
+			var series =  {type,seriesIndex,xAxis,yAxis,visible}
 			gridSeries.push(series);
 		})
 		return gridSeries;

@@ -104,7 +104,7 @@ class  Slice extends Component{
 				$el.attr('transform',transformEase(k));
 			}
 		});
-		$el.attr('filter',isHover?'url(#shadow)':'');
+		$el.attr('filter',isHover?'url(#shadow)':'none');
 		this.setState({isHover:isHover,update:false});
 	}
 	offset(selected){

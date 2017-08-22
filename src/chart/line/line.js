@@ -26,22 +26,28 @@ export default class Linechart extends Component {
         if(!hasInited) {
             return <g></g>;
         }
-        var points = seriesModel.getPointsOnGrid(grid);
+        var points = seriesModel.getLinePoints(grid);
+        var polylinePoints = points.map(function(point){
+            var x = point.plotX;
+            var y = point.plotY;
+            return {x,y};
+        })
         return (
             <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
-                <Polyline className="vcharts-series-polyline" points={points}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
                         &&
                         points.map(function(point,index){
-                            var {x,y,label} = point;
+                            var {x,y,plotX,plotY,polyline,color} = point;
                             return <Text  
                                     key={index}
-                                    x={x} 
-                                    y={y - 10} 
+                                    x={plotX} 
+                                    y={plotY - 10}
+                                    fill={color} 
                                     style={dataLabels.style} 
-                                    >{333}</Text>
+                                    >{y}</Text>
                         })
                     }
                 </g>
@@ -50,13 +56,14 @@ export default class Linechart extends Component {
                         marker.enabled
                         &&
                         points.map(function(point,index){
-                            var {x,y,label} = point;
+                            var {x,y,plotX,plotY,polyline,color} = point;
                             return <Circle  
                                         key={index}
-                                        cx={x} 
-                                        cy={y} r={4} 
+                                        cx={plotX} 
+                                        cy={plotY} 
+                                        r={4} 
                                         fill="#fff" 
-                                        stroke={seriesColor} 
+                                        stroke={color} 
                                         strokeWidth="1" 
                                         onMouseOver={that.animateSymbol}
                                         onMouseOut={that.animateSymbol} />

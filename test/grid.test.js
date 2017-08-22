@@ -3,13 +3,7 @@ import $ from 'jquery'
 
 var el = document.querySelector('#root');
 var option = {
-	colors:[{
-		type:'radialGradient',
-		stops:[
-			[0,'green'],
-			[1,'rgb(0,100,0']
-		]
-	},{
+/*	colors:['blue',{
 		type:'radialGradient',
 		stops:[
 			[0,'blue'],
@@ -21,7 +15,7 @@ var option = {
 			[0,'red'],
 			[1,'darkred']
 		]
-	},'red'],
+	},'red'],*/
 	grid:{
 		top:50,
 		left:80,
@@ -31,7 +25,9 @@ var option = {
 	xAxis:{
 		categories:['甲','乙','丙'],
 		gridLine:{
-			enabled:false
+			enabled:0,
+			lineWidth:5,
+			color:'blue'
 		},
 		opposite:0,
 		title:{
@@ -52,17 +48,12 @@ var option = {
 	series:[
 	{
 		type:'line',
-		data:[1,-2,3],
+		data:[1,2,1],
 		stack:1
 	},{
-		type:'pie',
-		data:[2,3,5],
+		type:'line',
+		data:[-2,1,3],
 		stack:1,
-		innerSize:0.5,
-		roseType:'radius',
-		itemStyle:{
-			filter:'url(#shadow)'
-		}
 	}]
 }
 
