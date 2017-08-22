@@ -36,7 +36,59 @@ export default class LegendModel extends ComponentModel {
 			radius:5
 		}
 	};
-	getRenderData(){
-
+	getLegendData(prevLegendData){
+		var {chartModel} = this;
+		var chartOption = chartModel.getOption();
+		var {legend} = chartOption;
+		var items = [];
+		chartModel.eachSeriesByDependency('legend',function(seriesModel){
+		    var {visible,icon,seriesColor,seriesIndex,seriesName,multipleLegend} = seriesModel;
+		    if(!seriesModel.getOption().showInLegend) {
+		        return;
+		    }
+		    if(!multipleLegend) {
+		        items.push({
+		            x:0,
+		            y:0,
+		            name:seriesName,
+		            color:seriesColor,
+		            icon:icon,
+		            visible:visible,
+		            multiple:false,
+		            seriesIndex:seriesIndex
+		        })
+		    } else {
+		        seriesModel.mapData(function(point,dataIndex){
+		            items.push({
+		                x:0,
+		                y:0,
+		                name:point.name,
+		                color:point.color,
+		                icon:icon,
+		                visible:point.visible,
+		                multiple:true,
+		                seriesIndex:seriesIndex,
+		                dataIndex:dataIndex
+		            })
+		        })
+		    }
+		    
+		})
+		if(prevLegendData) {
+		    items.map(function(item,index){
+		        var oldItem = prevLegendData.items[index];
+		        if(oldItem) {
+		            item.x = oldItem.x;
+		            item.y = oldItem.y;
+		            item.width = oldItem.width;
+		        }
+		    })
+		}
+		return {
+		    isAdjusted:false,
+		    items:items,
+		    hasInited:prevLegendData?true:false,
+		    updateType:'newProps'
+		}
 	}
 }

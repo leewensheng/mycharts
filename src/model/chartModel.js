@@ -3,15 +3,9 @@ import seriesModels from '../chart/models'
 import componentModels from '../components/models'
 export default class ChartModel {
 	constructor(width,height,option){
-        this.width = width;
-        this.height = height;
-		this.option = option;
-        this.series = [];// series models;
-        this.components = []; //components models;
-        this.gradients = [];
         this.constructor.chartId++;
         this.chartId = this.constructor.chartId;
-		this.init();
+		this.init(width,height,option);
 	}
     static chartId = 0;
     defaultOption = {
@@ -40,12 +34,21 @@ export default class ChartModel {
         },
         series:[]
     };
-	init(){
+	init(width,height,option){
+        this.width = width;
+        this.height = height;
+        this.originalOption = option;
+        this.option = option;
+        this.series = [];// series models;
+        this.components = []; //components models;
+        this.gradients = [];
+
         this.mergetDefaultOption();
         this.initSeriesModels();
         this.initComponentsModels();
         this.initGradients();
 	}
+    //支持背景图
     initGradients(){
         var that = this;
         var option = this.getOption();
@@ -83,6 +86,13 @@ export default class ChartModel {
         } else {
             return 'url(#' + this.getGradientId(index) + ')';
         }
+    }
+    update(width,height,nextOption,notMerge){
+        var {prevOption} = this;
+        if(!notMerge) {
+            nextOption = $.extend(true,{},prevOption,nextOption);
+        } 
+        this.init.call(this,width,height,nextOption);
     }
     getGradientId(index){
         var chartId = this.chartId;

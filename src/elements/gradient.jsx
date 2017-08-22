@@ -4,7 +4,7 @@ export default class Gradient extends Component{
 		super(props);
 	}
 	static defaultProps = {
-		type:'linearGradient',
+		type:'linearGradient',//radiaGradient image
 		x1:"0%",
 		x2:"0%",
 		y1:"0%",
@@ -12,7 +12,8 @@ export default class Gradient extends Component{
 		cx:'50%',
 		cy:'50%',
 		r:'50%',
-		stops:[]
+		stops:[],
+		url:''
 	}
 	render(){
 		var {props} = this;

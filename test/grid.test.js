@@ -6,22 +6,22 @@ var option = {
 	colors:[{
 		type:'radialGradient',
 		stops:[
-			[0,'lightgreen'],
-			[1,'blue']
+			[0,'green'],
+			[1,'rgb(0,100,0']
+		]
+	},{
+		type:'radialGradient',
+		stops:[
+			[0,'blue'],
+			[1,'darkblue']
 		]
 	},{
 		type:'radialGradient',
 		stops:[
 			[0,'red'],
-			[1,'blue']
+			[1,'darkred']
 		]
-	},{
-		type:'radialGradient',
-		stops:[
-			[0,'red'],
-			[1,'green']
-		]
-	}],
+	},'red'],
 	grid:{
 		top:50,
 		left:80,

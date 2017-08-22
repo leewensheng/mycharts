@@ -48,8 +48,8 @@ export default class Core extends Component {
                     </defs>
                     <rect className="vcharts-background" x="0" y="0" width="100%" height="100%" fill={option.chart.background}/>
                     {
-                        chartModel.components.map(function(component){
-                            var name = component.type;
+                        chartModel.components.map(function(componentModel){
+                            var name = componentModel.type;
                             var Vcomponent = Vcomponents[name];
                             if(!Vcomponent) {
                                 return;
@@ -59,6 +59,7 @@ export default class Core extends Component {
                                      key={name} 
                                      chartEmitter={chartEmitter} 
                                      chartModel = {chartModel}
+                                     componentModel={componentModel}
                                 />
                             )
                         })
@@ -95,9 +96,9 @@ export default class Core extends Component {
         $svg.addSVGNamespace();
         var paper = new Paper($svg[0]);
         paper.importDefs('shadow',{
-            blur:2,
-            offsetX:2,
-            offsetY:2
+            blur:4,
+            offsetX:0,
+            offsetY:0
         });
     }
     componentWillUnmount(){
@@ -106,7 +107,8 @@ export default class Core extends Component {
     }
     setOption(nextProps){
         var {width,height,option} = nextProps;
-        var chartModel = new ChartModel(width,height,option);
+        var {chartModel} = this.state;
+        chartModel.update(width,height,option);
         this.setState({chartModel});
     }
     resize(width,height){

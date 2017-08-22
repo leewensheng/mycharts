@@ -8,69 +8,15 @@ import mathUtils from 'cad/math'
 export default class Legend extends Component {
 	constructor(props){
 		super(props);
-		this.state = this.getRenderData(props);
-	}
-	getRenderData(props,oldState){ 
 		var {chartModel} = props;
-		var chartOption = chartModel.getOption();
-		var {legend} = chartOption;
-		var items = [];
-		chartModel.eachSeriesByDependency('legend',function(seriesModel){
-			var {visible,icon,seriesColor,seriesIndex,seriesName,multipleLegend} = seriesModel;
-			if(!seriesModel.getOption().showInLegend) {
-				return;
-			}
-			if(!multipleLegend) {
-				items.push({
-					x:0,
-					y:0,
-					name:seriesName,
-					color:seriesColor,
-					icon:icon,
-					visible:visible,
-					multiple:false,
-					seriesIndex:seriesIndex
-				})
-			} else {
-				seriesModel.mapData(function(point,dataIndex){
-					items.push({
-						x:0,
-						y:0,
-						name:point.name,
-						color:point.color,
-						icon:icon,
-						visible:point.visible,
-						multiple:true,
-						seriesIndex:seriesIndex,
-						dataIndex:dataIndex
-					})
-				})
-			}
-			
-		})
-		if(oldState) {
-			items.map(function(item,index){
-				var oldItem = oldState.items[index];
-				if(oldItem) {
-					item.x = oldItem.x;
-					item.y = oldItem.y;
-					item.width = oldItem.width;
-				}
-			})
-		}
-		return {
-			isAdjusted:false,
-			legendOption:legend,
-			items:items,
-			hasInited:oldState?true:false,
-			updateType:'newProps'
-		}
+		var legendModel = chartModel.getComponent('legend');
+		this.state = legendModel.getLegendData();
 	}
 	render(){
 		var that = this;
 		var {props,state} = this;
 		var {chartModel} = props;
-		var {hasInited,isAdjusted,items,legendOption,legendX,legendY,legendWidth,legendHeight} = state;
+		var {hasInited,isAdjusted,items,legendX,legendY,legendWidth,legendHeight} = state;
 		var chartOption = chartModel.getOption();
 		var {legend} = chartOption;
 		var {
@@ -127,7 +73,8 @@ export default class Legend extends Component {
 	}
     alignItems(){
     	var {props,state} = this;
-    	var {isAdjusted,items,legendOption} = state;
+    	var {isAdjusted,items} = state;
+    	var legendOption = props.componentModel.getOption();
 		var {chartModel} = props;
 		var chartOption = chartModel.getOption();
 		var chartWidth = chartModel.getWidth();
@@ -249,7 +196,7 @@ export default class Legend extends Component {
     }
     componentWillReceiveProps(nextProps){
 		var state = this.state;
-		var nextState = this.getRenderData(nextProps,state);
+		var nextState = this.props.componentModel.getLegendData(state);
     	this.setState(nextState);
     }    
     componentDidUpdate(){
