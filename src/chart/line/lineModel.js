@@ -36,6 +36,12 @@ export default class LineModel extends SeriesModel {
 	    visible:true
 	}
 	getLinePoints(grid){
+		//需要考虑不可见场景 
+		var visible = this.visible;
+		if(!visible) {
+			return [];
+		}
+		var {xAxis,yAxis,isEmpty,reversed} = grid;
 		var points = this.getPointsOnGrid(grid);
 		var name = this.seriesName;
 		return this.mapData(function(point,dataIndex){
