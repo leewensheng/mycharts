@@ -13,7 +13,13 @@ class  Line extends Component{
         var {props} = this;
         var {x1,y1,x2,y2} = props;
         var d = new Path().M(x1,y1).L(x2,y2);
-        return <PathElement {...props} style={{shapeRendering:"optimizeSpeed"}} d={d} /> 
+        //  https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/shape-rendering
+        //  auto | optimizeSpeed | crispEdges | geometricPrecision | inherit
+        var transform = '';
+        if(browser.msie) {
+            transform = 'translate(0.5,0.5)';
+        }
+        return <PathElement transform={transform} {...props} style={{shapeRendering:"optimizeSpeed "}} d={d} /> 
     }
 }
 Line.defaultProps = 

@@ -39,6 +39,7 @@ export default class Core extends Component {
             <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
                 <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} />
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
+                    <desc>created by liws</desc>
                     <defs>
                         {
                             gradients.map(function(gradient,index){
@@ -96,7 +97,7 @@ export default class Core extends Component {
         $svg.addSVGNamespace();
         var paper = new Paper($svg[0]);
         paper.importDefs('shadow',{
-            blur:4,
+            blur:3,
             offsetX:0,
             offsetY:0
         });
