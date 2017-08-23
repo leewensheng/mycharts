@@ -12,6 +12,7 @@ export default class SeriesModel extends BaseModel {
 		this.seriesColor = seriesOpt.seriesColor;
 		this.seriesName = seriesOpt.seriesName;
 		this.visible = seriesOpt.visible;
+		this.stack = seriesOpt.stack;
 	}
 	icon = null;
 	userHTML = false;
@@ -85,6 +86,10 @@ export default class SeriesModel extends BaseModel {
 			});
 			return  {x,y};
 		})
+	}
+	getStackedOnPoints(){
+		var seriesOpt = this.getOption();
+		var {stack}  = seriesOpt;
 	}
 	getData(){
 		var {option} = this;

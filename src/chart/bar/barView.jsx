@@ -31,9 +31,9 @@ export default class Bar extends Component {
                 <g>
                     {
                         bars.map(function(bar,index){
-                            var {x,y,barWidth,barHeight} = bar;
+                            var  {color,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight} = bar;
                             return (
-                            <Rect key={seriesIndex+index} x={x} y={y} width={barWidth} height={barHeight} fill={seriesColor} stroke="#333" strokeWidth={1} />
+                            <Rect key={seriesIndex+index} x={rectX} y={rectY} width={rectWidth} height={rectHeight} fill={color} stroke="#333" strokeWidth={1} />
                             )
                         })
                     }

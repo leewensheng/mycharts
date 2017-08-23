@@ -23,7 +23,6 @@ var option = {
 		background:'#ddd'
 	},
 	xAxis:{
-		categories:['甲','乙','丙'],
 		gridLine:{
 			enabled:0,
 			lineWidth:5,
@@ -35,6 +34,7 @@ var option = {
 		}
 	},
 	yAxis:{
+		categories:['甲','乙','丙'],
 		title:{
 			text:'liws',
 			style:{
@@ -45,15 +45,24 @@ var option = {
 			inside:true
 		}
 	},
+	plotOptions:{
+		bar: {
+			barWidth:null,
+			minBarLength:5,
+			maxBarWidth:50
+		}
+	},
 	series:[
 	{
-		type:'line',
-		data:[1,2,1],
+		name:'bar1',
+		type:'bar',
+		data:[1,2,3],
 		stack:1
 	},{
-		type:'line',
-		data:[-2,1,3],
-		stack:1,
+		name:'bar2',
+		type:'bar',
+		data:[1,2,3],
+		stack:2,
 	}]
 }
 

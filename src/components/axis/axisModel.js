@@ -206,7 +206,8 @@ export default class Axis extends ComponentModel {
 				includeSeries:includeSeries.map(function(seriesModel){
 					return {
 						type:seriesModel.type,
-						seriesIndex:seriesModel.seriesIndex
+						seriesIndex:seriesModel.seriesIndex,
+						stack:seriesModel.stack
 					}
 				})
 			}

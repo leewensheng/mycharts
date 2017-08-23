@@ -28,6 +28,9 @@ export default class ChartModel {
         ],
         plotOptions:{
             series:{
+                name:'',
+                animation:true,
+                stack:null,
                 visible:true,
                 showInLegend:true
             }
