@@ -78,8 +78,10 @@ export default class BarModel extends SeriesModel {
 				groupIng,
 				groupPadding
 			} =  seriesOpt;
-		if(!groupPadding) {
+		if(!groupIng) {
 			uniqueStackNumber = 1;
+			currentStackIndex = 0;
+			barGap = 0;
 		}
 		groupPadding = this.getPercentMayBeValue(groupPadding,interval);
 		if(!barWidth) {
