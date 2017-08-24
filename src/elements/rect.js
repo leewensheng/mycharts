@@ -9,8 +9,11 @@ class  Rect extends Component{
         this.state = {x,y,width,height};
     }
     render(){
-        var {x,y,width,height} = this.state;
-        return <rect {...this.props} x={x} y={y} width={Math.abs(width)} height={Math.abs(height)} style={{shapeRendering:"optimizeSpeed"}}/>
+        var {props,state} = this;
+        var {x,y,width,height} = state;
+        var defaultStyle = {shapeRendering:'optimizeSpeed'};
+        $.extend(defaultStyle,props.style);
+        return <rect {...props} x={x} y={y} width={Math.abs(width)} height={Math.abs(height)} style={defaultStyle}/>
     }
     animate(prevProps){
         var {state,props} = this;
