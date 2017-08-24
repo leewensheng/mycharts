@@ -12,7 +12,7 @@ export default class Linechart extends Component {
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
             hasInited:false,
-            isGridReady:false
+            points:[]
         };
     }
     render(){
@@ -21,12 +21,8 @@ export default class Linechart extends Component {
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
         var {color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
-        var {isGridReady,grid,hasInited} = this.state;
+        var {points,grid,hasInited} = this.state;
         var {seriesColor,visible} = seriesModel;
-        if(!hasInited) {
-            return <g></g>;
-        }
-        var points = seriesModel.getLinePoints(grid);
         var polylinePoints = points.map(function(point){
             var x = point.plotX;
             var y = point.plotY;
@@ -82,8 +78,10 @@ export default class Linechart extends Component {
     }
     onGridChange(grid){
         var that = this;
+        var {props,state} = this;
         if(grid.seriesIndex == this.props.seriesIndex) {
-            this.setState({grid,isGridReady:true,hasInited:true});
+            var points = props.seriesModel.getLinePoints(grid);
+            this.setState({grid,points,hasInited:true});
             this.forceUpdate();
         }
     }
@@ -112,10 +110,10 @@ export default class Linechart extends Component {
     }
     componentDidMount(){
     }
-    componentWillReceiveProps(nextProps){
-        this.setState({isGridReady:false});
-    }
     shouldComponentUpdate(nextProps,nextState){
+        if(!nextProps.seriesModel.visible) {
+            return true;
+        }
         return false;
     }
     componentDidUpdate(prevProps,prevState){

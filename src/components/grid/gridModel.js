@@ -29,10 +29,13 @@ export default class GridModel extends ComponentModel {
 		var {chartModel} = this;
 		var gridSeries = [];
 		chartModel.eachSeriesByDependency('grid',function(seriesModel){
+			if(!seriesModel.visible) {
+				return;
+			}
 			var seriesOpt = seriesModel.getOption();
-			var {seriesIndex,visible} = seriesModel;
+			var {seriesIndex} = seriesModel;
 			var {type,xAxis,yAxis} = seriesOpt;
-			var series =  {type,seriesIndex,xAxis,yAxis,visible}
+			var series =  {type,seriesIndex,xAxis,yAxis}
 			gridSeries.push(series);
 		})
 		return gridSeries;

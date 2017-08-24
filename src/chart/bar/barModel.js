@@ -13,7 +13,9 @@ export default class BarModel extends SeriesModel {
 		type:'bar',
 		name:'',
 		color:'',
-		style:{},
+		style:{
+			cursor:'default'
+		},
 		animation:true,
 		borderColor:'#fff',
 		borderRadius:1,
@@ -46,14 +48,15 @@ export default class BarModel extends SeriesModel {
 		var {xAxis,yAxis,width,height,reversed} = grid;
 		var points = this.getPointsOnGrid(grid);
 		var categoryAxis = reversed?yAxis:xAxis;
+		var valueAxis = reversed? xAxis:yAxis;
 		var groupBars = categoryAxis.axisData.includeSeries.filter(function(series){
 			return series.type === 'bar';
 		});
 		//考虑特殊场景，比如只有一个类目
 		var categories = categoryAxis.axisData.option.categories;
 		var interval =  Math.abs((categoryAxis.end - categoryAxis.start)/(categories.length));
-		var {start,end,other} = categoryAxis;	
-
+		var {start,end} = categoryAxis;	
+		var other = valueAxis.start||valueAxis.zeroPosition;
 		//不同stack的 bar 数量
 		var stackArray = [],currentStackIndex,uniqueStackNumber;
 		groupBars.map(function(barSeries){

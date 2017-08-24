@@ -157,10 +157,7 @@ export default class Grid extends Component {
 			var yAxisData = gridAxis.filter(function(axis){
 				return axis.axisData.option.index === yAxisIndex && axis.axisData.axis === 'yAxis';
 			})[0];
-			var visibleSeries = includeSeries.filter(function(series){
-				return series.visible;
-			});
-			var isEmpty = !visibleSeries.length;
+			var isEmpty = !includeSeries.length;
 			var reversed = false;
 			if(xAxisData.axisData.type === 'value' && yAxisData.axisData.type === 'category') {
 				reversed = true;

@@ -17,12 +17,13 @@ var option = {
 		]
 	},'red'],*/
 	grid:{
-		top:50,
+		top:80,
 		left:80,
 		containLabel:1,
 		background:'#ddd'
 	},
 	xAxis:{
+		categories:['甲','乙','丙'],
 		gridLine:{
 			enabled:0,
 			lineWidth:5,
@@ -31,10 +32,12 @@ var option = {
 		opposite:0,
 		title:{
 			text:'haha'
+		},
+		gridLine:{
+			enabled:true
 		}
 	},
 	yAxis:{
-		categories:['甲','乙','丙'],
 		title:{
 			text:'liws',
 			style:{
@@ -49,20 +52,22 @@ var option = {
 		bar: {
 			barWidth:null,
 			minBarLength:5,
-			maxBarWidth:50
+			maxBarWidth:50,
+			groupIng:false
 		}
 	},
 	series:[
 	{
 		name:'bar1',
-		type:'bar',
-		data:[1,2,3],
+		type:'line',
+		data:[2,3,5],
 		stack:1
-	},{
-		name:'bar2',
+	},
+	{
+		name:'bar1',
 		type:'bar',
-		data:[1,2,3],
-		stack:2,
+		data:[1,2,4],
+		stack:1
 	}]
 }
 

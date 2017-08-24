@@ -11,7 +11,7 @@ export default class Bar extends Component {
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
             hasInited:false,
-            isGridReady:false
+            bars:[]
         };
     }
     render(){
@@ -19,21 +19,28 @@ export default class Bar extends Component {
         var {props,state} = this;
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
-        var {isGridReady,grid,hasInited} = this.state;
+        var {style} = seriesOpt;
+        var {grid,hasInited,bars} = this.state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
-        if(!hasInited) {
-            return <g></g>;
-        }
-
-        var bars = seriesModel.getBars(grid);
         return (
             <g className="vcharts-series vcharts-bar-series">
-                <g>
+                <g className="vcharts-series-points">
                     {
                         bars.map(function(bar,index){
                             var  {color,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight} = bar;
                             return (
-                            <Rect key={seriesIndex+index} x={rectX} y={rectY} width={rectWidth} height={rectHeight} fill={color} stroke="#333" strokeWidth={1} />
+                            <Rect 
+                                className="vcharts-series-point" 
+                                key={seriesIndex+index} 
+                                x={rectX} 
+                                y={rectY} 
+                                width={visible?rectWidth:0} 
+                                height={rectHeight} 
+                                fill={color} 
+                                stroke="#333" 
+                                strokeWidth={1}
+                                style={style}
+                             />
                             )
                         })
                     }
@@ -42,19 +49,36 @@ export default class Bar extends Component {
         );
     }
     onGridChange(grid){
+        var {props,state} = this;
         if(grid.seriesIndex == this.props.seriesIndex) {
-            this.setState({grid,isGridReady:true,hasInited:true});
+            var bars = props.seriesModel.getBars(grid);
+            this.setState({grid,bars,hasInited:true});
             this.forceUpdate();
         }
     }
     animate(){
+        return;
+        var el = findDOMNode(this);
+        var $bars = $(el).find('.vcharts-series-point');
+        $bars.each(function(){
+            $(this).transition({
+                from:0,
+                to:1,
+                ease:'easeOut',
+                during:400,
+                onUpdate(k){
+                    var transform = 'scale(' + k + ','+ k+ ')';
+                    $(this).attr('transform',transform);
+                }
+            })
+        })
     }
     componentDidMount(){
     }
-    componentWillReceiveProps(nextProps){
-        this.setState({isGridReady:false});
-    }
     shouldComponentUpdate(nextProps,nextState){
+        if(!nextProps.seriesModel.visible) {
+            return true;
+        }
         return false;
     }
     componentDidUpdate(prevProps,prevState){
