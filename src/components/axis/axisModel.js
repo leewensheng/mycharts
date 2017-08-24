@@ -190,8 +190,9 @@ export default class Axis extends ComponentModel {
 			min = typeof axisOpt.min === 'number' ? axisOpt.min : min;
 			max = typeof axisOpt.max === 'number' ? axisOpt.max : max;
 			var {type} =  axisOpt;
+			var splitData;
 			if(type === 'value') {
-				var splitData = that.getSplitArray(min,max,axisOpt.splitNumber);
+				splitData = that.getSplitArray(min,max,axisOpt.splitNumber);
 				min = splitData[0];
 				max = splitData[splitData.length-1];
 			}

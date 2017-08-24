@@ -47,6 +47,7 @@ export default class BarModel extends SeriesModel {
 		var visible = this.visible;
 		var {xAxis,yAxis,width,height,reversed} = grid;
 		var points = this.getPointsOnGrid(grid);
+		var stackedOnPoints = this.getStackedOnPoints(grid);
 		var categoryAxis = reversed?yAxis:xAxis;
 		var valueAxis = reversed? xAxis:yAxis;
 		var groupBars = categoryAxis.axisData.includeSeries.filter(function(series){
@@ -109,6 +110,7 @@ export default class BarModel extends SeriesModel {
 		var realGroupWidth = barWidth*uniqueStackNumber + barGap*(uniqueStackNumber - 1);
 		var flag = end > start ? 1: -1;
 		return this.mapData(function(point,dataIndex){
+			var stackPoint = stackedOnPoints[dataIndex];
 			var {x,y,color} = point;
 			var plotX = points[dataIndex].x;
 			var plotY = points[dataIndex].y;
@@ -117,7 +119,7 @@ export default class BarModel extends SeriesModel {
 							(barWidth+barGap)*currentStackIndex*flag;
 			var plotWidthEnd = plotWidthStart + barWidth*flag;
 			var pointOtherStart = reversed ? plotX : plotY;
-			var pointOtherEnd = other;
+			var pointOtherEnd = reversed? stackPoint.x:stackPoint.y;
 			var barLength = Math.abs(pointOtherEnd - pointOtherStart);
 			if(barLength < minBarLength) {
 				barLength = minBarLength;

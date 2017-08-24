@@ -20,7 +20,7 @@ export default class Bar extends Component {
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
         var {style} = seriesOpt;
-        var {grid,hasInited,bars} = this.state;
+        var {grid,hasInited,bars} = state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
         return (
             <g className="vcharts-series vcharts-bar-series">
@@ -34,7 +34,7 @@ export default class Bar extends Component {
                                 key={seriesIndex+index} 
                                 x={rectX} 
                                 y={rectY} 
-                                width={visible?rectWidth:0} 
+                                width={rectWidth} 
                                 height={rectHeight} 
                                 fill={color} 
                                 stroke="#333" 
@@ -74,6 +74,21 @@ export default class Bar extends Component {
         })
     }
     componentDidMount(){
+    }
+    componentWillReceiveProps(nextProps){
+        var bars = this.state.bars;
+        var grid = this.state.grid;
+        if(!nextProps.seriesModel.visible && grid) {
+            bars = bars.map(function(bar){
+                if(!grid.reversed) {
+                    bar.rectWidth = 0;
+                } else {
+                    bar.rectHeight = 0;
+                }
+                return bar;
+            })
+            this.setState({bars});
+        }
     }
     shouldComponentUpdate(nextProps,nextState){
         if(!nextProps.seriesModel.visible) {

@@ -19,7 +19,7 @@ var option = {
 	grid:{
 		top:80,
 		left:80,
-		containLabel:1,
+		containLabel:0,
 		background:'#ddd'
 	},
 	xAxis:{
@@ -33,6 +33,7 @@ var option = {
 		title:{
 			text:'haha'
 		},
+		min:0,
 		gridLine:{
 			enabled:true
 		}
@@ -46,7 +47,8 @@ var option = {
 		},
 		axisTick:{
 			inside:true
-		}
+		},
+		min:0
 	},
 	plotOptions:{
 		bar: {
@@ -58,15 +60,15 @@ var option = {
 	},
 	series:[
 	{
-		name:'bar1',
-		type:'line',
-		data:[2,3,5],
+		name:'series1',
+		type:'bar',
+		data:[2,2,5],
 		stack:1
 	},
 	{
-		name:'bar1',
+		name:'series2',
 		type:'bar',
-		data:[1,2,4],
+		data:[2,2,4],
 		stack:1
 	}]
 }

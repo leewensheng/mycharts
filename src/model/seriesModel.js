@@ -87,9 +87,43 @@ export default class SeriesModel extends BaseModel {
 			return  {x,y};
 		})
 	}
-	getStackedOnPoints(){
-		var seriesOpt = this.getOption();
-		var {stack}  = seriesOpt;
+	getStackedOnData(){
+		var option = this.getOption();
+		var {stack} = option;
+		if(!stack) {
+			return null;
+		}
+		var seriesIndex = this.seriesIndex;
+		var type = this.type;
+		var stackOnData = [];
+		this.chartModel.eachSeriesByType(type,function(seriesModel){
+			var seriesOpt = seriesModel.getOption();
+			if(seriesOpt.stack === stack && seriesModel.seriesIndex < seriesIndex && seriesModel.visible) {
+				stackOnData.push(seriesModel.getData());
+			}
+		});
+		if(stackOnData.length === 0) {
+			return null;
+		} else {
+			var fristData =stackOnData[0];
+			return fristData.map(function(point,dataIndex){
+				var {x,y} = point;
+				stackOnData.slice(1).map(function(data){
+					if(data[dataIndex]) {
+						var stackedY = data[dataIndex].y;
+						if(!isNaN(stackedY)) {
+							if(!isNaN(y)) {
+								y += stackedY;
+							} else {
+								y = stackedY;
+							}
+						}
+					}
+				});
+				return {x,y};
+			})
+		}
+		return stackOnData;
 	}
 	getData(){
 		var {option} = this;
@@ -141,8 +175,35 @@ export default class SeriesModel extends BaseModel {
 		})
 	}
 	getPointsOnGrid(grid) {
-		var that = this;
 		var data = this.getStackedData();
+		return this.getDataPointsOnGrid(data,grid);
+	}
+	getStackedOnPoints(grid){
+		var seriesOpt = this.getOption();
+		var {stack}  = seriesOpt;
+		var data = this.getData();
+		var {xAxis,yAxis,reversed,isEmpty} = grid;
+		var stackedOnData = this.getStackedOnData();
+		var categoryAxis = reversed ? yAxis : xAxis;
+		var valueAxis = reversed ? xAxis : yAxis;
+		if(!stackedOnData) {
+			//有零时在0上，无0时，在轴线上
+			var {start,end,other,axisData} = categoryAxis;
+			var {zeroPosition} = valueAxis;
+			return data.map(function(data,dataIndex){
+				var x = start + (end - start)*dataIndex
+				var y = zeroPosition?zeroPosition:other;
+				return {
+					x:reversed?y:x,
+					y:reversed?x:y
+				}
+			})
+		} else {
+			return this.getDataPointsOnGrid(stackedOnData,grid);
+		}
+	}
+	getDataPointsOnGrid(data,grid){
+		var that = this;
 		var {xAxis,yAxis,isEmpty,reversed} = grid;
 		if(isEmpty) {
 			return [];
