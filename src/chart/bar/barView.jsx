@@ -19,28 +19,35 @@ export default class Bar extends Component {
         var {props,state} = this;
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
-        var {style} = seriesOpt;
         var {grid,hasInited,bars} = state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
+
+        var {style,borderRadius,borderColor,borderWidth} = seriesOpt;
         return (
             <g className="vcharts-series vcharts-bar-series">
                 <g className="vcharts-series-points">
                     {
                         bars.map(function(bar,index){
-                            var  {color,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight} = bar;
+                            var  {color,barWidth,barLength,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight} = bar;
+                            var r =  seriesModel.getPercentMayBeValue(borderRadius,Math.min(barLength,barWidth));
                             return (
+                            <g key={'group'+index}>
                             <Rect 
+                                key={'bar'+index}
                                 className="vcharts-series-point" 
-                                key={seriesIndex+index} 
                                 x={rectX} 
                                 y={rectY} 
+                                rx={r}
+                                ry={r}
                                 width={rectWidth} 
                                 height={rectHeight} 
                                 fill={color} 
-                                stroke="#333" 
-                                strokeWidth={1}
+                                stroke={borderColor} 
+                                strokeWidth={borderWidth}
                                 style={style}
                              />
+                             <Text key={'label'+index} x={rectX + rectWidth/2} y={rectY  - 5} style={{textAlign:'center',textBaseLine:'bottom'}}>{y}</Text>
+                             </g>
                             )
                         })
                     }

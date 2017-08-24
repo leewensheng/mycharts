@@ -141,7 +141,7 @@ export default class BarModel extends SeriesModel {
 				rectWidth = barLength;
 				rectHeight = barWidth;
 			}
-			return  {color,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight};
+			return  {color,barWidth,barLength,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight};
 		})
 	}
 }

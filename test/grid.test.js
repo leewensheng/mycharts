@@ -19,11 +19,11 @@ var option = {
 	grid:{
 		top:80,
 		left:80,
+		right:80,
 		containLabel:0,
 		background:'#ddd'
 	},
 	xAxis:{
-		categories:['甲','乙','丙'],
 		gridLine:{
 			enabled:0,
 			lineWidth:5,
@@ -55,22 +55,19 @@ var option = {
 			barWidth:null,
 			minBarLength:5,
 			maxBarWidth:50,
-			groupIng:false
+			groupIng:true
 		}
 	},
 	series:[
 	{
-		name:'series1',
-		type:'bar',
-		data:[2,2,5],
-		stack:1
-	},
-	{
-		name:'series2',
-		type:'bar',
-		data:[2,2,4],
-		stack:1
-	}]
+		type:'scatter',
+		data:[
+			[1,2,3],
+			[2,4,3],
+			[4,6,3]
+		]
+	}
+	]
 }
 
 var chart = vchart.init(el,{

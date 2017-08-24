@@ -55,7 +55,7 @@ export default class SeriesModel extends BaseModel {
 		option.data = data;
 	}
 	getStackedData(){
-		var data = this.getData;
+		var data = this.getData();
 		var option = this.getOption();
 		var {stack} = option;
 		if(!stack) {
