@@ -109,7 +109,7 @@ export default class ChartModel {
         var components = {};
         series = series.map(function(seriesOpt,seriesIndex){
             seriesOpt.seriesIndex = seriesIndex;
-            seriesOpt.seriesColor = colors[seriesIndex % colors.length];
+            seriesOpt.seriesColor = seriesOpt.color || colors[seriesIndex % colors.length];
             seriesOpt.seriesName = seriesOpt.name || ('series' + seriesIndex);
             var {type} = seriesOpt;
             return $.extend(true,{animation:option.chart.animation},plotOptions.series,plotOptions[type],seriesOpt);

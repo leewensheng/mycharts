@@ -12,11 +12,17 @@ export default class Scatter extends SeriesModel {
 	defaultOption =  {
 		xAxis:0,
 		yAxis:0,
-		borderColor:'#000',
-		borderWidth: 0,
-		borderType:'solid',
-		style:{},
 		data:[],
+		marker:{
+			symbol:'circle',
+			size:20,
+			borderWidth:0,
+			borderColor:'#000',
+			borderType:'solid',
+			style:{
+				
+			}
+		},
 		maxSize:'20%',
 		minSize:'8',
 		sizeBy:'area',

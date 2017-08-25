@@ -20,8 +20,8 @@ export default class Scatter extends Component {
         var seriesOpt = seriesModel.getOption();
         var {grid,hasInited,points} = state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
-
-        var {color,style,borderRadius,borderColor,borderWidth} = seriesOpt;
+        var {marker} = seriesOpt;
+        var {symbol,size,style,borderRadius,borderColor,borderWidth,borderType} = marker;
         return (
             <g className="vcharts-series vcharts-bar-series">
                 <g className="vcharts-series-points">
@@ -34,7 +34,7 @@ export default class Scatter extends Component {
                           			cx={plotX} 
                           			cy={plotY} 
                           			size={size} 
-                          			fill={color||seriesColor}
+                          			fill={seriesColor}
                           			stroke={borderColor} 
                           			strokeWidth={borderWidth}
                                     style={style}

@@ -64,12 +64,11 @@ var option = {
 			[0,'rgb(129, 227, 238)'],
 			[1,'rgb(25, 183, 207)']
 		]},
-		style:{
-			filter:'url(#shadow)'
+		marker:{
+			symbol:'circle',
+			size:50
 		},
 		type:'scatter',
-		borderWidth:1,
-		borderColor:'#333',
 		data:[
 			[1,2,3],
 			[2,4,3],

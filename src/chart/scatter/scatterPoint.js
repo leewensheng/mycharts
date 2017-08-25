@@ -18,7 +18,7 @@ export default class ScatterPoint extends Component {
 		var {cx,cy,size,fill} = props;
 		if(isHover) {
 			size += 5;
-			fill = colorHelper.brighten(fill,0.5); 
+			fill = colorHelper.brighten(fill,0.2); 
 		}
 		var animation = {
 			during:400,
@@ -26,22 +26,24 @@ export default class ScatterPoint extends Component {
 			delay:0	
 		}
 		return (
-			<Circle animation={animation} {...props}  cx={cx} cy={cy} r={size} fill={fill} onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut} />
+			<g onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
+				<Circle animation={animation} {...props}  cx={cx} cy={cy} r={size} fill={fill}/>
+			</g>
 		)
 	}
 	componentWillReceiveProps(){
 		this.setState({updateType:'newProps'});
 	}
 	handleMouseOver(event){
-		var target = event.target;
+		var elem = findDOMNode(this);
 		this.setState({isHover:true,updateType:'hoverChange'});
-		target.parentNode.appendChild(target);
+		elem.parentNode.appendChild(elem);
 	}
 	handleMouseOut(event){
-		var target = event.target;
+		var elem = findDOMNode(this);
 		var index = this.props.index;
-		var children = target.parentNode.children;
-		target.parentNode.insertBefore(target,children[index]);
+		var children = elem.parentNode.children;
+		elem.parentNode.insertBefore(elem,children[index]);
 		this.setState({isHover:false,updateType:'hoverChange'});
 	}
 }
