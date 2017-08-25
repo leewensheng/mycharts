@@ -60,11 +60,22 @@ var option = {
 	},
 	series:[
 	{
+		color:{type:'radialGradient',cx:0.3,cy:0.4,r:1,stops:[
+			[0,'rgb(129, 227, 238)'],
+			[1,'rgb(25, 183, 207)']
+		]},
+		style:{
+			filter:'url(#shadow)'
+		},
 		type:'scatter',
+		borderWidth:1,
+		borderColor:'#333',
 		data:[
 			[1,2,3],
 			[2,4,3],
-			[4,6,3]
+			[4,6,3],
+			[1,1.5,2],
+			[2,2.2,5]
 		]
 	}
 	]

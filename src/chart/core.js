@@ -97,7 +97,7 @@ export default class Core extends Component {
         $svg.addSVGNamespace();
         var paper = new Paper($svg[0]);
         paper.importDefs('shadow',{
-            blur:3,
+            blur:2,
             offsetX:0,
             offsetY:0
         });

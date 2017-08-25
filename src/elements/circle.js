@@ -22,12 +22,17 @@ class  Circle extends Component{
         var changed = attrs.some(function(attr){
             return props[attr]!==prevProps[attr];
         });
+        var during = 400,ease = 'easeOut';
+        if(typeof animation === 'object') {
+            during = animation.during || during;
+            ease = animation.ease || ease;
+        }
         if(animation&&changed) {
             $(el).stopTransition().transition({
                 cx:cx,
                 cy:cy,
                 r:r
-            },400,'easeOut');
+            },during,ease);
         } else {
             $(el).stopTransition().attr({cx,cy,r});
         }

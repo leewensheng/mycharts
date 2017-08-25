@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Text from '../../elements/text'
-import Circle from '../../elements/circle'
+import ScatterPoint from './scatterPoint'
 export default class Scatter extends Component {
     constructor(props){
         super(props);
@@ -21,21 +21,23 @@ export default class Scatter extends Component {
         var {grid,hasInited,points} = state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
 
-        var {style,borderRadius,borderColor,borderWidth} = seriesOpt;
+        var {color,style,borderRadius,borderColor,borderWidth} = seriesOpt;
         return (
             <g className="vcharts-series vcharts-bar-series">
                 <g className="vcharts-series-points">
                     {
                         points.map(function(point,index){
                           var {plotX,plotY,size,x,y} = point;
-                          return <Circle 
+                          return <ScatterPoint 
                                     key={index}
+                                    index={index}
                           			cx={plotX} 
                           			cy={plotY} 
-                          			r={size} 
-                          			fill={seriesColor}
+                          			size={size} 
+                          			fill={color||seriesColor}
                           			stroke={borderColor} 
                           			strokeWidth={borderWidth}
+                                    style={style}
                           		/>
                         })
                     }
