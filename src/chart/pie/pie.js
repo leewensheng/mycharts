@@ -33,7 +33,7 @@ export default class  Pie extends Component{
 		return (
 			<g clipPath={'url(#'+ seriesId +')'} className="vcharts-series vcharts-pie-series" style={{display:visible?'':'none'}}>
 				<clipPath id={seriesId}>
-					<Shape animation={animation} name="sector" cx={cx} cy={cy} radius={radius+sliceOffset} startAngle={startAngle} endAngle={hasInited?endAngle:startAngle+1e-6} />
+					<Shape animation={animation} name="sector" cx={cx} cy={cy} radius={Math.min(width,height)} startAngle={startAngle} endAngle={hasInited?endAngle:startAngle+1e-6} />
 				</clipPath>
 				<g className="vcharts-points vcharts-pie-points">
 				{
@@ -164,7 +164,12 @@ export default class  Pie extends Component{
 		this.setState({points,updateType:'select'});
 	}
 	componentDidMount(){
-		this.setState({hasInited:true})
+		var el = $(findDOMNode(this));
+		var animation = this.props.seriesModel.getOption().animation;
+		this.setState({hasInited:true});
+		setTimeout(function(){
+			el.removeAttr('clip-path');
+		},animation.during?animation.during:400)
 	}
 	componentWillReceiveProps(nextProps){
 		var {width,height} = nextProps;

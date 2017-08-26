@@ -91,6 +91,10 @@ var option = {
 			value:550
 		}]
 	},
+	{
+		type:'line',
+		data:[1,2,3,5]
+	}
 	]
 }
 for(var i = 0; i < 30;i++) {

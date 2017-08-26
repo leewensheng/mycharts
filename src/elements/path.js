@@ -4,12 +4,16 @@ import $ from 'jquery'
 import Path from 'cad/path'
 import {interpolatePath,interpolateObject} from 'cad/interpolate'
 import shape from 'cad/shape'
-class  PathElement extends Component{
+export default class  PathElement extends Component{
     constructor(props){
         super(props);
         var {d} = props;
         this.state = {d};
     }
+    static defaultProps = {
+        animation:true,
+        d:''
+    };
     render(){
         var {state,props} = this;
         var {d} = state;
@@ -42,7 +46,7 @@ class  PathElement extends Component{
                 ease:ease,
                 onUpdate(k){
                     var d = shape.getShapePath(pathShape.name,configInterpolate(k));
-                    $(el).attr('d',d);
+                    $(el).attr('d',d.toString());
                 },
                 callback(){
                     onAnimationChange&&onAnimationChange(false);
@@ -51,15 +55,15 @@ class  PathElement extends Component{
         } else {
             var oldPath = $(el).attr('d');
             oldPath = new Path(oldPath);
-            var ease = interpolatePath(oldPath,d);
+            var pathInterpolate = interpolatePath(oldPath,d);
             $(el).stopTransition().transition({
                 from:0,
                 to:1,
                 during:during,
                 ease:ease,
                 onUpdate(k){
-                    var d = ease(k);
-                    $(el).attr('d',d);
+                    var d = pathInterpolate(k);
+                    $(el).attr('d',d.toString());
                 },
                 callback(){
                     onAnimationChange&&onAnimationChange(false);
@@ -85,9 +89,5 @@ class  PathElement extends Component{
     componentWillUnmount(){
         $(findDOMNode(this)).stopTransition();
     }
-}
-PathElement.defaultProps = {
-    animation:true,
-    d:''
 }
 module.exports = PathElement;
