@@ -21,7 +21,10 @@ export default class Scatter extends Component {
         var {grid,hasInited,points} = state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
         var {marker} = seriesOpt;
-        var {symbol,size,style,borderRadius,borderColor,borderWidth,borderType} = marker;
+        var {symbol,size,style,borderRadius,borderColor,borderWidth,borderType,shadow} = seriesOpt;
+        if(shadow) {
+            style.filter = 'url(#shadow)';
+        }
         return (
             <g className="vcharts-series vcharts-bar-series">
                 <g className="vcharts-series-points">

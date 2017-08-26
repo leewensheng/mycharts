@@ -38,7 +38,7 @@ export default class Core extends Component {
         return (
             <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
                 <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} />
-                <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} >
+                <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} style={{userSelect:'none'}}>
                     <desc>created by liws</desc>
                     <defs>
                         {

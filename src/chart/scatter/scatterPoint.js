@@ -9,27 +9,39 @@ export default class ScatterPoint extends Component {
 		this.handleMouseOver = this.handleMouseOver.bind(this);
 		this.handleMouseOut = this.handleMouseOut.bind(this);
 		this.state = {
-			isHover:false
+			isHover:false,
+			hasInited:false
 		}
 	}
 	render(){
 		var {props,state} = this;
-		var {isHover,updateType} = state;
+		var {isHover,hasInited,updateType} = state;
 		var {cx,cy,size,fill} = props;
 		if(isHover) {
 			size += 5;
 			fill = colorHelper.brighten(fill,0.2); 
 		}
+		
 		var animation = {
 			during:400,
 			ease:updateType==='hoverChange'?'elasticOut':'easeOut',
 			delay:0	
+		}
+		if(!hasInited) {
+			size = 0;
+		}
+		if(updateType ==='animation') {
+			animation.during = 1000;
 		}
 		return (
 			<g onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
 				<Circle animation={animation} {...props}  cx={cx} cy={cy} r={size} fill={fill}/>
 			</g>
 		)
+	}
+	componentDidMount(){
+		//动画
+		this.setState({hasInited:true,updateType:'animation'});
 	}
 	componentWillReceiveProps(){
 		this.setState({updateType:'newProps'});

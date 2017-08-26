@@ -13,6 +13,10 @@ class PieModel extends SeriesModel {
 	dependencies=['legend'];
 	multipleLegend = true;
 	defaultOption =  {
+		animation:{
+			during:1000,
+			ease:'easeOut'
+		},
 		color:null,//主色
 		colors:null,//系列色
 		center:[0.5,0.5],//中心位置

@@ -11,6 +11,7 @@ export default class SeriesModel extends BaseModel {
 		this.seriesIndex = seriesOpt.seriesIndex;
 		this.seriesColor = seriesOpt.seriesColor;
 		this.seriesName = seriesOpt.seriesName;
+		this.seriesId = chartModel.chartId + 'seires' + seriesOpt.seriesIndex;
 		this.visible = seriesOpt.visible;
 		this.stack = seriesOpt.stack;
 	}

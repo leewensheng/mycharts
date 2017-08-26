@@ -2,6 +2,7 @@ import vchart from '../src/index.js'
 import $ from 'jquery'
 
 var el = document.querySelector('#root');
+var data = [];
 var option = {
 /*	colors:['blue',{
 		type:'radialGradient',
@@ -59,27 +60,48 @@ var option = {
 		}
 	},
 	series:[
+
 	{
 		color:{type:'radialGradient',cx:0.3,cy:0.4,r:1,stops:[
-			[0,'rgb(129, 227, 238)'],
-			[1,'rgb(25, 183, 207)']
+			[0,'rgba(129, 227, 238,0.9)'],
+			[1,'rgba(25, 183, 207,0.9)']
 		]},
-		marker:{
-			symbol:'circle',
-			size:50
-		},
+		shadow:false,
+		symbol:'circle',
+		size:50,
+		borderWidth:0,
+		borderColor:'#3B98A2',
 		type:'scatter',
 		data:[
 			[1,2,3],
 			[2,4,3],
 			[4,6,3],
+			[2,2.5,3],
 			[1,1.5,2],
 			[2,2.2,5]
 		]
-	}
+	},
+	{
+		type:'pie',
+		data:[{
+			name:'330',
+			value:300
+		},{
+			name:'333',
+			value:550
+		}]
+	},
 	]
 }
+for(var i = 0; i < 30;i++) {
+	data.push([
 
+		Math.random()*5,
+		Math.random()*5,
+		3
+		])
+}
+option.series[0].data = data;
 var chart = vchart.init(el,{
 	height:400
 });

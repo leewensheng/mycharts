@@ -13,7 +13,13 @@ class  Rect extends Component{
         var {x,y,width,height} = state;
         var defaultStyle = {shapeRendering:'optimizeSpeed'};
         $.extend(defaultStyle,props.style);
-        return <rect {...props} x={x} y={y} width={Math.abs(width)} height={Math.abs(height)} style={defaultStyle}/>
+        if(typeof width === 'number') {
+            width = Math.abs(width);
+        }
+        if(typeof height === 'number') {
+            height = Math.abs(height);
+        }
+        return <rect {...props} x={x} y={y} width={width} height={height} style={defaultStyle}/>
     }
     animate(prevProps){
         var {state,props} = this;
@@ -21,8 +27,13 @@ class  Rect extends Component{
         width = Math.abs(width);
         height = Math.abs(height);
         var el = findDOMNode(this);
+        var during = 400,ease = 'easeOut';
         if(animation) {
-            $(el).stopTransition().transition({x,y,width,height},400,'easeOut');        
+            if(typeof animation === 'object') {
+                during = animation.during || during;
+                ease = animation.ease || ease;
+            }
+            $(el).stopTransition().transition({x,y,width,height},during,ease);        
         } else {
             $(el).stopTransition().attr({x,y,width,height});        
         }

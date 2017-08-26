@@ -6,9 +6,11 @@ import Paper from 'cad/paper/index'
 import shape from 'cad/shape'
 import Point from 'cad/point'
 import mathUtils from 'cad/math'
-import Text from '../../elements/text'
-import ConnectLine from './connect-line'
 
+import Path from  '../../elements/path'
+import Text from '../../elements/text'
+import Shape from '../../elements/shape'
+import ConnectLine from './connect-line'
 import Slice from './slice'
 
 export default class  Pie extends Component{
@@ -23,13 +25,16 @@ export default class  Pie extends Component{
 		var {props,state} = this;
 		var {width,height,seriesModel,option} = props;
 		var seriesOpt = seriesModel.getOption();
-		var {visible} = seriesModel
+		var {visible,seriesId} = seriesModel
 		var {points} = state;
+		var {cx,cy,startAngle,endAngle,radius,innerRadius,selectedPointsMap,updateType,hasInited} = state;
 		var {animation,center,size,itemStyle,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = seriesOpt;
-		var {cx,cy,radius,innerRadius,selectedPointsMap,updateType} = this.state;
 		var onSlice = this.onSlice;
 		return (
-			<g className="vcharts-series vcharts-pie-series" style={{display:visible?'':'none'}}>
+			<g clipPath={'url(#'+ seriesId +')'} className="vcharts-series vcharts-pie-series" style={{display:visible?'':'none'}}>
+				<clipPath id={seriesId}>
+					<Shape animation={animation} name="sector" cx={cx} cy={cy} radius={radius+sliceOffset} startAngle={startAngle} endAngle={hasInited?endAngle:startAngle+1e-6} />
+				</clipPath>
 				<g className="vcharts-points vcharts-pie-points">
 				{
 				points.map(function(point,index){
@@ -37,7 +42,6 @@ export default class  Pie extends Component{
 					return <Slice
 							style={itemStyle}
 							key={index}
-							animation={animation}
 							cx={cx}
 							cy={cy}
 							startAngle={startAngle}
@@ -106,7 +110,6 @@ export default class  Pie extends Component{
 									dataLabels.enabled
 									&&
 									<Text 
-									animation={animation}
 									x={textPoint.x + dx}
 									y={textPoint.y}
 									style={{
@@ -122,7 +125,6 @@ export default class  Pie extends Component{
 									connectLine.enabled && !dataLabels.inside && dataLabels.distance>0
 									&&
 									<ConnectLine
-										animation={animation}
 										cx={cx}
 										cy={cy}
 										radius={p.radius}
@@ -161,54 +163,8 @@ export default class  Pie extends Component{
 		}
 		this.setState({points,updateType:'select'});
 	}
-	animate(){
-		var {width,height,seriesModel} = this.props;
-		var seriesIndex = seriesModel.seriesIndex;
-		var seriesOpt = seriesModel.getOption();
-		var {sliceOffset} = seriesOpt;
-		var {cx,cy,radius,startAngle,endAngle} = this.state;
-		var el = findDOMNode(this);
-		var svg = $(el).closest("svg").get(0);
-		var paper = new Paper(svg);
-		var group = $(findDOMNode(this));
-		var clip = paper.clipPath(function(){
-			paper.addShape("sector",{
-							cx,
-							cy,
-							radius:radius + sliceOffset,
-							startAngle:startAngle,
-							endAngle:startAngle + 1e-6
-						});
-		});
-		var clipId = 'pie-clip' + Math.random();
-		clip.attr("id",clipId);
-		group.attr("clip-path","url(#"+ clipId +")");
-		var path = clip.find("path");
-		$(el).find('.vcharts-labels').css("display","none");
-		path.transition({
-			from:startAngle,
-			to:endAngle,
-			ease:'easeOutIn',
-			during:600,
-			callback(){
-				clip.remove();
-				group.removeAttr("clip-path");
-				$(el).find('.vcharts-labels').css("display","");
-			},
-			onUpdate:function(val){
-				path.attr("d",shape.getShapePath("sector",{
-					cx,
-					cy,
-					startAngle:startAngle,
-					endAngle:val,
-					radius:radius + sliceOffset
-				}));
-			}
-		})
-		paper.destroy();
-	}
 	componentDidMount(){
-		this.animate();
+		this.setState({hasInited:true})
 	}
 	componentWillReceiveProps(nextProps){
 		var {width,height} = nextProps;

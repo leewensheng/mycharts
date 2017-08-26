@@ -29,7 +29,6 @@ export default class ChartModel {
         plotOptions:{
             series:{
                 name:'',
-                animation:true,
                 stack:null,
                 visible:true,
                 showInLegend:true
@@ -112,7 +111,7 @@ export default class ChartModel {
             seriesOpt.seriesColor = seriesOpt.color || colors[seriesIndex % colors.length];
             seriesOpt.seriesName = seriesOpt.name || ('series' + seriesIndex);
             var {type} = seriesOpt;
-            return $.extend(true,{animation:option.chart.animation},plotOptions.series,plotOptions[type],seriesOpt);
+            return $.extend(true,{},plotOptions.series,plotOptions[type],seriesOpt);
         })
         option.series = series;
         this.option = option;

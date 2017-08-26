@@ -13,16 +13,15 @@ export default class Scatter extends SeriesModel {
 		xAxis:0,
 		yAxis:0,
 		data:[],
-		marker:{
-			symbol:'circle',
-			size:20,
-			borderWidth:0,
-			borderColor:'#000',
-			borderType:'solid',
-			style:{
-				
-			}
+		symbol:'circle',
+		borderWidth:0,
+		borderColor:'#000',
+		borderType:'solid',
+		style:{
+
 		},
+		shadow:true,
+		size:20,
 		maxSize:'20%',
 		minSize:'8',
 		sizeBy:'area',
@@ -48,6 +47,9 @@ export default class Scatter extends SeriesModel {
 				obj.y = point[1];
 				if(point[2]) {
 					obj.value = point[2]
+				}
+				if(point[3]) {
+					obj.name = point[3];
 				}
 			} else if (typeof point === 'object') {
 				obj = $.extend(obj,point);

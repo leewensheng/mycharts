@@ -1,22 +1,19 @@
 import $ from 'jquery'
 import React,{Component} from 'react'
+import {findDOMNode} from 'react-dom'
 
 export default class ClipPath extends Component {
 	constructor(props){
 		super(props);
-		this.state = {
-			dom:null
-		};
 	}
 	render(){
-		return this.props.children;
+		var id = this.props.id;
+		return <clipPath id={id}>{this.props.children}</clipPath>
 	}
 	componentDidMount(){
+		return;
 		var el = findDOMNode(this);
-	}
-	componentWillUnmount(){
-		var dom = state.dom;
-		state.dom = null;
-		$(dom).remove();
+		var defs = $(el).closest('svg').find('defs');
+		defs.append(el);
 	}
 }

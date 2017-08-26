@@ -20,7 +20,7 @@ export default class Bar extends Component {
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
         var {grid,hasInited,bars} = state;
-        var {seriesColor,visible,seriesIndex} = seriesModel;
+        var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
 
         var {style,borderRadius,borderColor,borderWidth} = seriesOpt;
         return (

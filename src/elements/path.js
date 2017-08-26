@@ -26,6 +26,11 @@ class  PathElement extends Component{
             $(el).attr('d',d.toString());
             return;
         }
+        var during = 400,ease = 'easeOut';
+        if(typeof animation === 'object') {
+            during = animation.during || during;
+            ease = animation.ease || ease;
+        }
         onAnimationChange&&onAnimationChange(true)
         if(pathShape) {
             var prevConfig = prevProps.pathShape.config;
@@ -33,8 +38,8 @@ class  PathElement extends Component{
             $(el).stopTransition().transition({
                 from:0,
                 to:1,
-                during:400,
-                ease:'easeOut',
+                during:during,
+                ease:ease,
                 onUpdate(k){
                     var d = shape.getShapePath(pathShape.name,configInterpolate(k));
                     $(el).attr('d',d);
@@ -50,8 +55,8 @@ class  PathElement extends Component{
             $(el).stopTransition().transition({
                 from:0,
                 to:1,
-                during:400,
-                ease:'easeOut',
+                during:during,
+                ease:ease,
                 onUpdate(k){
                     var d = ease(k);
                     $(el).attr('d',d);

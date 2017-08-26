@@ -10,7 +10,10 @@ export default class LineModel extends SeriesModel {
 	//默认配置
 	icon  = LineIcon;
 	defaultOption =  {
-	    animation:true,
+	    animation:{
+	    	during:1000,
+	    	ease:'linear'
+	    },
 	    color:null,//主色
 	    name:'',
 	    xAxis:0,
