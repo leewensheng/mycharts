@@ -13,7 +13,7 @@ export default class Linechart extends Component {
         this.onGridChange = this.onGridChange.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
-            hasInited:false,
+            hasInited:0,
             points:[]
         };
     }
@@ -34,9 +34,13 @@ export default class Linechart extends Component {
         var clipId = seriesId + 'clippath';
         return (
             <g className="vcharts-series vcharts-line-series" clipPath={'url(#' + clipId + ')'} style={{display:visible?'':'none'}}>
+                {
+                hasInited<2
+                &&
                 <ClipPath id={clipId}>
                     <Rect animation={animation} x={0} y={0} width={hasInited?width:0} height={height} />
                 </ClipPath>
+                }
                 <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
@@ -78,9 +82,11 @@ export default class Linechart extends Component {
     onGridChange(grid){
         var that = this;
         var {props,state} = this;
+        var {hasInited} = state;
         if(grid.seriesIndex == this.props.seriesIndex) {
+            hasInited++;
             var points = props.seriesModel.getLinePoints(grid);
-            this.setState({grid,points,hasInited:true});
+            this.setState({grid,points,hasInited:hasInited});
             this.forceUpdate();
         }
     }
