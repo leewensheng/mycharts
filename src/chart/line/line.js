@@ -37,7 +37,7 @@ export default class Linechart extends Component {
                 <ClipPath id={clipId}>
                     <Rect animation={animation} x={0} y={0} width={hasInited?width:0} height={height} />
                 </ClipPath>
-                <Polyline className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
@@ -83,8 +83,6 @@ export default class Linechart extends Component {
             this.setState({grid,points,hasInited:true});
             this.forceUpdate();
         }
-    }
-    componentDidMount(){
     }
     shouldComponentUpdate(nextProps,nextState){
         if(!nextProps.seriesModel.visible) {

@@ -82,16 +82,6 @@ var option = {
 		]
 	},
 	{
-		type:'pie',
-		data:[{
-			name:'330',
-			value:300
-		},{
-			name:'333',
-			value:550
-		}]
-	},
-	{
 		type:'line',
 		data:[1,2,3,5]
 	}

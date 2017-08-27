@@ -2,7 +2,7 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Circle from '../../elements/circle'
 import colorHelper from 'cad/color/index'
-
+import browser from 'cad/browser'
 export default class ScatterPoint extends Component {
 	constructor(props) {
 		super(props);
@@ -48,14 +48,18 @@ export default class ScatterPoint extends Component {
 	}
 	handleMouseOver(event){
 		var elem = findDOMNode(this);
+		if(!browser.msie) {
+			elem.parentNode.appendChild(elem);
+		}
 		this.setState({isHover:true,updateType:'hoverChange'});
-		elem.parentNode.appendChild(elem);
 	}
 	handleMouseOut(event){
 		var elem = findDOMNode(this);
 		var index = this.props.index;
 		var children = elem.parentNode.children;
-		elem.parentNode.insertBefore(elem,children[index]);
+		if(!browser.msie) {
+			elem.parentNode.insertBefore(elem,children[index]);
+		}
 		this.setState({isHover:false,updateType:'hoverChange'});
 	}
 }
