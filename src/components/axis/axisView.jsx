@@ -136,11 +136,15 @@ export default class  Axis extends Component {
             axisLabel.style.textBaseLine = 'middle';
         };
         if(isFirstTime && containLabel) {
+            //等文本宽度计算后再渲染
             gridLines = [];
             ticks = [];
         }
         return (
             <g className={className}>
+                {
+                    <AxisTitle axis={axis} option={option} animation={isLabelAdjusted||!isFirstTime} start={start} end={end} other={other} top={top} left={left} right={right} bottom={bottom}/>
+                }
                 {
                 (!isFirstTime||!containLabel)&&axisLine.enabled
                 &&
@@ -164,14 +168,16 @@ export default class  Axis extends Component {
                             if(index === 0 && !zeroPoisition) {
                                 return;
                             }
-                            if(axis === 'xAxis' && zeroPoisition === x1) {
-                                return;
-                            }
-                            if(axis === 'yAxis' && zeroPoisition === y1) {
-                                return;
-                            }
-                            if(index === gridLines.length-1&&hasOpposite) {
-                                return;
+                            if(zeroPoisition) {
+                                if(axis === 'xAxis' && Math.abs(zeroPoisition - x1) < 1e-3) {
+                                    return;
+                                }
+                                if(axis === 'yAxis' && Math.abs(zeroPoisition -y1) < 1e-3) {
+                                    return;
+                                }
+                                if(index === gridLines.length-1&&hasOpposite) {
+                                    return;
+                                }                            
                             }
                             return <Line   
                                     key={index} 

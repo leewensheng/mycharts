@@ -30,18 +30,23 @@ var option = {
 			lineWidth:5,
 			color:'blue'
 		},
+		axisLine:{
+			onZero:1
+		},
 		opposite:0,
 		title:{
 			text:'haha'
 		},
 		min:0,
 		gridLine:{
-			enabled:true
+			enabled:0
 		}
 	},
 	yAxis:{
 		title:{
 			text:'liws',
+			align:'middle',
+			rotation:270,
 			style:{
 				color:'red'
 			}
@@ -49,7 +54,6 @@ var option = {
 		axisTick:{
 			inside:true
 		},
-		min:0
 	},
 	plotOptions:{
 		bar: {
@@ -78,24 +82,15 @@ var option = {
 			[4,6,3],
 			[2,2.5,3],
 			[1,1.5,2],
-			[2,2.2,5]
+			[2,-2.2,5]
 		]
 	},
 	{
 		type:'line',
-		data:[1,2,3,5]
+		data:[1,-2,3,5]
 	}
 	]
 }
-for(var i = 0; i < 30;i++) {
-	data.push([
-
-		Math.random()*5,
-		Math.random()*5,
-		3
-		])
-}
-option.series[0].data = data;
 var chart = vchart.init(el,{
 	height:400
 });

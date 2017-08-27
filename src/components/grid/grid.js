@@ -55,11 +55,15 @@ export default class Grid extends Component {
 				if(xAxisData.zeroPoisition !== null) {
 					yAxisData.other = xAxisData.zeroPoisition;
 				}
+			} else {
+				xAxisData.zeroPoisition = null;
 			}
 			if(yAxisData.axisData.type === 'value' && xAxisData.axisData.option.axisLine.onZero) {
 				if(yAxisData.zeroPoisition !== null) {
 					xAxisData.other = yAxisData.zeroPoisition;
 				}
+			} else {
+				yAxisData.zeroPoisition = null;
 			}
 		})
 		return gridAxis;
