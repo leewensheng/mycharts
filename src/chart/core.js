@@ -36,7 +36,7 @@ export default class Core extends Component {
         var option = chartModel.getOption();
         var {gradients} = chartModel;
         return (
-            <div className='vcharts-container' style={{fontSize:0,width:width,height:height,overflow:'visible',position:'relative'}}>
+            <div className='vcharts-container' style={{fontSize:0,width:"100%",height:height,overflow:'hidden',position:'relative'}}>
                 <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} />
                 <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} style={{userSelect:'none'}}>
                     <desc>created by liws</desc>
