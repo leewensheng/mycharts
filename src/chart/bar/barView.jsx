@@ -30,6 +30,9 @@ export default class Bar extends Component {
                         bars.map(function(bar,index){
                             var  {color,barWidth,barLength,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight} = bar;
                             var r =  seriesModel.getPercentMayBeValue(borderRadius,Math.min(barLength,barWidth));
+                            if(!visible) {
+                                grid.reversed ? rectHeight = 0 : rectWidth = 0;
+                            }
                             return (
                             <g key={'group'+index}>
                             <Rect 
@@ -81,21 +84,6 @@ export default class Bar extends Component {
         })
     }
     componentDidMount(){
-    }
-    componentWillReceiveProps(nextProps){
-        var bars = this.state.bars;
-        var grid = this.state.grid;
-        if(!nextProps.seriesModel.visible && grid) {
-            bars = bars.map(function(bar){
-                if(!grid.reversed) {
-                    bar.rectWidth = 0;
-                } else {
-                    bar.rectHeight = 0;
-                }
-                return bar;
-            })
-            this.setState({bars});
-        }
     }
     shouldComponentUpdate(nextProps,nextState){
         if(!nextProps.seriesModel.visible) {

@@ -36,7 +36,7 @@ export default class Scatter extends Component {
                                     index={index}
                           			cx={plotX} 
                           			cy={plotY} 
-                          			size={size} 
+                          			size={visible?size:0} 
                           			fill={seriesColor}
                           			stroke={borderColor} 
                           			strokeWidth={borderWidth}
@@ -56,32 +56,13 @@ export default class Scatter extends Component {
             this.forceUpdate();
         }
     }
-    animate(){
-   
-    }
     componentDidMount(){
-    }
-    componentWillReceiveProps(nextProps){
-        var points = this.state.points;
-        var grid = this.state.grid;
-        if(!nextProps.seriesModel.visible && grid) {
-            points.map(function(point){
-               point.size = 0;
-            })
-            this.setState({points});
-        }
     }
     shouldComponentUpdate(nextProps,nextState){
         if(!nextProps.seriesModel.visible) {
             return true;
         }
         return false;
-    }
-    componentDidUpdate(prevProps,prevState){
-        var {props,state} = this;
-        if(state.hasInited != prevState.hasInited) {
-            this.animate();
-        }
     }
     componentWillUnmount(){
         var {props,state} = this;
