@@ -84,9 +84,8 @@ export default class Linechart extends Component {
         var {props,state} = this;
         var {hasInited} = state;
         if(grid.seriesIndex == this.props.seriesIndex) {
-            hasInited++;
             var points = props.seriesModel.getLinePoints(grid);
-            this.setState({grid,points,hasInited:hasInited});
+            this.setState({grid,points,hasInited:++hasInited});
             this.forceUpdate();
         }
     }
