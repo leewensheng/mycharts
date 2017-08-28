@@ -7,36 +7,49 @@ class AxisTitle extends Component{
 	}
 	render(){
 		var {props} = this;
-		var {axis,option,animation,start,end,other} = props;
-		var {type,opposite,title,reversed} = option;
+		var {update,axis,option,animation,start,end,other} = props;
+		var {type,opposite,title,inverse} = option;
 		var {enabled,align,margin,rotation,style,text} = title;
 		var x,y,transform;
 		if(axis === 'xAxis') {
 			if(align === 'start') {
-				x = start;
+				x = start + margin*(inverse?1:-1);
 				y = other;
-			}else if( align === 'middle') {
+				inverse ? style.textAlign = 'left':style.textAlign = 'right';
+				style.textBaseLine = 'middle';
+			} else if( align === 'middle') {
 				x = (start + end) / 2;
-				y = other + margin;
+				y = other + margin*(opposite?-1:1);
+				style.textAlign = 'center';
+				style.textBaseLine = opposite ? 'bottom' : 'top';
+
 			} else if( align === 'end') {
-				x = end;
+				x = end + margin*(inverse?-1:1);
 				y = other;
+				style.textBaseLine = 'middle';
+				inverse ? style.textAlign = 'right':style.textAlign = 'left';
 			}
 		} else if(axis === 'yAxis') {
 			if(align === 'start') {
 				x = other;
-				y = start;
+				y = start + margin*(inverse?-1:1);
+				style.textAlign = 'center';
+				style.textBaseLine = inverse?'bottom':'top';
 			}else if( align === 'middle') {
-				x = other + margin;
+				x = other + margin*(opposite?1:-1);
 				y = (start + end) /2;
+				style.textAlign = 'center';
+				style.textBaseLine = 'middle';
 			} else if( align === 'end') {
 				x = other;
-				y = end;
+				y = end + margin*((inverse?1:-1));
+				style.textAlign = 'center';
+				style.textBaseLine = inverse?'top':'bottom';
 			}
 		}
 		transform = 'rotate(' + rotation + ',' + x+ ',' + y + ')';
 		return (
-			<Text transform={transform} className="vcharts-axis-title" animation={animation} x={x} y={y}  style={style}>{text||''}</Text>
+			<Text update={update} animation={animation} transform={transform} className="vcharts-axis-title" animation={animation} x={x} y={y}  style={style}>{text||''}</Text>
 		)
 	}
 }

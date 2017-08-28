@@ -13,19 +13,27 @@ class  Rect extends Component{
         var {x,y,width,height} = state;
         var defaultStyle = {shapeRendering:'optimizeSpeed'};
         $.extend(defaultStyle,props.style);
-        if(typeof width === 'number') {
+        if(width < 0) {
             width = Math.abs(width);
+            x = x - width;
         }
-        if(typeof height === 'number') {
+        if(height < 0) {
             height = Math.abs(height);
+            y = y - height;
         }
         return <rect {...props} x={x} y={y} width={width} height={height} style={defaultStyle}/>
     }
     animate(prevProps){
         var {state,props} = this;
         var {animation,x,y,width,height} = props;
-        width = Math.abs(width);
-        height = Math.abs(height);
+        if(width < 0) {
+            width = Math.abs(width);
+            x = x - width;
+        }
+        if(height < 0) {
+            height = Math.abs(height);
+            y = y - height;
+        }
         var el = findDOMNode(this);
         var during = 400,ease = 'easeOut';
         if(animation) {

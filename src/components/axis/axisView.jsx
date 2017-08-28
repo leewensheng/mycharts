@@ -143,7 +143,9 @@ export default class  Axis extends Component {
         return (
             <g className={className}>
                 {
-                    <AxisTitle axis={axis} option={option} animation={isLabelAdjusted||!isFirstTime} start={start} end={end} other={other} top={top} left={left} right={right} bottom={bottom}/>
+                    !isFirstTime&&title.enabled&&title.text
+                    &&
+                    <AxisTitle update={updateType==='newProps'&&containLabel?false:true} axis={axis} option={option} start={start} end={end} other={other} top={top} left={left} right={right} bottom={bottom}/>
                 }
                 {
                 (!isFirstTime||!containLabel)&&axisLine.enabled
