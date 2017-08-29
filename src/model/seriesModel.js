@@ -189,10 +189,10 @@ export default class SeriesModel extends BaseModel {
 		var valueAxis = reversed ? xAxis : yAxis;
 		if(!stackedOnData) {
 			//有零时在0上，无0时，在轴线上
-			var {start,end,other,axisData} = categoryAxis;
+			var {start,end,interval,other,axisData} = categoryAxis;
 			var {zeroPosition} = valueAxis;
-			return data.map(function(data,dataIndex){
-				var x = start + (end - start)*dataIndex
+			return data.map(function(point,dataIndex){
+				var x = start + interval*dataIndex;
 				var y = zeroPosition?zeroPosition:other;
 				return {
 					x:reversed?y:x,

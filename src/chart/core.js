@@ -38,7 +38,7 @@ export default class Core extends Component {
         return (
             <div className='vcharts-container' style={{fontSize:0,width:"100%",height:height,overflow:'hidden',position:'relative'}}>
                 <Tooltip key={'tooltip'} chartEmitter={chartEmitter} chartWidth={width} chartHeight={height} chartOption={option} />
-                <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} style={{userSelect:'none'}}>
+                <svg width={width} height={height} xmlns={namespace.svg} xmlnsXlink={namespace.xlink} style={{userSelect:'none',fontSize:12,fontFamily:'"Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif'}}>
                     <desc>created by liws</desc>
                     <defs>
                         {
@@ -111,9 +111,6 @@ export default class Core extends Component {
         var {chartModel} = this.state;
         chartModel.update(width,height,option);
         this.setState({chartModel});
-    }
-    resize(width,height){
-        
     }
     onLegendVisibleToggle(msg){
         var {chartModel} = this.state;

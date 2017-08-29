@@ -23,7 +23,7 @@ export default class Linechart extends Component {
         var {width,height,seriesModel} = props;
         var seriesOpt = seriesModel.getOption();
         var seriesId = seriesModel.seriesId;
-        var {animation,color,lineWidth,linecap,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
+        var {animation,color,lineWidth,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
         var {points,grid,hasInited} = this.state;
         var {seriesColor,visible} = seriesModel;
         var polylinePoints = points.map(function(point){
@@ -31,6 +31,12 @@ export default class Linechart extends Component {
             var y = point.plotY;
             return {x,y};
         })
+        var stackOnPoints = points.map(function(point){
+            var x = point.stackX;
+            var y = point.stackY;
+            return {x,y};
+        })
+        var fillAreaPoints = polylinePoints.concat(stackOnPoints.reverse());
         var clipId = seriesId + 'clippath';
         return (
             <g className="vcharts-series vcharts-line-series" clipPath={'url(#' + clipId + ')'} style={{display:visible?'':'none'}}>
@@ -41,7 +47,8 @@ export default class Linechart extends Component {
                     <Rect animation={animation} x={0} y={0} width={hasInited?width:0} height={height} />
                 </ClipPath>
                 }
-                <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none' strokeLinecap={linecap} strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.5"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled

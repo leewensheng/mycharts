@@ -20,12 +20,11 @@ export default class Scatter extends SeriesModel {
 		style:{
 
 		},
-		shadow:true,
 		size:20,
-		maxSize:'20%',
+		maxSize:'20%',//类目宽度的百分比
 		minSize:'8',
 		sizeBy:'area',
-		sizeByAbsoluteValue:false
+		sizeByAbsoluteValue:false//默认是by max
 	};
 	normalLizeData(){
 		var option = this.getOption();

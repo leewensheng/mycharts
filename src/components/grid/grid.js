@@ -16,7 +16,7 @@ export default class Grid extends Component {
 	getGridAxis(props,left,top,right,bottom){
 		var {xAxis,yAxis,includeSeries} = props;
 		var gridAxis = xAxis.concat(yAxis).map(function(axis,indexInGrid){
-			var {min,max,type,option,includeSeries} = axis;
+			var {type,min,max,splitData,option,includeSeries} = axis;
 			var {opposite}  = option;
 			var start ,end , other,interval,zeroPoisition = null;
 			if(axis.axis === 'xAxis') {
@@ -36,8 +36,21 @@ export default class Grid extends Component {
 	       if(type === 'value' && min * max < 0) {
 	       		zeroPoisition = start + (0 - min)/(max - min)*(end  - start);
 	       }
+	       if(type === 'value') {
+	        	if(splitData.length === 1) {
+	        		interval = end - start;
+	        	} else {
+	        		interval = (end - start)/(splitData.length - 1);
+	        	}
+	       } else if(type === 'category') {
+	       		if(option.categories.length === 1) {
+	       			interval = end - start;
+	       		} else {
+	       			interval = (end - start) / (option.categories.length - 1);
+	       		}
+	       }
 	       return {
-	       		start,end,other,zeroPoisition,axisData:axis,labelPlace:{}
+	       		start,end,interval,other,zeroPoisition,axisData:axis,labelPlace:{}
 	       }
 		})
 		includeSeries.map(function(series){

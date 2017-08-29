@@ -33,7 +33,7 @@ export default class Axis extends ComponentModel {
 	    axisLine:{
 	    	onZero:true,
 	        enabled:true,
-	        lineColor:'blue',
+	        lineColor:'#ccc',
 	        lineWidth:1,
 	        lineDash:false,
 	        style:{
@@ -42,7 +42,7 @@ export default class Axis extends ComponentModel {
 	    },
 	    gridLine:{
 	    	enabled:true,
-	        lineColor:'red',
+	        lineColor:'#ccc',
 	        lineWidth:1,
 	        lineDash:false,
 	    	style:{
@@ -54,7 +54,7 @@ export default class Axis extends ComponentModel {
 	        interval:"auto",
 	        inside:false,
 	        length:5,
-	        lineColor:'red',
+	        lineColor:'#333',
 	        lineWidth:1,
 	        lineDash:false,
 	        style:{

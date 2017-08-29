@@ -11,6 +11,14 @@ class AxisTitle extends Component{
 		var {type,opposite,title,inverse} = option;
 		var {enabled,align,margin,rotation,style,text} = title;
 		var x,y,transform;
+		var enumAlign = {
+			start:1,
+			end:1,
+			middle:1
+		};
+		if(!enumAlign[align]) {
+			align = 'end';
+		}
 		if(axis === 'xAxis') {
 			if(align === 'start') {
 				x = start + margin*(inverse?1:-1);

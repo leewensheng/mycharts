@@ -21,21 +21,23 @@ var option = {
 		top:80,
 		left:80,
 		right:80,
-		containLabel:0,
-		background:'#ddd'
+		containLabel:1,
+		background:'#fff'
 	},
 	xAxis:{
 		gridLine:{
 			enabled:0,
 			lineWidth:5,
-			color:'blue'
+			color:'#e6e6e6'
 		},
 		axisLine:{
 			onZero:1
 		},
 		opposite:0,
 		title:{
-			text:'haha'
+			text:'haha',
+			margin:10,
+			align:'end',
 		},
 		min:0,
 		gridLine:{
@@ -44,11 +46,13 @@ var option = {
 	},
 	yAxis:{
 		title:{
-			text:'liws',
-			align:'middle',
-			rotation:270,
+			text:'李文胜',
+			align:'top',
+			margin:10,
+			rotation:0,
 			style:{
-				color:'red'
+				color:'#333',
+				fontSize:12
 			}
 		},
 		axisTick:{
