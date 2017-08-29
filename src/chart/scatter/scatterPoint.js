@@ -35,7 +35,7 @@ export default class ScatterPoint extends Component {
 		}
 		return (
 			<g onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
-				<Circle animation={animation} {...props}  cx={cx} cy={cy} r={size} fill={fill}/>
+				<Circle animation={animation} {...props}  cx={cx} cy={cy} r={size/2} fill={fill}/>
 			</g>
 		)
 	}

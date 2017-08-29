@@ -48,7 +48,7 @@ export default class Linechart extends Component {
                 </ClipPath>
                 }
                 <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.5"/>
+                <Polyline ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled

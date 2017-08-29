@@ -76,17 +76,16 @@ var option = {
 		]},
 		shadow:false,
 		symbol:'circle',
-		size:50,
-		borderWidth:0,
+		borderWidth:1,
 		borderColor:'#3B98A2',
-		type:'scatter',
+		type:'bubble',
 		data:[
-			[1,2,3],
-			[2,4,3],
-			[4,6,3],
-			[2,2.5,3],
-			[1,1.5,2],
-			[2,-2.2,5]
+			[1,3,1],
+			[2,3,2],
+			[3,3,4],
+			[4,3,8],
+			[5,3,16],
+			[6,3,32]
 		]
 	},
 	{
@@ -95,6 +94,11 @@ var option = {
 	}
 	]
 }
+var data = [];
+for(var i = 0; i < 50; i++ ){
+	data.push([Math.random()*10,Math.random()*10,Math.random()*10]);
+}
+option.series[0].data = data;
 var chart = vchart.init(el,{
 	height:400
 });

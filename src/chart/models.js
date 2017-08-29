@@ -6,5 +6,6 @@ module.exports = {
 	pie:pieModel,
 	line:lineModel,
 	bar:barModel,
-	scatter:scatterModel
+	scatter:scatterModel,
+	bubble:scatterModel
 };

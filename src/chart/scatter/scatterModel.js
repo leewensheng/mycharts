@@ -21,14 +21,13 @@ export default class Scatter extends SeriesModel {
 
 		},
 		size:20,
-		maxSize:'20%',//类目宽度的百分比
+		maxSize:'20%',//图表vmin的百分比
 		minSize:'8',
-		sizeBy:'area',
-		sizeByAbsoluteValue:false//默认是by max
+		sizeBy:'area'//根据面积成比例，还是根据size成比例
 	};
 	normalLizeData(){
 		var option = this.getOption();
-		var {data,colors} = option;
+		var {type,data,colors} = option;
 		var chartModel = this.chartModel;
 		data = data.map(function(point,index){
 			var obj = {
@@ -38,9 +37,6 @@ export default class Scatter extends SeriesModel {
 				value:null,
 				color:chartModel.getColorByIndex(index)
 			};
-			if(colors) {
-				obj.color  = colors[index%colors.length];
-			}
 			if(point instanceof Array) {
 				obj.x= point[0];
 				obj.y = point[1];
@@ -53,21 +49,47 @@ export default class Scatter extends SeriesModel {
 			} else if (typeof point === 'object') {
 				obj = $.extend(obj,point);
 			} else if(typeof point === 'number') {
-				obj.y = 0;
-				obj.value = point;
+				if(type === 'bubble') {
+					obj.y = 0;
+					obj.value = point;
+				} else if(type === 'scatter') {
+					obj.y = point;
+				}
 			}
 			return obj;
 		});
 		option.data = data;
 	}
 	getScatterPoints(grid){
+		var width = this.chartModel.getWidth();
+		var height = this.chartModel.getHeight();
+		var option = this.getOption();
+		var {type,size,minSize,maxSize,sizeBy} = option;
 		var points = this.getPointsOnGrid(grid);
+		var maxValue = this.getMaxValue();
+		maxSize = this.getPercentMayBeValue(maxSize,Math.min(width,height));
 		return this.mapData(function(point,dataIndex){
-			var {x,y} = point;
+			var pointSize;
+			var {x,y,value,name} = point;
 			var plotX = points[dataIndex].x;
 			var plotY = points[dataIndex].y; 
-			var size = 20;
-			return {x,y,plotX,plotY,size}
+			if(type === "scatter") {
+				pointSize = size;
+			} else {
+				if(typeof size === 'function') {
+					pointSize = size(value);
+				} else {
+					if(sizeBy === 'area') {
+						pointSize = Math.sqrt(value/maxValue)*maxSize;
+					} else {
+						pointSize = (value/maxValue)*maxSize;
+					}
+					if(pointSize < minSize) {
+						pointSize = minSize;
+					}
+				}
+			}
+			return {name,value,x,y,plotX,plotY,size:pointSize}
 		})
 	}
 }

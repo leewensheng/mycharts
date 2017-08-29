@@ -144,6 +144,11 @@ export default class SeriesModel extends BaseModel {
 			y:extreme.y[1]
 		}
 	}
+	getMaxValue(){
+		return mathUtils.max(this.mapData(function(point){
+			return point.value;
+		}))
+	}
 	getExtreme(){
 		var option = this.getOption();
 		var {data} = option;
