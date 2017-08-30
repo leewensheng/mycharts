@@ -66,7 +66,7 @@ export default class  Axis extends Component {
     }
     render(){
         var {props,state} = this;
-        var {axisData,start,end,other,zeroPoisition,containLabel,updateType,hasOpposite,top,left,right,bottom,width,height} = props;
+        var {axisData,start,end,other,zeroPoisition,otherAxisPosition,containLabel,updateType,hasOpposite,top,left,right,bottom,width,height} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
         var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var {isLabelAdjusted,points,isFirstTime} = state;
@@ -167,19 +167,11 @@ export default class  Axis extends Component {
                         &&
                         gridLines.map(function(grid,index){
                             var {x1,y1,x2,y2} = grid;
-                            if(index === 0 && !zeroPoisition) {
+                            if(axis === 'yAxis' &&Math.abs(otherAxisPosition - y1)<1e-3) {
                                 return;
                             }
-                            if(zeroPoisition) {
-                                if(axis === 'xAxis' && Math.abs(zeroPoisition - x1) < 1e-3) {
-                                    return;
-                                }
-                                if(axis === 'yAxis' && Math.abs(zeroPoisition -y1) < 1e-3) {
-                                    return;
-                                }
-                                if(index === gridLines.length-1&&hasOpposite) {
-                                    return;
-                                }                            
+                            if(axis === 'xAxis' &&Math.abs(otherAxisPosition - x1)<1e-3) {
+                                return;
                             }
                             return <Line   
                                     key={index} 

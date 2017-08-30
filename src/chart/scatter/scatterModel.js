@@ -10,6 +10,10 @@ export default class Scatter extends SeriesModel {
 	icon = ScatterIcon;
 	dependencies=['legend','grid'];
 	defaultOption =  {
+		animation:{
+			during:1000,
+			ease:'easeOut'
+		},
 		xAxis:0,
 		yAxis:0,
 		data:[],
@@ -74,7 +78,11 @@ export default class Scatter extends SeriesModel {
 			var plotX = points[dataIndex].x;
 			var plotY = points[dataIndex].y; 
 			if(type === "scatter") {
-				pointSize = size;
+				if(typeof size === 'function') {
+					pointSize = size(value);
+				} else {
+					pointSize = size;
+				}
 			} else {
 				if(typeof size === 'function') {
 					pointSize = size(value);

@@ -20,8 +20,7 @@ export default class Scatter extends Component {
         var seriesOpt = seriesModel.getOption();
         var {grid,hasInited,points} = state;
         var {seriesColor,visible,seriesIndex} = seriesModel;
-        var {marker} = seriesOpt;
-        var {symbol,size,style,borderRadius,borderColor,borderWidth,borderType} = seriesOpt;
+        var {animation,symbol,size,style,borderRadius,borderColor,borderWidth,borderType} = seriesOpt;
         return (
             <g className="vcharts-series vcharts-bar-series">
                 <g className="vcharts-series-points">
@@ -29,6 +28,7 @@ export default class Scatter extends Component {
                         points.map(function(point,index){
                           var {plotX,plotY,size,x,y} = point;
                           return <ScatterPoint 
+                                    animation={points.length>400?false:animation}
                                     key={index}
                                     index={index}
                           			cx={plotX} 
@@ -52,8 +52,6 @@ export default class Scatter extends Component {
             this.setState({grid,points,hasInited:true});
             this.forceUpdate();
         }
-    }
-    componentDidMount(){
     }
     shouldComponentUpdate(nextProps,nextState){
         if(!nextProps.seriesModel.visible) {

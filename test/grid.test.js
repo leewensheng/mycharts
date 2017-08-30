@@ -31,7 +31,8 @@ var option = {
 			color:'#e6e6e6'
 		},
 		axisLine:{
-			onZero:1
+			onZero:1,
+			lineColor:'#000'
 		},
 		opposite:0,
 		title:{
@@ -58,6 +59,10 @@ var option = {
 		axisTick:{
 			inside:true
 		},
+		gridLine:{
+			enabled:1,
+			lineColor:'red'
+		}
 	},
 	plotOptions:{
 		bar: {
@@ -79,6 +84,10 @@ var option = {
 		borderWidth:1,
 		borderColor:'#3B98A2',
 		type:'bubble',
+		style:{
+			cursor:'pointer'
+		},
+		size:8,
 		data:[
 			[1,3,1],
 			[2,3,2],

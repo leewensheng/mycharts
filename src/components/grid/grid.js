@@ -68,16 +68,14 @@ export default class Grid extends Component {
 				if(xAxisData.zeroPoisition !== null) {
 					yAxisData.other = xAxisData.zeroPoisition;
 				}
-			} else {
-				xAxisData.zeroPoisition = null;
 			}
 			if(yAxisData.axisData.type === 'value' && xAxisData.axisData.option.axisLine.onZero) {
 				if(yAxisData.zeroPoisition !== null) {
 					xAxisData.other = yAxisData.zeroPoisition;
 				}
-			} else {
-				yAxisData.zeroPoisition = null;
 			}
+			xAxisData.otherAxisPosition = yAxisData.other;;
+			yAxisData.otherAxisPosition = xAxisData.other;
 		})
 		return gridAxis;
 	}
@@ -96,7 +94,7 @@ export default class Grid extends Component {
 				{
 					gridAxis.map(function(axis,gridAxisIndex){
 						var hasOpposite;
-						var {start,end,other,axisData,zeroPoisition} = axis;
+						var {start,end,other,axisData,zeroPoisition,otherAxisPosition} = axis;
 						return <Axis 	
 									key={'xaxis'+gridAxisIndex}
 									start = {start}
@@ -113,6 +111,7 @@ export default class Grid extends Component {
 									updateType={updateType}
 									gridAxisIndex={gridAxisIndex}
 									zeroPoisition={zeroPoisition}
+									otherAxisPosition={otherAxisPosition}
 									/>
 					})
 				}
