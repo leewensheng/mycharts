@@ -17,12 +17,29 @@ var option = {
 			[1,'darkred']
 		]
 	},'red'],*/
+	title:{
+		text:'统计图表测试标题',
+		margin:0,
+		style:{
+			color:'#000'
+		},
+		subTitle:{
+			text:'子标题测试',
+			style:{
+				color:'#999'
+			}
+		}
+	},
 	grid:{
-		top:80,
+		top:100,
 		left:80,
 		right:80,
 		containLabel:1,
 		background:'#fff'
+	},
+	legend:{
+		align:'center',
+		margin:40
 	},
 	xAxis:{
 		gridLine:{
@@ -72,6 +89,7 @@ var option = {
 			groupIng:true
 		}
 	},
+
 	series:[
 
 	{

@@ -1,6 +1,6 @@
 import ComponentModel from '../../model/componentModel'
 import $  from 'jquery'
-export default class LegendModel extends ComponentModel {
+export default class TitleModel extends ComponentModel {
 	constructor(chartModel){
 		super(chartModel);
 		this.initOption();
@@ -8,7 +8,7 @@ export default class LegendModel extends ComponentModel {
 	type = 'title';
 	defaultOption = {
 		align:'center',
-		verticalAlign:'middle',
+		verticalAlign:'top',
 		margin:15,
 		text:'',
 		style:{
@@ -19,7 +19,9 @@ export default class LegendModel extends ComponentModel {
 		subTitle:{
 			text:'',
 			style:{
-				color:'#666'
+				color:'#666',
+				fontSize:13,
+				textBaseLine:'top'
 			}
 		}
 	};
