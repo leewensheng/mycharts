@@ -106,6 +106,7 @@ var option = {
 			cursor:'pointer'
 		},
 		size:8,
+		maxSize:'15%',
 		data:[
 			[1,3,1],
 			[2,3,2],

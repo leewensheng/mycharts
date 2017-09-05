@@ -16,7 +16,7 @@ export default class Title extends Component {
 		var width = chartModel.getWidth();
 		var height = chartModel.getHeight();
 		var {align,verticalAlign,margin,text,style,subTitle} = titleOpt;
-		var x,y;
+		var x = width / 2 , y = margin;
 		style.textAlign = align;
 		subTitle.style.textAlign = align;
 		style.textBaseLine = verticalAlign;
@@ -26,8 +26,6 @@ export default class Title extends Component {
 			x = width / 2;
 		} else if(align === 'right') {
 			x = width - margin;
-		} else {
-			x = width / 2;
 		}
 		if(verticalAlign === 'top') {
 			y = 0 + margin;

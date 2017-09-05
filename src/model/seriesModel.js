@@ -185,6 +185,7 @@ export default class SeriesModel extends BaseModel {
 		return this.getDataPointsOnGrid(data,grid);
 	}
 	getStackedOnPoints(grid){
+		var that = this;
 		var seriesOpt = this.getOption();
 		var {stack}  = seriesOpt;
 		var data = this.getData();
@@ -197,7 +198,7 @@ export default class SeriesModel extends BaseModel {
 			var {start,end,interval,other,axisData} = categoryAxis;
 			var {zeroPoisition} = valueAxis;
 			return data.map(function(point,dataIndex){
-				var x = start + interval*dataIndex;
+				var x =  that.getPositionOnAxis(dataIndex,categoryAxis);
 				var y = zeroPoisition?zeroPoisition:other;
 				return {
 					x:reversed?y:x,
