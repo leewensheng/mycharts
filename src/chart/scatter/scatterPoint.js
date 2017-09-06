@@ -8,6 +8,7 @@ export default class ScatterPoint extends Component {
 		super(props);
 		this.handleMouseOver = this.handleMouseOver.bind(this);
 		this.handleMouseOut = this.handleMouseOut.bind(this);
+		this.handleMouseMove = this.handleMouseMove.bind(this);
 		this.state = {
 			isHover:false,
 			hasInited:false
@@ -34,7 +35,7 @@ export default class ScatterPoint extends Component {
 			animation.during = 1000;
 		}
 		return (
-			<g onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut}>
+			<g onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut} onMouseMove={this.handleMouseMove}>
 				<Circle {...props} animation={animation}   cx={cx} cy={cy} r={size/2} fill={fill}/>
 			</g>
 		)
@@ -53,13 +54,22 @@ export default class ScatterPoint extends Component {
 		}
 		this.setState({isHover:true,updateType:'hoverChange'});
 	}
+	handleMouseMove(event){
+		var {props} = this;
+		var {index,toggleToolTip} = props;
+		var {clientX,clientY} = event;
+		props.toggleToolTip(index,true,event);
+	}
 	handleMouseOut(event){
+		var {props} = this;
+		var {index,toggleToolTip} = props;
 		var elem = findDOMNode(this);
 		var index = this.props.index;
 		var children = elem.parentNode.children;
 		if(!browser.msie) {
 			elem.parentNode.insertBefore(elem,children[index]);
 		}
+		props.toggleToolTip(index,false,event);
 		this.setState({isHover:false,updateType:'hoverChange'});
 	}
 }

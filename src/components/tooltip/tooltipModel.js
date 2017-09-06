@@ -1,10 +1,10 @@
 import ComponentModel from '../../model/componentModel'
-import $  from 'jquery'
-export default class LegendModel extends ComponentModel {
+export default class TooltipModel extends ComponentModel {
 	constructor(chartModel){
 		super(chartModel);
 		this.initOption();
 	}
+	useHTML = true;
 	type = 'tooltip';
 	defaultOption = {
 		enabled:true,

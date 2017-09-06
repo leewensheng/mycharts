@@ -7,6 +7,7 @@ export default class Scatter extends Component {
     constructor(props){
         super(props);
         this.onGridChange = this.onGridChange.bind(this);
+        this.toggleToolTip = this.toggleToolTip.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
             hasInited:false,
@@ -38,12 +39,27 @@ export default class Scatter extends Component {
                           			stroke={borderColor} 
                           			strokeWidth={borderWidth}
                                     style={style}
+                                    toggleToolTip={that.toggleToolTip}
                           		/>
                         })
                     }
                 </g>
             </g>
         );
+    }
+    toggleToolTip(dataIndex,isShow,mouseEvent){
+        var {props,state} = this;
+        var {seriesModel} = props;
+        var data = seriesModel.getData();
+        var point = state.points[dataIndex];
+        var {plotX,plotY} = point;
+        props.chartEmitter.emit('toggleToolTip',{
+            show:isShow,
+            point:data[dataIndex],
+            plotX:plotX,
+            plotY:plotY,
+            event:mouseEvent
+        });
     }
     onGridChange(grid){
         var {props,state} = this;

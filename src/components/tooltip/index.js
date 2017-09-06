@@ -1,62 +1,60 @@
 import React,{Component} from 'react'
-class Tooltip extends Component {
-	constructor(props){
+export default class Tooltip extends Component {
+	constructor(props) {
 		super(props);
-		this.showPoint = this.showPoint.bind(this);
-		this.hidePoint = this.hidePoint.bind(this);
 		this.state = {
 			show:false,
+			x:null,
+			y:null,
 			points:[]
 		}
+		this.toggleToolTip = this.toggleToolTip.bind(this);
 	}
 	render(){
 		var {props,state} = this;
-		var {chartWidth,chartHeight,chartOption} = props;
-		var {show,points} = state;
+		var {chartModel} = props;
+		var {show,x,y,points} = state;
 		var style = {};
 		style.position = 'absolute';
-		style.background ='rgba(0,0,0,0.7)';
-		style.zIndex = 11;
-		style.left = 0;
-		style.top = 0;
-		style.padding = "5px 10px";
+		style.zIndex = 1;
+		style.borderRadius = '5px';
+		style.borderWidth = '3';
+		style.borderColor = 'transparent';
+		style.background = 'rgba(0,0,0,0.3)';
+		style.padding = '5px';
+		style.fontSize ='12px';
+		style.color = '#fff';
+		style.left = x;
+		style.top = y;
 		style.display = show?'block':'none';
-		style.fontSize = 14;
-		style.color = "#fff";
-		style.borderRadius = 5;
 		return (
 			<div className="vcharts-tooltip" style={style}>
-				<ul style={{margin:0,padding:0}}>
-					{
-						points.map((point,index) => {
-							return (
-								<li style={{listStyle:'none'}} key={index}>{point.name}</li>
-							)
-						})
-					}
+				<ul>
+				{
+					points.map(function(point,index){
+						var {name,value} = point;
+						return <li key={index}>{point.name +' : ' + point.value}</li>
+					})	
+				}
 				</ul>
-			</div> 
+			</div>
 		)
 	}
-	showPoint(point){
-		var state = this.state;
-		var points = [point];
+	toggleToolTip(data){
+		var {show,event,point} = data; 
+		var x =event.clientX;
+		var y = event.clientY;
 		this.setState({
-			show:true,
-			points:points
-		})
-	}
-	hidePoint(point) {
-
+			show:show,
+			x:x,
+			y:y,
+			points:show?[point]:[]
+		});
 	}
 	componentDidMount(){
-		this.props.chartEmitter.on('tooltip.showPoint',this.showPoint);
-		this.props.chartEmitter.on('tooltip.hidePoint',this.hidePoint);
+		this.props.chartEmitter.on('toggleToolTip',this.toggleToolTip)
 	}
 	componentWillUnmount(){
-		this.props.chartEmitter.removeListener('showPoint',this.showPoint);
-		this.props.chartEmitter.removeListener('hidePoint',this.hidePoint);
+		this.props.chartEmitter.removeListener('toggleToolTip',this.toggleToolTip);
 	}
 }
-Tooltip.useHTML = true;
-module.exports = Tooltip;

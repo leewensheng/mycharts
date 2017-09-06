@@ -7,6 +7,7 @@ export default class TitleModel extends ComponentModel {
 	}
 	type = 'title';
 	defaultOption = {
+		enabled:true,
 		align:'center',
 		verticalAlign:'top',
 		margin:15,
