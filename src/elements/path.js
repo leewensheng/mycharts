@@ -38,11 +38,12 @@ export default class  PathElement extends Component{
         if(d.toString()=== prevProps.d.toString()&&transform === prevProps.transform) {
             return;
         }
-        var oldTransform = $(el).attr('transform');
-        var transformEase = interpolateTransform(oldTransform,transform);
+        var currentTransform = $(el).attr('transform');
+        var currentD = $(el).attr('d');
+        var transformEase = interpolateTransform(currentTransform,transform);
         var pathInterpolate;
         if(!pathShape) {
-            pathInterpolate = interpolatePath(prevProps.d,d);
+            pathInterpolate = interpolatePath(currentD,d);
         } else {
             pathInterpolate = interpolateObject(prevProps.pathShape.config,pathShape.config);
         }

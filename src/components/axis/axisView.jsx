@@ -26,8 +26,8 @@ export default class  Axis extends Component {
          */
         var keepState = oldState&&props.updateType!='adjust';
         data.map(function(value,index){
-           var x,y,text;
-           if(axis === 'xAxis') {
+            var x,y,text;
+            if(axis === 'xAxis') {
                 if(data.length > 1) {
                     x = start + gap*index/(data.length-1);
                 } else {
@@ -35,7 +35,7 @@ export default class  Axis extends Component {
                 }
 
                 y = other;
-           } else {
+            } else {
                 if(data.length > 1) {
                     y = start + gap*index/(data.length-1);
                 } else {
@@ -43,14 +43,18 @@ export default class  Axis extends Component {
                 }
                 
                 x = other;
-           }
-           if(oldState&&oldState.points[index]) {
-                if(keepState) {
-                    x = oldState.points[index].x;
-                    y = oldState.points[index].y;
-                }
-           }
-           points.push({x,y,value});
+            }
+            if(oldState&&oldState.points[index]) {
+                 if(keepState) {
+                     x = oldState.points[index].x;
+                     y = oldState.points[index].y;
+                 }
+            }
+            var obj = {x,y,value};
+            if(oldState && !oldState.points[index]) {
+                obj.isAdd = true;
+            }
+            points.push(obj);
         })
         if(keepState) {
             start = oldState.start;
@@ -96,7 +100,7 @@ export default class  Axis extends Component {
             points = [];
         }
         points.map(function(point,index){
-            var {x,y,value} = point;
+            var {x,y,value,isAdd} = point;
             var x1,x2,y1,y2;
             if(axis === 'xAxis') {
                 y = (opposite?top:bottom) + axisLabel.margin*labelFlag;
@@ -113,7 +117,7 @@ export default class  Axis extends Component {
                 x1 = other;
                 x2 = other - axisTick.length*tickFlag;
             }
-            ticks.push({x1,x2,y1,y2});
+            ticks.push({x1,x2,y1,y2,isAdd});
             if(axis === 'xAxis') {
                 x1  = x2 = x;
                 y1 = top;
@@ -206,8 +210,9 @@ export default class  Axis extends Component {
                         axisTick.enabled
                         &&
                         ticks.map(function(tick,index){
-                            var {x1,y1,x2,y2} = tick;
+                            var {x1,y1,x2,y2,isAdd} = tick;
                             return <Line   
+                                    animation={!isAdd}
                                     update={updateType==='newProps'&&containLabel?false:true}
                                     key={index}
                                     x1={x1} 
