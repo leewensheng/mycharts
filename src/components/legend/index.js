@@ -35,7 +35,7 @@ export default class Legend extends Component {
 				{
 					items.map(function(item,index){
 						var Icon = item.icon;
-						var {x,y,color,width,visible} = item;
+						var {x,y,color,width,visible,isAdd} = item;
 						var symbolHeight = symbol.height||itemStyle.fontSize;
 						var symbolY =  y + (itemHeight - symbolHeight)/2;
 						var textX = x + symbol.width + symbol.padding;
@@ -49,9 +49,9 @@ export default class Legend extends Component {
 								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
-								<Rect animation={animation} fill="transparent" x={x} y={y} width={width} height={itemHeight} stroke="none"/>
-								<Icon animation={animation} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={visible!==false?color:'gray'}/>
-								<Text animation={animation} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
+								<Rect animation={animation&&!isAdd} fill="transparent" x={x} y={y} width={width} height={itemHeight} stroke="none"/>
+								<Icon animation={animation&&!isAdd} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={visible!==false?color:'gray'}/>
+								<Text animation={animation&&!isAdd} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)
 					})

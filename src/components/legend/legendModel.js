@@ -81,6 +81,8 @@ export default class LegendModel extends ComponentModel {
 		            item.x = oldItem.x;
 		            item.y = oldItem.y;
 		            item.width = oldItem.width;
+		        } else {
+		        	item.isAdd = true;
 		        }
 		    })
 		}
