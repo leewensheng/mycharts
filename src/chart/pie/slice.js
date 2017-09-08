@@ -16,26 +16,41 @@ const HOVER_RADIUS_ADD = 10;
 class  Slice extends Component{
 	constructor(props) {
 		super(props);
+		this.handleMouseOver = this.handleMouseOver.bind(this);
+		this.handleMouseOut = this.handleMouseOut.bind(this);
+		this.handleMouseMove = this.handleMouseMove.bind(this);
 		this.state = {
 			isHover:false,
 			isAnimating:false,
-			hasAddAnimation:props.isAdd
+			addAnimationDone:false
 		}
 	}
 	render(){
 		var {props,state} = this;
 		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset,isAdd} = props;
 		var {color,borderColor,borderWidth} = props;
-		var {isHover,isAnimating,hasAddAnimation} = state
+		var {isHover,isAnimating,updateType} = state
 		var that = this;
-		var offsetX = 0, offsetY = 0;
+		var offsetX = 0, offsetY = 0,transform;
+		var animation = {
+			ease:'easeOut',
+			during:400
+		};
 		if(selected) {
 			var offset = Point(0,0).angleMoveTo(midAngle,sliceOffset);
 			offsetX = offset.x;
 			offsetY = offset.y;
 		}
-		if(isAdd&&hasAddAnimation) {
+		transform = 'translate(' + offsetX + ',' + offsetY + ')';
+		if(isAdd&&!addAnimationDone) {
 			startAngle = endAngle;
+		}
+		if(isHover) {
+			radius += HOVER_RADIUS_ADD;
+			color = colorHelper.brighten(color,0.1);
+		}
+		if(updateType === 'hoverChange') {
+			animation.ease = 'elasticOut';
 		}
 		var d = shape.getShapePath("sector" , {
 				cx,
@@ -45,93 +60,51 @@ class  Slice extends Component{
 				radius,
 				innerRadius
 			},true);
+
 		return (
 			<PathElement 
+				animation={animation}
 				filter="url(#shadow)"
+				transform={transform}
 				d={d}
 				fill={color}
 				stroke={borderColor}
 				strokeWidth={borderWidth}
-				transform={'translate('+offsetX + ',' + offsetY + ')'}
 				onClick={this.props.onSlice}
 				pathShape={{name:'sector',config:{cx,cy,startAngle,endAngle,radius,innerRadius}}}
-				onAnimationChange={this.onAnimationChange.bind(this)}
-				onMouseOver={this.handleMouseOver.bind(this,true,false)}
-				onMouseOut={this.handleMouseOver.bind(this,false,false)}
+				onMouseOver={this.handleMouseOver}
+				onMouseOut={this.handleMouseOut}
+				onMouseMove={this.handleMouseMove}
 			/>
 		)
 	}
-	onAnimationChange(isAnimating){
+	handleMouseOver(){
 		this.setState({
-			isAnimating:isAnimating,
-			update:false
+			isHover:true,
+			updateType:'hoverChange'
 		})
 	}
-	handleMouseOver(isHover,forceSelected,forceValue){
-		var {props,state} = this;
-		var {selected,cx,cy,startAngle,midAngle,
-			endAngle,radius,innerRadius,color,sliceOffset} = props;
-		if(state.isAnimating) {
-			this.setState({isHover:isHover})
-			return;
-		}
-		if(forceSelected) {
-			selected = forceValue;
-		}
-		var $el = $(findDOMNode(this));
-		var d = $el.attr('d');
-		if(isHover) {
-			radius += HOVER_RADIUS_ADD;
-			color = colorHelper.brighten(color,0.1);
-		}
-		var transform = $el.attr('transform');
-		var offsetX = 0, offsetY = 0;
-		if(selected) {
-			var offset = Point(0,0).angleMoveTo(midAngle,sliceOffset);
-			offsetX = offset.x;
-			offsetY = offset.y;
-		}
-		var d2 = shape.getShapePath('sector',{cx,cy,startAngle,endAngle,radius,innerRadius},true);
-		var pathEase = interpolatePath(d,d2);
-		var transformEase = interpolateTransform(transform,'translate('+offsetX+ ',' + offsetY + ')');
-		$el.attr('fill',color).stopTransition().transition({
-			from:0,
-			to:1,
-			ease:forceSelected?'easeOut':'elastic',
-			during:400,
-			onUpdate(k){
-				$el.attr('d',pathEase(k));
-				$el.attr('transform',transformEase(k));
-			}
-		});
-		$el.attr('filter',isHover?'url(#shadow)':'none');
-		this.setState({isHover:isHover,update:false});
+	handleMouseMove(){
+		
 	}
-	offset(selected){
-		this.handleMouseOver(this.state.isHover,true,selected);
+	handleMouseOut(){
+		this.setState({
+			isHover:false,
+			updateType:'hoverChange'
+		})
 	}
 	componentDidMount(){
-		var {props,state} = this;
-		if(props.isAdd) {
+		if(this.props.isAdd) {
 			this.setState({
-				hasAddAnimation:false,
-				update:true
+				addAnimationDone:true,
+				updateType:'animation'
 			})
 		}
 	}
 	componentWillReceiveProps(nextProps){
-	 	if(nextProps.updateType === 'select') {
-			if(this.props.selected != nextProps.selected) {
-				this.offset(nextProps.selected);
-			}
-			this.setState({update:false});
-		} else {
-			this.setState({update:true});
-		}
-
-	}
-	shouldComponentUpdate(nextProps,nextState){
-		return nextProps.updateType !== 'select' && nextState.update;
+		this.setState({
+			updateType:'newProps'
+		});
 	}
 }
 Slice.defaultProps = {

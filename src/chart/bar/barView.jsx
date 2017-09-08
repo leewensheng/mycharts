@@ -4,10 +4,13 @@ import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper/index'
 import Text from '../../elements/text'
 import Rect from '../../elements/rect'
+import colorHelper from 'cad/color/index'
+
 export default class Bar extends Component {
     constructor(props){
         super(props);
         this.onGridChange = this.onGridChange.bind(this);
+        this.toggleToolTip = this.toggleToolTip.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
             hasInited:false,
@@ -21,7 +24,7 @@ export default class Bar extends Component {
         var seriesOpt = seriesModel.getOption();
         var {grid,hasInited,bars} = state;
         var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
-
+        var toggleToolTip = this.toggleToolTip;
         var {style,borderRadius,borderColor,borderWidth} = seriesOpt;
         return (
             <g className="vcharts-series vcharts-bar-series">
@@ -35,9 +38,10 @@ export default class Bar extends Component {
                             }
                             return (
                             <g key={'group'+index}>
-                            <Rect 
+                            <BarItem 
                                 key={'bar'+index}
                                 className="vcharts-series-point" 
+                                index={index}
                                 x={rectX} 
                                 y={rectY} 
                                 rx={r}
@@ -48,6 +52,7 @@ export default class Bar extends Component {
                                 stroke={borderColor} 
                                 strokeWidth={borderWidth}
                                 style={style}
+                                toggleToolTip={toggleToolTip}
                              />
                              <Text key={'label'+index} x={rectX + rectWidth/2} y={rectY  - 5} style={{textAlign:'center',textBaseLine:'bottom'}}>{y}</Text>
                              </g>
@@ -65,6 +70,20 @@ export default class Bar extends Component {
             this.setState({grid,bars,hasInited:true});
             this.forceUpdate();
         }
+    }
+    toggleToolTip(index,isShow,event){
+        var {props,state} = this;
+        var point = props.seriesModel.getData()[index];
+        var bar = this.state.bars[index];
+        var {plotX,plotY} = bar;
+        var {props,state} = this;
+        props.chartEmitter.emit('toggleToolTip',{
+            show:isShow,
+            point:point,
+            plotX:plotX,
+            plotY:plotY,
+            event:event
+        });
     }
     animate(){
         return;
@@ -100,5 +119,47 @@ export default class Bar extends Component {
     componentWillUnmount(){
         var {props,state} = this;
         props.chartEmitter.off('grid',this.onGridChange);
+    }
+}
+class BarItem extends Component {
+    constructor(props) {
+        super(props);
+        this.handleMouseOver = this.handleMouseOver.bind(this);
+        this.handleMouseOut = this.handleMouseOut.bind(this);
+        this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.state = {
+            hasInited:false
+        };
+    }
+    render(){
+        var {props,state} = this;
+        var {hasInited} = state;
+        return <Rect    {...props} 
+                        onMouseOver={this.handleMouseOver} 
+                        onMouseMove={this.handleMouseMove} 
+                        onMouseOut={this.handleMouseOut} />
+
+    }
+    handleMouseOver(event){
+        var {props,state} = this;
+        var fillColor = this.props.fill;
+        var hoverColor = colorHelper.brighten(fillColor,0.2);
+        var el = findDOMNode(this);
+        $(el).attr('fill',hoverColor);
+        props.toggleToolTip(props.index,true,event);
+    }
+    handleMouseMove(event){
+        var {props,state} = this;
+        props.toggleToolTip(props.index,true,event);
+    }
+    handleMouseOut(){
+        var {props,state} = this;
+        var fillColor = props.fill;
+        var el = findDOMNode(this);
+        $(el).attr('fill',fillColor);
+        props.toggleToolTip(props.index,false,event);
+    }
+    componentDidMount(){
+        this.setState({hasInited:true});
     }
 }

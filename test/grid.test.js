@@ -117,8 +117,11 @@ var option = {
 		]
 	},
 	{
-		type:'line',
+		type:'bar',
 		data:[1,-2,3,5]
+	},{
+		type:'pie',
+		data:[1,2,3]
 	}
 	]
 }

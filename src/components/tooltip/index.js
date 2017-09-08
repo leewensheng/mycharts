@@ -33,7 +33,7 @@ export default class Tooltip extends Component {
 				{
 					points.map(function(point,index){
 						var {name,value} = point;
-						return <li key={index}>{point.name +' : ' + point.value}</li>
+						return <li key={index}>{point.name||point.x +' : ' + (point.value||point.y) }</li>
 					})	
 				}
 				</ul>

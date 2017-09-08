@@ -2,13 +2,13 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
 import Path from 'cad/path'
-import {interpolatePath,interpolateObject} from 'cad/interpolate'
+import {interpolatePath,interpolateObject,interpolateTransform} from 'cad/interpolate'
 import shape from 'cad/shape'
 export default class  PathElement extends Component{
     constructor(props){
         super(props);
-        var {d} = props;
-        this.state = {d};
+        var {d,transform} = props;
+        this.state = {d,transform};
     }
     static defaultProps = {
         animation:true,
@@ -16,18 +16,17 @@ export default class  PathElement extends Component{
     };
     render(){
         var {state,props} = this;
-        var {d} = state;
-        return <path {...props}  d={d.toString()} />
+        var {d,transform} = state;
+        return <path {...props}  d={d.toString()} transform={transform}/>
     }
     animate(prevProps){
         var {state,props} = this;
         var el = findDOMNode(this);
-        var {animation,d,pathShape,onAnimationChange} = props;
-        if(d.toString()=== prevProps.d.toString()) {
-            return;
-        }
+        var {animation,d,transform,pathShape,onAnimationChange} = props;
+
         if(!(prevProps.animation&&animation)){
             $(el).attr('d',d.toString());
+            $(el).attr('transform',transform);
             return;
         }
         var during = 400,ease = 'easeOut';
@@ -35,41 +34,34 @@ export default class  PathElement extends Component{
             during = animation.during || during;
             ease = animation.ease || ease;
         }
-        onAnimationChange&&onAnimationChange(true)
-        if(pathShape) {
-            var prevConfig = prevProps.pathShape.config;
-            var configInterpolate = interpolateObject(prevConfig,pathShape.config);
-            $(el).stopTransition().transition({
-                from:0,
-                to:1,
-                during:during,
-                ease:ease,
-                onUpdate(k){
-                    var d = shape.getShapePath(pathShape.name,configInterpolate(k));
-                    $(el).attr('d',d.toString());
-                },
-                callback(){
-                    onAnimationChange&&onAnimationChange(false);
-                }
-            })
-        } else {
-            var oldPath = $(el).attr('d');
-            oldPath = new Path(oldPath);
-            var pathInterpolate = interpolatePath(oldPath,d);
-            $(el).stopTransition().transition({
-                from:0,
-                to:1,
-                during:during,
-                ease:ease,
-                onUpdate(k){
-                    var d = pathInterpolate(k);
-                    $(el).attr('d',d.toString());
-                },
-                callback(){
-                    onAnimationChange&&onAnimationChange(false);
-                }
-            });
+        onAnimationChange&&onAnimationChange(true);
+        if(d.toString()=== prevProps.d.toString()&&transform === prevProps.transform) {
+            return;
         }
+        var oldTransform = $(el).attr('transform');
+        var transformEase = interpolateTransform(oldTransform,transform);
+        var pathInterpolate;
+        if(!pathShape) {
+            pathInterpolate = interpolatePath(prevProps.d,d);
+        } else {
+            pathInterpolate = interpolateObject(prevProps.pathShape.config,pathShape.config);
+        }
+        $(el).stopTransition().transition({
+            from:0,
+            to:1,
+            ease:ease,
+            during:during,
+            onUpdate(k) {
+                var easeD;
+                $(el).attr('transform',transformEase(k));
+                if(!pathShape) {
+                    easeD = pathInterpolate(k);
+                } else {
+                    easeD = shape.getShapePath(pathShape.name,pathInterpolate(k));
+                }
+                $(el).attr('d',easeD);
+            }
+        });
     }
     componentWillReceiveProps(nextProps){
         this.setState({
@@ -81,10 +73,10 @@ export default class  PathElement extends Component{
     }
     componentDidUpdate(prevProps){
         var {props} = this;
-        var {d} = props;
+        var {d,transform} = props;
         var update = false;
         this.animate(prevProps);
-        this.setState({d,update})
+        this.setState({d,transform,update})
     }
     componentWillUnmount(){
         $(findDOMNode(this)).stopTransition();

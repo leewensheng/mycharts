@@ -42,6 +42,7 @@ export default class  Pie extends Component{
 					return <Slice
 							style={itemStyle}
 							key={index}
+							index={index}
 							cx={cx}
 							cy={cy}
 							startAngle={startAngle}
@@ -52,7 +53,6 @@ export default class  Pie extends Component{
 							borderWidth={borderWidth}
 							borderColor={borderColor}
 							color={color}
-							index={index}
 							selected={selected}
 							sliceOffset={sliceOffset}
 							onSlice={onSlice.bind(that,index)}
