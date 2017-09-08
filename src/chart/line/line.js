@@ -38,17 +38,18 @@ export default class Linechart extends Component {
         })
         var fillAreaPoints = polylinePoints.concat(stackOnPoints.reverse());
         var clipId = seriesId + 'clippath';
+        var clipPath='url(#' + clipId + ')'
         return (
-            <g className="vcharts-series vcharts-line-series" clipPath={'url(#' + clipId + ')'} style={{display:visible?'':'none'}}>
+            <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
                 {
-                hasInited<2
+                animation
                 &&
                 <ClipPath id={clipId}>
-                    <Rect animation={animation} x={0} y={0} width={hasInited?width:0} height={height} />
+                    <Rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
                 </ClipPath>
                 }
-                <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                <Polyline clipPath={clipPath} ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline clipPath={clipPath} ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
@@ -86,14 +87,40 @@ export default class Linechart extends Component {
             </g>
         );
     }
+    animate(grid){
+        var animation = this.props.seriesModel.getOption().animation;
+        if(!animation) {
+            return
+        }
+        var clip = this.refs.clip;
+        var rect = findDOMNode(clip);
+        var {left,top,width,height} = grid;
+        var ease = 'easeOut',during = 1000;
+        if(typeof animation === 'object') {
+            ease = animation.ease || ease;
+            during = animation.during || during;
+        }
+        $(rect)
+        .attr('x',left)
+        .attr('y',top)
+        .attr('width',0)
+        .attr('height',height)
+        .transition({
+            width:width
+        },during,ease);
+    }
     onGridChange(grid){
         var that = this;
         var {props,state} = this;
         var {hasInited} = state;
         if(grid.seriesIndex == this.props.seriesIndex) {
             var points = props.seriesModel.getLinePoints(grid);
+            if(!hasInited) {
+                this.animate(grid);
+            }
             this.setState({grid,points,hasInited:++hasInited});
             this.forceUpdate();
+            
         }
     }
     shouldComponentUpdate(nextProps,nextState){
