@@ -29,7 +29,7 @@ class  Slice extends Component{
 		var {props,state} = this;
 		var {selected,cx,cy,startAngle,midAngle,endAngle,radius,innerRadius,sliceOffset,isAdd} = props;
 		var {color,borderColor,borderWidth} = props;
-		var {isHover,isAnimating,updateType} = state
+		var {isHover,isAnimating,updateType,addAnimationDone} = state
 		var that = this;
 		var offsetX = 0, offsetY = 0,transform;
 		var animation = {
