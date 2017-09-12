@@ -18,6 +18,7 @@ export default class  Pie extends Component{
 		super(props);
 		var state = props.seriesModel.getRenderData(props.width,props.height);
 		this.state = state;
+        this.toggleToolTip = this.toggleToolTip.bind(this);
 	}
 
 	render(){
@@ -30,6 +31,7 @@ export default class  Pie extends Component{
 		var {cx,cy,startAngle,endAngle,radius,innerRadius,selectedPointsMap,updateType,hasInited} = state;
 		var {animation,center,size,itemStyle,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = seriesOpt;
 		var onSlice = this.onSlice;
+		var toggleToolTip = this.toggleToolTip;
 		return (
 			<g clipPath={'url(#'+ seriesId +')'} className="vcharts-series vcharts-pie-series" style={{display:visible?'':'none'}}>
 				<clipPath id={seriesId}>
@@ -58,6 +60,7 @@ export default class  Pie extends Component{
 							onSlice={onSlice.bind(that,index)}
 							isAdd={isAdd}
 							updateType={updateType}
+							toggleToolTip={toggleToolTip}
 						/>
 					})			
 				}
@@ -162,6 +165,19 @@ export default class  Pie extends Component{
 			})
 		}
 		this.setState({points,updateType:'select'});
+	}
+    toggleToolTip(dataIndex,isShow,mouseEvent){
+		var {props,state} = this;
+        var {seriesModel} = props;
+        var data = seriesModel.getData();
+        var {cx,cy} = state;
+        props.chartEmitter.emit('toggleToolTip',{
+            show:isShow,
+            point:data[dataIndex],
+            plotX:cx,
+            plotY:cy,
+            event:mouseEvent
+        });
 	}
 	componentDidMount(){
 		var el = $(findDOMNode(this));

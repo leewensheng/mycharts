@@ -38,7 +38,7 @@ export default class Linechart extends Component {
         })
         var fillAreaPoints = polylinePoints.concat(stackOnPoints.reverse());
         var clipId = seriesId + 'clippath';
-        var clipPath='url(#' + clipId + ')'
+        var clipPath='url(#' + clipId + ')';
         return (
             <g className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
                 {

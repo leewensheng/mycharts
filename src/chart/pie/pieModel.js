@@ -66,8 +66,7 @@ class PieModel extends SeriesModel {
 		data = data.map(function(point,index){
 			var obj = {
 				name:'slice'+(index + 1),
-				x:index,
-				y:null,
+				value:null,
 				visible:true,
 				selected:false
 			}
@@ -78,15 +77,14 @@ class PieModel extends SeriesModel {
 			obj.color = color;
 			if(point instanceof Array) {
 				obj.name= point[0];
-				obj.y = point[1];
+				obj.value = point[1];
 				if(point[2]) {
 					obj.color = point[3]
 				}
 			} else if (typeof point === 'object') {
 				obj = $.extend(obj,point);
-				obj.y = obj.y||obj.value;
 			} else if(typeof point === 'number') {
-				obj.y = point;
+				obj.value = point;
 			}
 			return obj;
 		})
@@ -105,7 +103,7 @@ class PieModel extends SeriesModel {
 			} 
 		})
 		var arr_value = data.map(function(point,index){
-			return point.visible?point.y:0;
+			return point.visible?point.value:0;
 		})
 		
 		var sum = mathUtils.sum(arr_value);

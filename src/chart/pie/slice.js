@@ -84,14 +84,19 @@ class  Slice extends Component{
 			updateType:'hoverChange'
 		})
 	}
-	handleMouseMove(){
-		
+	handleMouseMove(mouseEvent){
+		var {props} = this;
+		var {toggleToolTip,index} = props;
+		toggleToolTip(index,true,mouseEvent)
 	}
-	handleMouseOut(){
+	handleMouseOut(mouseEvent){
+		var {props} = this;
+		var {toggleToolTip,index} = props;
 		this.setState({
 			isHover:false,
 			updateType:'hoverChange'
-		})
+		});
+		toggleToolTip(index,false,mouseEvent);
 	}
 	componentDidMount(){
 		if(this.props.isAdd) {
