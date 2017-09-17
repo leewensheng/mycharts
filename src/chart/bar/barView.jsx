@@ -85,36 +85,11 @@ export default class Bar extends Component {
             event:event
         });
     }
-    animate(){
-        return;
-        var el = findDOMNode(this);
-        var $bars = $(el).find('.vcharts-series-point');
-        $bars.each(function(){
-            $(this).transition({
-                from:0,
-                to:1,
-                ease:'easeOut',
-                during:400,
-                onUpdate(k){
-                    var transform = 'scale(' + k + ','+ k+ ')';
-                    $(this).attr('transform',transform);
-                }
-            })
-        })
-    }
-    componentDidMount(){
-    }
     shouldComponentUpdate(nextProps,nextState){
         if(!nextProps.seriesModel.visible) {
             return true;
         }
         return false;
-    }
-    componentDidUpdate(prevProps,prevState){
-        var {props,state} = this;
-        if(state.hasInited != prevState.hasInited) {
-            this.animate();
-        }
     }
     componentWillUnmount(){
         var {props,state} = this;

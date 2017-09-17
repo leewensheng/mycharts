@@ -187,7 +187,13 @@ export default class Grid extends Component {
 				reversed,
 				isEmpty
 			});
-		})
+		});
+		chartEmitter.emit('gridReady',{
+			axis:gridAxis,
+			top,left,right,
+			bottom,width,height,
+			includeSeries:includeSeries
+		});
 	}
 	componentWillReceiveProps(nextProps){
 		var {left,top,right,bottom} = nextProps;

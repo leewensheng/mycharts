@@ -34,6 +34,7 @@ var option = {
 		top:100,
 		left:80,
 		right:80,
+		bottom:150,
 		containLabel:1,
 		background:'#fff'
 	},

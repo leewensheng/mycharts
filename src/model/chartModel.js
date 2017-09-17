@@ -143,6 +143,7 @@ export default class ChartModel {
             })
         });
         components.push('title');
+        components.push('dataZoom');
         var that = this;
         var models = [];
         for(var i = 0; i < components.length;i++) {

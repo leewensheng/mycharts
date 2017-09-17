@@ -169,6 +169,7 @@ export default class Axis extends ComponentModel {
 			var maxX = mathUtils.max(stackedX);
 			var minY = mathUtils.min(stackedY);
 			var maxY = mathUtils.max(stackedY);
+			var realMin,realMax;
 			var reversed = axisOpt.reversed,min,max
 			if(axis === 'xAxis') {
 				if(reversed) {
@@ -196,11 +197,15 @@ export default class Axis extends ComponentModel {
 				min = splitData[0];
 				max = splitData[splitData.length-1];
 			}
+			realMin = min;
+			realMax = max;
 			return {
 				type:axisOpt.type,
 				option:axisOpt,
 				min:min,
 				max:max,
+				realMin:realMin,
+				realMax:realMax,
 				axis:axis,
 				indexInGrid:indexInGrid,
 				splitData:splitData,
