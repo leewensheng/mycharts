@@ -15,8 +15,16 @@ export default class DataZoomModel extends ComponentModel {
 		xAxis:0,
 		yAxis:null,
 		opposite:false,
-		margin:20,
-		background:"rgba(33,33,33,0.7)"
+		margin:40,
+		height:40,
+		background:"rgba(33,33,33,0.7)",
+		handle:{
+			size:'100%',
+			color:'#a7b7cc',
+			borderColor:'#000',
+			borderWidth:0,
+			borderType:''
+		}
 	};
 	initOption(){
 		var that = this;
@@ -56,7 +64,7 @@ export default class DataZoomModel extends ComponentModel {
 				top:null,
 				right:null,
 				bottom:null,
-				left:null
+				left:null,
 			}
 		})
 	}

@@ -1,6 +1,6 @@
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import $ from 'react'
+import $ from 'jquery'
 export default class Draggable extends Component {
 	constructor(props) {
 		super(props);
@@ -13,14 +13,28 @@ export default class Draggable extends Component {
 			startX:0,
 			startY:0,
 			endX:0,
-			endY:0,
-			x:x,
-			y:y
+			endY:0
 		}
 	}
+	static defaultProps = {
+		x:0,
+		y:0,
+		axis:null,
+		cursor:'pointer',
+		disabled:false,
+		containment :null,//限制区域
+		onDragStart(){
+
+		},
+		onDragMove(){
+
+		},
+		onDragEnd(){
+
+		}
+	};
 	render(){
-		return 
-		(<g onMouseDown={this.dragStart}>
+		return (<g onMouseDown={this.dragStart}>
 			{this.props.children}
 		</g>)
 	}
@@ -35,15 +49,20 @@ export default class Draggable extends Component {
 		});
 		$(document).on("mousemove",this.dragMove);
 		$(document).on("mouseup",this.dragEnd);
+		this.props.onDragStart();
 	}
 	dragMove(event){
+		var {props,state} = this;
 		var {clientX,clientY} = event;
+		var {startX,startY} = state;
 		this.setState({
 			endX:clientX,
 			endY:clientY
 		});
+		this.props.onDragMove(clientX - startX,clientY - startY);
 	}
 	dragEnd(event){
+		var {startX,startY} = this.state;
 		var {clientX,clientY} = event;
 		this.setState({
 			isDragging:false,
@@ -52,5 +71,13 @@ export default class Draggable extends Component {
 		});
 		$(document).off("mousemove",this.dragMove);
 		$(document).off("mouseup",this.dragEnd);
+		this.props.onDragEnd(clientX - startX,clientY - startY);
+	}
+	componentWillReceiveProps(){
+		var {endX,endY} = this.state;
+		this.setState({
+			startX:endX,
+			startY:endY
+		});
 	}
 }

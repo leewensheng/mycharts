@@ -35,7 +35,7 @@ var option = {
 		left:80,
 		right:80,
 		bottom:150,
-		containLabel:1,
+		containLabel:0,
 		background:'#fff'
 	},
 	legend:{
@@ -58,10 +58,10 @@ var option = {
 			margin:10,
 			align:'end',
 		},
-		min:0,
 		gridLine:{
 			enabled:0
-		}
+		},
+		min:4
 	},
 	yAxis:{
 		title:{
@@ -92,45 +92,12 @@ var option = {
 	},
 
 	series:[
-
-	{
-		color:{type:'radialGradient',cx:0.3,cy:0.4,r:1,stops:[
-			[0,'rgba(129, 227, 238,0.9)'],
-			[1,'rgba(25, 183, 207,0.9)']
-		]},
-		shadow:false,
-		symbol:'circle',
-		borderWidth:1,
-		borderColor:'#3B98A2',
-		type:'bubble',
-		style:{
-			cursor:'pointer'
-		},
-		size:8,
-		maxSize:'15%',
-		data:[
-			[1,3,1],
-			[2,3,2],
-			[3,3,4],
-			[4,3,8],
-			[5,3,16],
-			[6,3,32]
-		]
-	},
-	{
-		type:'bar',
-		data:[1,-2,3,5]
-	},{
-		type:'line',
-		data:[10,20,30,20,15,24,10,8]
-	}
+		{
+			type:'line',
+			data:[10,20,30,20,15,24,10,8]
+		}
 	]
 }
-var data = [];
-for(var i = 0; i < 50; i++ ){
-	data.push([Math.random()*10,Math.random()*10,Math.random()*10]);
-}
-option.series[0].data = data;
 var chart = vchart.init(el,{
 	height:400
 });

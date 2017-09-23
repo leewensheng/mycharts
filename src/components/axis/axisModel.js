@@ -188,6 +188,8 @@ export default class Axis extends ComponentModel {
 					max = maxY;
 				}
 			}
+			realMin = min;
+			realMax = max;
 			min = typeof axisOpt.min === 'number' ? axisOpt.min : min;
 			max = typeof axisOpt.max === 'number' ? axisOpt.max : max;
 			var {type} =  axisOpt;
@@ -197,8 +199,8 @@ export default class Axis extends ComponentModel {
 				min = splitData[0];
 				max = splitData[splitData.length-1];
 			}
-			realMin = min;
-			realMax = max;
+			realMin = Math.min(min,realMin);
+			realMax = Math.max(max,realMax);
 			return {
 				type:axisOpt.type,
 				option:axisOpt,

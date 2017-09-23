@@ -17,6 +17,7 @@ export default class Core extends Component {
         var {width,height,option} = props;
         var chartModel = new ChartModel(width,height,option);
         this.onLegendVisibleToggle = this.onLegendVisibleToggle.bind(this);
+        this.refresh = this.refresh.bind(this);
         this.chartEmitter = chartEmitter;
         this.state = {chartModel};
         this.initEvents();
