@@ -121,9 +121,6 @@ var option = {
 		type:'bar',
 		data:[1,-2,3,5]
 	},{
-		type:'pie',
-		data:[1,2,3]
-	},{
 		type:'line',
 		data:[10,20,30,20,15,24,10,8]
 	}

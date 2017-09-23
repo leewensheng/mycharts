@@ -127,11 +127,15 @@ export default class Core extends Component {
     componentWillReceiveProps(nextProps) {
         this.setOption(nextProps);
     }
-    initEvents() {
-        this.chartEmitter.on('legendVisibileToggle',this.onLegendVisibleToggle);
-    }
     componentWillUnmount(){
         this.chartEmitter.removeAllListeners();
+    }
+    initEvents() {
+        this.chartEmitter.on('legendVisibileToggle',this.onLegendVisibleToggle);
+        this.chartEmitter.on('refresh',this.refresh);
+    }
+    refresh(){
+        this.setState({});
     }
     resize(width,height){
         var {chartModel} = this.state;
