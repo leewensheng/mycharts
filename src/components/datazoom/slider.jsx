@@ -7,6 +7,7 @@ export default class Slider extends Component {
 	constructor(props) {
 		super(props);
 		this.onPanning = this.onPanning.bind(this);
+		this.onQuickPanning = this.onQuickPanning.bind(this);
 		this.startHandleMove = this.startHandleMove.bind(this);
 		this.endHandleMove = this.endHandleMove.bind(this);
 		this.state = this.getSliderState(props);
@@ -15,6 +16,12 @@ export default class Slider extends Component {
 		var {axis,top,left,right,bottom,gridAxis,sliderOpt} = props;
 		var {axisData} = gridAxis;
 		var {min,max,realMin,realMax,includeSeries} = axisData;
+		if(min < realMin) {
+			min = realMin;
+		}
+		if(max > realMax) {
+			max = realMax;
+		}
 		var {inverse} = axisData.option;
 		var {margin,height,handle,background} = sliderOpt;
 		var sliderStart,sliderEnd,sliderOther,handleStart,handleEnd;
@@ -71,18 +78,18 @@ export default class Slider extends Component {
 		if(axis === 'xAxis') {
 			return (
 			<g className="vcharts-slider">
-				<Rect animation={false} className="datazoom-slider" x={left} y={sliderOther} width={right-left} height={height} fill={background} stroke="none"/>
+				<Rect onclick={this.onQuickPanning} animation={false} className="datazoom-slider" x={left} y={sliderOther} width={right-left} height={height} fill={background} stroke="none"/>
 				{
 				includeSeries.length
 				&&
 				<g>
-					<Draggable axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
+					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
 						<Rect animation={false} className="datazoom-pan" x={handleStart-size/2} y={sliderOther} width={handleEnd - handleStart} height={height} fill={background} stroke="none" />
 					</Draggable>
-					<Draggable axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
+					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
 						<Rect animation={false}className="datazoom-handle" x={handleStart-size/2} y={sliderOther} width={size} height={height} fill="blue" stroke="none" />
 					</Draggable>
-					<Draggable axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
+					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
 						<Rect animation={false} className="datazoom-handle" x={handleEnd-size/2} y={sliderOther} width={size} height={height} fill="blue" stroke="none" />
 					</Draggable>
 				</g>
@@ -91,9 +98,20 @@ export default class Slider extends Component {
 			)
 		}
 	}
+	onQuickPanning(event) {
+		var {props,state} = this;
+		var {sliderStart,sliderEnd} = this;
+		//计算出平移的距离
+	}
 	onPanning(dx,dy){
 		var {props,state} = this;
-		var {min,max} = state;
+		var {min,max,realMin,realMax} = state;
+		if(min === realMin && dx < 0) {
+			return;
+		}
+		if(max === realMax && dx > 0) {
+			return;
+		}
 		var {axis} = props;
 		var handleStart = this.getPositionByValue(min);
 		var handleEnd = this.getPositionByValue(max);
@@ -101,15 +119,27 @@ export default class Slider extends Component {
 		handleEnd +=  axis === 'xAxis' ? dx:dy;
 		min = this.getValueByPosition(handleStart);
 		max = this.getValueByPosition(handleEnd);
+		if(min <= realMin ) {
+			min = realMin;
+		}
+		if(max >= realMax) {
+			max = realMax;
+		}
 		this.setState({min,max,updateType:'zoom'});
 	}
 	startHandleMove(dx,dy){
 		var {props,state} = this;
-		var {min,max} = state;
+		var {min,max,realMin,realMax} = state;
+		if(min === realMin && dx < 0) {
+			return;
+		}
 		var {axis} = props;
 		var handleStart = this.getPositionByValue(min);
 		handleStart += axis === 'xAxis' ? dx:dy;
 		var nextMin = this.getValueByPosition(handleStart);
+		if(nextMin < realMin) {
+			nextMin = realMin;
+		}
 		this.setState({
 			min:Math.min(nextMin,max),
 			max:Math.max(nextMin,max),
@@ -118,14 +148,19 @@ export default class Slider extends Component {
 	}
 	endHandleMove(dx,dy){
 		var {props,state} = this;
-		var {min,max} = state;
+		var {min,max,realMin,realMax} = state;
+		if(max === realMax && dx > 0) {
+			return;
+		}
 		var {axis} = props;
 		var handleEnd = this.getPositionByValue(max);
 		handleEnd += axis === 'xAxis' ? dx:dy;
 		var nextMax = this.getValueByPosition(handleEnd);
+		if(nextMax > realMax) {
+			nextMax = realMax;
+		}
 		this.setState({
-			min:Math.min(nextMax,min),
-			max:Math.max(nextMax,min),
+			max:nextMax,
 			updateType:'zoom'
 		});
 	}
@@ -136,7 +171,7 @@ export default class Slider extends Component {
 	}
 	componentDidUpdate(){
 		var {state} = this;
-		var {min,max} = state;
+		var {min,max,realMin,realMax} = state;
 		if(state.updateType === 'zoom') {
 			this.props.zoomAxis(this.props.gridAxis,min,max);
 		}
