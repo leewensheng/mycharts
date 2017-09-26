@@ -169,7 +169,7 @@ export default class Axis extends ComponentModel {
 			var maxX = mathUtils.max(stackedX);
 			var minY = mathUtils.min(stackedY);
 			var maxY = mathUtils.max(stackedY);
-			var realMin,realMax;
+			var realMin,realMax,isforceMin,isforceMax;
 			var reversed = axisOpt.reversed,min,max
 			if(axis === 'xAxis') {
 				if(reversed) {
@@ -190,17 +190,17 @@ export default class Axis extends ComponentModel {
 			}
 			realMin = min;
 			realMax = max;
-			min = typeof axisOpt.min === 'number' ? axisOpt.min : min;
-			max = typeof axisOpt.max === 'number' ? axisOpt.max : max;
+			isforceMin = typeof axisOpt.min === 'number' && axisOpt.min !== realMin;
+			isforceMax = typeof axisOpt.max === 'number' && axisOpt.max !== realMax
+			min = isforceMin ? axisOpt.min : min;
+			max = isforceMax ? axisOpt.max : max;
 			var {type} =  axisOpt;
 			var splitData;
 			if(type === 'value') {
-				splitData = that.getSplitArray(min,max,axisOpt.splitNumber);
+				splitData = that.getSplitArray(min,max,axisOpt.splitNumber,isforceMin,isforceMax);
 				min = splitData[0];
 				max = splitData[splitData.length-1];
 			}
-			realMin = Math.min(min,realMin);
-			realMax = Math.max(max,realMax);
 			return {
 				type:axisOpt.type,
 				option:axisOpt,
@@ -232,7 +232,7 @@ export default class Axis extends ComponentModel {
 		})
 		return series;
 	}
-	getSplitArray(min,max,splitNumber) {
+	getSplitArray(min,max,splitNumber,isforceMin,isforceMax) {
         if(min === max) {
         	if(min === null) {
             	return [];
@@ -261,6 +261,13 @@ export default class Axis extends ComponentModel {
         for(var i = 0;i < splitNumber; i++){
             data.push(realMin + tick*i);
         }
+        if(isforceMin) {
+        	data[0] = min;
+        }
+        if(isforceMax) {
+        	data[data.length - 1] = max;
+        }
+        
         return data;
     }
 }

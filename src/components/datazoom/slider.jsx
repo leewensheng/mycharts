@@ -71,7 +71,7 @@ export default class Slider extends Component {
 		if(axis === 'xAxis') {
 			return (
 			<g className="vcharts-slider">
-				<Rect className="datazoom-slider" x={left} y={sliderOther} width={right-left} height={height} fill={background} stroke="none"/>
+				<Rect animation={false} className="datazoom-slider" x={left} y={sliderOther} width={right-left} height={height} fill={background} stroke="none"/>
 				{
 				includeSeries.length
 				&&
