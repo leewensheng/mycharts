@@ -16,7 +16,6 @@ export default class Core extends Component {
         var chartEmitter = new EventEmitter();
         var {width,height,option} = props;
         var chartModel = new ChartModel(width,height,option);
-        this.onLegendVisibleToggle = this.onLegendVisibleToggle.bind(this);
         this.refresh = this.refresh.bind(this);
         this.chartEmitter = chartEmitter;
         this.state = {chartModel};
@@ -113,18 +112,6 @@ export default class Core extends Component {
         chartModel.update(width,height,option);
         this.setState({chartModel});
     }
-    onLegendVisibleToggle(msg){
-        var {chartModel} = this.state;
-        var {seriesIndex,dataIndex} = msg;
-       var seriesModel = chartModel.getSeriesByIndex(seriesIndex);
-       if(!seriesModel.multipleLegend) {
-            seriesModel.visible = !(seriesModel.visible)
-       } else {
-            var data = seriesModel.getOption().data[dataIndex];
-            data.visible = !data.visible;
-       }
-       this.setState({chartModel});
-    }
     componentWillReceiveProps(nextProps) {
         this.setOption(nextProps);
     }
@@ -132,7 +119,6 @@ export default class Core extends Component {
         this.chartEmitter.removeAllListeners();
     }
     initEvents() {
-        this.chartEmitter.on('legendVisibileToggle',this.onLegendVisibleToggle);
         this.chartEmitter.on('refresh',this.refresh);
     }
     refresh(){

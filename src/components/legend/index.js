@@ -61,12 +61,20 @@ export default class Legend extends Component {
 	}
 	toggleItem(index){
 		var {props,state} = this;
-		var {chartEmitter} = props;
+		var {chartEmitter,chartModel} = props;
 		var item = state.items[index];
 		var {seriesIndex,dataIndex} = item;
 		chartEmitter.emit('legendVisibileToggle',{
 			seriesIndex,dataIndex
 		});
+       	var seriesModel = chartModel.getSeriesByIndex(seriesIndex);
+       	if(!seriesModel.multipleLegend) {
+            seriesModel.visible = !(seriesModel.visible)
+       	} else {
+            var data = seriesModel.getOption().data[dataIndex];
+            data.visible = !data.visible;
+       	}
+       	chartEmitter.emit('refresh');
 	}
 	handleMouseEvent(index,isHover){
 
