@@ -39,6 +39,8 @@ export default class Draggable extends Component {
 		</g>)
 	}
 	dragStart(event){
+		event.preventDefault();
+		event.stopPropagation();
 		var {clientX,clientY} = event;
 		this.setState({
 			isDragging:true,
@@ -52,6 +54,8 @@ export default class Draggable extends Component {
 		this.props.onDragStart();
 	}
 	dragMove(event){
+		event.preventDefault();
+		event.stopPropagation();
 		var {props,state} = this;
 		var {clientX,clientY} = event;
 		var {startX,startY} = state;
@@ -62,6 +66,8 @@ export default class Draggable extends Component {
 		this.props.onDragMove(clientX - startX,clientY - startY);
 	}
 	dragEnd(event){
+		event.preventDefault();
+		event.stopPropagation();
 		var {startX,startY} = this.state;
 		var {clientX,clientY} = event;
 		this.setState({

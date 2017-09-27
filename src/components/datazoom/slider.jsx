@@ -86,10 +86,10 @@ export default class Slider extends Component {
 					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
 						<Rect animation={false} className="datazoom-pan" x={handleStart-size/2} y={sliderOther} width={handleEnd - handleStart} height={height} fill={background} stroke="none" />
 					</Draggable>
-					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
+					<Draggable key="start" containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
 						<Rect animation={false}className="datazoom-handle" x={handleStart-size/2} y={sliderOther} width={size} height={height} fill="blue" stroke="none" />
 					</Draggable>
-					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
+					<Draggable key="end" containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
 						<Rect animation={false} className="datazoom-handle" x={handleEnd-size/2} y={sliderOther} width={size} height={height} fill="blue" stroke="none" />
 					</Draggable>
 				</g>

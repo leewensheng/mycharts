@@ -60,8 +60,7 @@ var option = {
 		},
 		gridLine:{
 			enabled:0
-		},
-		min:4
+		}
 	},
 	yAxis:{
 		title:{
