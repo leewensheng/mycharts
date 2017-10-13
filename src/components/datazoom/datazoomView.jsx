@@ -66,10 +66,14 @@ export default class DataZoom extends Component {
 		var {props,state} = this;
 		var {chartModel,chartEmitter} = props;
 		var index = axis.axisData.option.index;
-		var chartOpt = chartModel.getOption()
-		var axis = chartOpt[axis.axisData.axis][index];
-		axis.min = min;
-		axis.max = max;
-		chartEmitter.emit('refresh');
+		var axis = axis.axisData.axis;
+		var msg = {
+			xAxis:[],
+			yAxis:[]
+		};
+		if(axis === 'xAxis') {
+			msg.xAxis.push({index,min,max});
+		}
+		chartEmitter.emit("axisZoom",msg);
 	}
 }

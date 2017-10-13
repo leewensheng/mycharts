@@ -2,12 +2,22 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
 //todo 多行支持tspan
-class  Rect extends Component{
+export default class Rect extends Component{
     constructor(props){
         super(props);
         var {x,y,width,height} = props;
         this.state = {x,y,width,height};
     }
+    static defaultProps =  {
+        animation:true,
+        x:0,
+        y:0,
+        width:0,
+        height:0,
+        style:{
+         
+        }
+    };
     render(){
         var {props,state} = this;
         var {x,y,width,height} = state;
@@ -60,15 +70,3 @@ class  Rect extends Component{
         this.setState({x,y,width,height,update});
     }
 }
-Rect.defaultProps =
- {
-    animation:true,
-    x:0,
-    y:0,
-    width:0,
-    height:0,
-    style:{
-     
-    }
-}
-module.exports = Rect;
