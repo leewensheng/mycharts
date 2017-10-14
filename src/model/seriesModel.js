@@ -227,7 +227,9 @@ export default class SeriesModel extends BaseModel {
 	}
 	getPositionOnAxis(value,axis) {
 		var {start,end,axisData} = axis;
-		var {min,max} = axisData;
+		var {splitData} = axisData;
+		var min = splitData[0];
+		var max = splitData[splitData.length -1];
 		if(min === max) {
 			return (start + end) / 2;
 		}
