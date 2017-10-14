@@ -152,7 +152,7 @@ export default class Axis extends ComponentModel {
 		return option[axis].filter(function(axisOpt){
 			return axisOpt.grid == gridIndex;
 		}).map(function(axisOpt,indexInGrid){
-			var {index} = axisOpt;
+			var {index,categories} = axisOpt;
 			var includeSeries = that.getSeriesByAxis(axis,index);
 			var stackedData = includeSeries.map(function(seriesModel){
 				return seriesModel.getStackedData();
@@ -200,6 +200,14 @@ export default class Axis extends ComponentModel {
 				splitData = that.getSplitArray(min,max,axisOpt.splitNumber,isforceMin,isforceMax);
 				min = splitData[0];
 				max = splitData[splitData.length-1];
+			} else {
+				splitData = categories.map(function(val,index){
+					return index;
+				});
+				if(min < 0) {
+					min = 0;
+				}
+				splitData = splitData.slice(Math.round(min),Math.round(min)+Math.round(max-min));
 			}
 			return {
 				type:axisOpt.type,

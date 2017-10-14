@@ -2,11 +2,12 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Slider from './slider'
+import _ from 'lodash'
 export default class DataZoom extends Component {
 	constructor(props) {
 		super(props);
 		this.onGridReady = this.onGridReady.bind(this);
-		this.zoomAxis = this.zoomAxis.bind(this);
+		this.zoomAxis = _.throttle(this.zoomAxis.bind(this),50);
 		this.props.chartEmitter.on('gridReady',this.onGridReady);
 		var sliders = props.componentModel.getSliders();
 		this.state = {
@@ -26,7 +27,7 @@ export default class DataZoom extends Component {
 						if(!gridAxis) {
 							return;
 						}
-						return <Slider key={index} zoomAxis={that.zoomAxis} {...slider} />
+						return <Slider key={'slider'+index} index={index} zoomAxis={that.zoomAxis} {...slider} />
 					})
 				}
 			</g>
@@ -62,18 +63,13 @@ export default class DataZoom extends Component {
 	componentWillUnmount(){
 		this.props.chartEmitter.removeListner('gridReady',this.onGridReady);
 	}
-	zoomAxis(axis,min,max){
+	zoomAxis(gridAxis,min,max){
 		var {props,state} = this;
 		var {chartModel,chartEmitter} = props;
-		var index = axis.axisData.option.index;
-		var axis = axis.axisData.axis;
-		var msg = {
-			xAxis:[],
-			yAxis:[]
-		};
-		if(axis === 'xAxis') {
-			msg.xAxis.push({index,min,max});
-		}
+		var index = gridAxis.axisData.option.index;
+		var axis = gridAxis.axisData.axis;
+		var msg = [];
+		msg.push({index,axis,min,max});
 		chartEmitter.emit("axisZoom",msg);
 	}
 }

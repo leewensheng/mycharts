@@ -15,29 +15,23 @@ export default class  Axis extends Component {
         var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var points = [];
         var gap = end - start;
-        var data = [];
-        if(type === 'category') {
-            data = categories;
-        } else {
-            data = splitData;
-        }
         /*
             需要计算数字宽度时，会连续更新两次，导致动画失效，在前一次保持状态
          */
         var keepState = oldState&&props.updateType!='adjust';
-        data.map(function(value,index){
-            var x,y,text;
+        splitData.map(function(value,index){
+            var x,y;
             if(axis === 'xAxis') {
-                if(data.length > 1) {
-                    x = start + gap*index/(data.length-1);
+                if(splitData.length > 1) {
+                    x = start + gap*index/(splitData.length-1);
                 } else {
                     x  = (start + end) / 2;
                 }
 
                 y = other;
             } else {
-                if(data.length > 1) {
-                    y = start + gap*index/(data.length-1);
+                if(splitData.length > 1) {
+                    y = start + gap*index/(splitData.length-1);
                 } else {
                     y = (start + end ) / 2;
                 }
@@ -70,7 +64,9 @@ export default class  Axis extends Component {
     }
     render(){
         var {props,state} = this;
-        var {axisData,start,end,other,zeroPoisition,otherAxisPosition,containLabel,updateType,hasOpposite,top,left,right,bottom,width,height} = props;
+        var {axisData,start,end,other,zeroPoisition,
+            otherAxisPosition,containLabel,updateType,hasOpposite,
+            top,left,right,bottom,width,height} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
         var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var {isLabelAdjusted,points,isFirstTime} = state;

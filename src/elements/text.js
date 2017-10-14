@@ -1,7 +1,6 @@
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
-
 class  Text extends Component{
     constructor(props){
         super(props);

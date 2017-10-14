@@ -43,6 +43,8 @@ var option = {
 		margin:40
 	},
 	xAxis:{
+		type:'category',
+		categories:[10,20,30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25].map(function(val,index){return index}),
 		gridLine:{
 			enabled:0,
 			lineWidth:5,
@@ -93,19 +95,7 @@ var option = {
 	series:[
 		{
 			type:'line',
-			data:[10,20,30,20,15,24,10,8]
-		},
-		{
-			type:'bar',
-			data:[12,22,12,55,30,22,19,9]
-		},
-		{
-			type:'pie',
-			data:[1,2,3,4]
-		},
-		{
-			type:'bubble',
-			data:[10,5,10,23,33,11,11]
+			data:[10,20,30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
 		}
 	]
 }
