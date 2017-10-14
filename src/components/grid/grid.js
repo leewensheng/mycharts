@@ -47,7 +47,7 @@ export default class Grid extends Component {
 	       		if(option.categories.length === 1) {
 	       			interval = end - start;
 	       		} else {
-	       			interval = (end - start) / (option.categories.length - 1);
+	       			interval = (end - start) / (max - min);
 	       		}
 	       }
 	       return {

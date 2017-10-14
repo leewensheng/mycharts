@@ -4,6 +4,7 @@ import Core from './chart/core'
 import Paper from 'cad/paper/index'
 import React from 'react'
 import {render} from 'react-dom'
+import _ from 'lodash'
 function Chart(el,option){
 	this.container = null;
 	this.width = null;
@@ -18,6 +19,7 @@ Chart.prototype = {
 	init:function(el,option) {
 		this.container = el;
 		this.initPaper(el,option);
+		this.refresh  = _.debounce(this.refresh,80);
 	},
 	initPaper(el,option = {}){
 		var width,height,paper;
@@ -39,18 +41,10 @@ Chart.prototype = {
 			var newOption = $.extend(true,oldOption,option);
 			this.option = newOption;
 			this.updateType = 'newProps';
-			this.debounceUpdate();
 		} else {
 			this.option = option;
 			this.render();
 		}
-	},
-	debounceUpdate(){
-		var timer = this.__lastRefreshTimer;
-		clearTimeout(timer);
-		this.__lastRefreshTimer =  setTimeout((function(){
-			this.refresh();
-		}).bind(this),80);
 	},
 	refresh(){
 		var option = this.option;
@@ -68,7 +62,7 @@ Chart.prototype = {
 		this.width = width;
 		this.height = height;
 		this.updateType = 'resize';
-		this.debounceUpdate();
+		this.refresh();
 	},
 	downloadImage(name){
 		this.$$paper.downloadImage(name);

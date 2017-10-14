@@ -87,14 +87,14 @@ var option = {
 		bar: {
 			barWidth:null,
 			minBarLength:5,
-			maxBarWidth:50,
+			maxBarWidth:500,
 			groupIng:true
 		}
 	},
 
 	series:[
 		{
-			type:'line',
+			type:'bar',
 			data:[10,20,30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
 		}
 	]

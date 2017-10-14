@@ -4,6 +4,8 @@ import {findDOMNode} from 'react-dom'
 import Paper from 'cad/paper/index'
 import Text from '../../elements/text'
 import Rect from '../../elements/rect'
+import ClipPath from '../../elements/clippath'
+
 import colorHelper from 'cad/color/index'
 
 export default class Bar extends Component {
@@ -26,8 +28,18 @@ export default class Bar extends Component {
         var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
         var toggleToolTip = this.toggleToolTip;
         var {style,borderRadius,borderColor,borderWidth} = seriesOpt;
+        var clipId = seriesId + 'clippath';
+        var clipPath='url(#' + clipId + ')';
         return (
-            <g className="vcharts-series vcharts-bar-series">
+            <g clipPath={clipPath}  className="vcharts-series vcharts-bar-series">
+                {
+                hasInited 
+                && 
+                <ClipPath id={clipId}>
+                    <Rect  x={grid.left} y={grid.top} width={grid.width} height={grid.height} />
+                </ClipPath>
+                }
+                
                 <g className="vcharts-series-points">
                     {
                         bars.map(function(bar,index){

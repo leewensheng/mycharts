@@ -54,7 +54,7 @@ export default class BarModel extends SeriesModel {
 			return series.type === 'bar';
 		});
 		//考虑特殊场景，比如只有一个类目
-		var interval =  Math.abs((categoryAxis.end - categoryAxis.start)/(this.getData().length));
+		var interval = Math.abs(categoryAxis.interval);
 		var {start,end} = categoryAxis;	
 		var other = valueAxis.start||valueAxis.zeroPosition;
 		//不同stack的 bar 数量
