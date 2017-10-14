@@ -66,7 +66,10 @@ export default class Bar extends Component {
                                 style={style}
                                 toggleToolTip={toggleToolTip}
                              />
-                             <Text key={'label'+index} x={rectX + rectWidth/2} y={rectY  - 5} style={{textAlign:'center',textBaseLine:'bottom'}}>{y}</Text>
+                             <Text  key={'label'+index} 
+                                    x={rectX + rectWidth/2} 
+                                    y={rectY  - 5} 
+                                    style={{textAlign:'center',textBaseLine:'bottom',display:visible?'':'none'}}>{y}</Text>
                              </g>
                             )
                         })
