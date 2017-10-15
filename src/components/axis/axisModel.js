@@ -204,10 +204,13 @@ export default class Axis extends ComponentModel {
 				splitData = categories.map(function(val,index){
 					return index;
 				});
-				if(min < 0) {
+				if(min < 0 || isNaN(min)) {
 					min = 0;
 				}
-				splitData = splitData.slice(Math.round(min),Math.round(min)+Math.round(max-min));
+				if(max > splitData.length - 1 || isNaN(max)) {
+					max = splitData.length - 1;
+				}
+				splitData = splitData.slice(Math.round(min),Math.round(min)+Math.round(max-min)+1);
 			}
 			return {
 				type:axisOpt.type,

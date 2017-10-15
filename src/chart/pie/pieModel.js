@@ -93,9 +93,6 @@ class PieModel extends SeriesModel {
 	getRenderData(width,height,oldState){
 		var seriesOpt = this.getOption();
 		var {center,size,minSize,innerSize,startAngle,endAngle,roseType} = seriesOpt;
-		if(seriesOpt.colors) {
-			colors = series.colors;
-		}
 		var {data,color} = seriesOpt;
 		data.map(function(point,index){
 		if(oldState&&oldState.points[index]) {

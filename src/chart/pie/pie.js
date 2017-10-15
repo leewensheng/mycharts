@@ -18,7 +18,8 @@ export default class  Pie extends Component{
 		super(props);
 		var state = props.seriesModel.getRenderData(props.width,props.height);
 		this.state = state;
-        this.toggleToolTip = this.toggleToolTip.bind(this);
+		this.toggleToolTip = this.toggleToolTip.bind(this);
+		this.onSlice = this.onSlice.bind(this);
 	}
 
 	render(){
@@ -30,7 +31,6 @@ export default class  Pie extends Component{
 		var {points} = state;
 		var {cx,cy,startAngle,endAngle,radius,innerRadius,selectedPointsMap,updateType,hasInited} = state;
 		var {animation,center,size,itemStyle,dataLabels,connectLine,borderColor,borderWidth,sliceOffset} = seriesOpt;
-		var onSlice = this.onSlice;
 		var toggleToolTip = this.toggleToolTip;
 		return (
 			<g clipPath={'url(#'+ seriesId +')'} className="vcharts-series vcharts-pie-series" style={{display:visible?'':'none'}}>
@@ -57,7 +57,7 @@ export default class  Pie extends Component{
 							color={color}
 							selected={selected}
 							sliceOffset={sliceOffset}
-							onSlice={onSlice.bind(that,index)}
+							onSlice={that.onSlice}
 							isAdd={isAdd}
 							updateType={updateType}
 							toggleToolTip={toggleToolTip}

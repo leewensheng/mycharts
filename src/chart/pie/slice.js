@@ -19,6 +19,7 @@ class  Slice extends Component{
 		this.handleMouseOver = this.handleMouseOver.bind(this);
 		this.handleMouseOut = this.handleMouseOut.bind(this);
 		this.handleMouseMove = this.handleMouseMove.bind(this);
+		this.handleClick = this.handleClick.bind(this);
 		this.state = {
 			isHover:false,
 			isAnimating:false,
@@ -70,7 +71,7 @@ class  Slice extends Component{
 				fill={color}
 				stroke={borderColor}
 				strokeWidth={borderWidth}
-				onClick={this.props.onSlice}
+				onClick={this.handleClick}
 				pathShape={{name:'sector',config:{cx,cy,startAngle,endAngle,radius,innerRadius}}}
 				onMouseOver={this.handleMouseOver}
 				onMouseOut={this.handleMouseOut}
@@ -78,11 +79,17 @@ class  Slice extends Component{
 			/>
 		)
 	}
+	handleClick(event){
+		event.preventDefault();
+		event.stopPropagation();
+		var index = this.props.index;
+		this.props.onSlice(index);
+	}
 	handleMouseOver(){
 		this.setState({
 			isHover:true,
 			updateType:'hoverChange'
-		})
+		});
 	}
 	handleMouseMove(mouseEvent){
 		var {props} = this;

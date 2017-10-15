@@ -199,7 +199,7 @@ export default class SeriesModel extends BaseModel {
 			return data.map(function(point,dataIndex){
 				var x,y;
 				x =  that.getPositionOnAxis(dataIndex,categoryAxis);
-				if(valueAxis.min <= 0) {
+				if(valueAxis.min*valueAxis.max <= 0) {
 					y =  that.getPositionOnAxis(0,valueAxis);
 				} else {
 					y = other;
