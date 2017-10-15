@@ -123,13 +123,18 @@ export default class ChartModel {
         var that = this;
         var option = this.getOption();
         var {series} = option;
-        var models = series.map(function(seriesOpt,seriesIndex){
-            var {type} = seriesOpt;
-            var Model = seriesModels[type];
-            var seriesModel =  new Model(that,seriesOpt);
-            series[seriesIndex] = seriesModel.getOption();
-            return seriesModel;
-        })
+        var seriesModel,models = [];
+        for(var i = 0; i < series.length; i++) {
+            let seriesOpt = series[i];
+            let {type} = seriesOpt;
+            let Model = seriesModels[type];
+            if(!Model) {
+                continue;
+            }
+            seriesModel =  new Model(that,seriesOpt);
+            series[i] = seriesModel.getOption();
+            models.push(seriesModel);
+        }
         this.series = models;
     }
     initComponentsModels(){

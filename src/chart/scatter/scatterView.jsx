@@ -27,7 +27,7 @@ export default class Scatter extends Component {
                 <g className="vcharts-series-points">
                     {
                         points.map(function(point,index){
-                          var {plotX,plotY,size,x,y} = point;
+                          var {plotX,plotY,size,x,y,color} = point;
                           return <ScatterPoint 
                                     animation={points.length>400?false:animation}
                                     key={index}
@@ -35,7 +35,7 @@ export default class Scatter extends Component {
                           			cx={plotX} 
                           			cy={plotY} 
                           			size={visible?size:0} 
-                          			fill={seriesColor}
+                          			fill={color}
                           			stroke={borderColor} 
                           			strokeWidth={borderWidth}
                                     style={style}

@@ -31,6 +31,7 @@ export default class Scatter extends SeriesModel {
 	};
 	normalLizeData(){
 		var option = this.getOption();
+		var {seriesColor} = this;
 		var {type,data,colors} = option;
 		var chartModel = this.chartModel;
 		data = data.map(function(point,index){
@@ -39,7 +40,7 @@ export default class Scatter extends SeriesModel {
 				x:index,
 				y:null,
 				value:null,
-				color:chartModel.getColorByIndex(index)
+				color:seriesColor
 			};
 			if(point instanceof Array) {
 				obj.x= point[0];
@@ -74,7 +75,7 @@ export default class Scatter extends SeriesModel {
 		maxSize = this.getPercentMayBeValue(maxSize,Math.min(width,height));
 		return this.mapData(function(point,dataIndex){
 			var pointSize;
-			var {x,y,value,name} = point;
+			var {x,y,value,name,color} = point;
 			var plotX = points[dataIndex].x;
 			var plotY = points[dataIndex].y; 
 			if(type === "scatter") {
@@ -97,7 +98,7 @@ export default class Scatter extends SeriesModel {
 					}
 				}
 			}
-			return {name,value,x,y,plotX,plotY,size:pointSize}
+			return {name,value,x,y,plotX,plotY,size:pointSize,color}
 		})
 	}
 }
