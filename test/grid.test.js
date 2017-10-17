@@ -44,6 +44,7 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
+		startOnTick:true,
 		categories:[10,20,30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25].map(function(val,index){return index}),
 		gridLine:{
 			enabled:0,
@@ -96,7 +97,15 @@ var option = {
 		{
 			type:'bar',
 			borderWidth:0,
-			borderRadius:'20%',
+			borderRadius:'30%',
+			stack:2,
+			data:[20,{color:'blue',y:20},30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
+		},
+		{
+			type:'line',
+			borderWidth:0,
+			borderRadius:'30%',
+			stack:2,
 			data:[20,{color:'blue',y:20},30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
 		},
 		{

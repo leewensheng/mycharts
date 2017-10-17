@@ -17,7 +17,7 @@ export default class Grid extends Component {
 		var {xAxis,yAxis,includeSeries} = props;
 		var gridAxis = xAxis.concat(yAxis).map(function(axis,indexInGrid){
 			var {type,min,max,splitData,option,includeSeries} = axis;
-			var {opposite}  = option;
+			var {opposite,categories}  = option;
 			var start ,end , other,base,interval,zeroPoisition = null;
 			if(axis.axis === 'xAxis') {
 	            start = left;
@@ -33,7 +33,14 @@ export default class Grid extends Component {
 	        	var tempVar =  start;
 	        	start = end;
 	        	end = tempVar;
-	        }
+			}
+			if(option.startOnTick && type === 'category') {
+				if(categories.length > 1) {
+					var gap =  (end - start)/(max - min+1)/2;
+					start += gap;
+					end -= gap;
+				}
+			}
 	       if(type === 'value' && min * max < 0) {
 	       		zeroPoisition = start + (0 - min)/(max - min)*(end  - start);
 	       }
@@ -95,12 +102,13 @@ export default class Grid extends Component {
 				{
 					gridAxis.map(function(axis,gridAxisIndex){
 						var hasOpposite;
-						var {start,end,other,axisData,zeroPoisition,otherAxisPosition} = axis;
+						var {start,end,other,interval,axisData,zeroPoisition,otherAxisPosition} = axis;
 						return <Axis 	
 									key={'xaxis'+gridAxisIndex}
 									start = {start}
 									end={end}
 									other={other}
+									interval={interval}
 									top={top}
 									left={left}
 									right={right}

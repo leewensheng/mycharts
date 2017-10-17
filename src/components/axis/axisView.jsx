@@ -12,7 +12,7 @@ export default class  Axis extends Component {
     getRenderData(props,oldState){
         var {start,end,other,axisData,containLabel,updateType} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
-        var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
+        var {opposite,startOnTick,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var points = [];
         var gap = end - start;
         /*
@@ -64,21 +64,21 @@ export default class  Axis extends Component {
     }
     render(){
         var {props,state} = this;
-        var {axisData,start,end,other,zeroPoisition,
+        var {axisData,start,end,other,interval,zeroPoisition,
             otherAxisPosition,containLabel,updateType,hasOpposite,
             top,left,right,bottom,width,height} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
-        var {opposite,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
+        var {opposite,startOnTick,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
         var {isLabelAdjusted,points,isFirstTime} = state;
         var x1,y1,x2,y2;
         if(axis === 'xAxis') {
             y1 = y2 = other;
-            x1 = start;
-            x2 = end;
+            x1 = left;
+            x2 = right;
         } else {
             x1 = x2 = other;
-            y1 = start;
-            y2 = end;
+            y1 = top;
+            y2 = bottom;
         };
         var labels = [],ticks = [],gridLines = [];
         var labelFlag = 1,tickFlag = 1;
@@ -108,11 +108,18 @@ export default class  Axis extends Component {
                 x1  = x2 = x;
                 y1 = other;
                 y2 = other + axisTick.length*tickFlag;
+                if(startOnTick && type === 'category' && categories.length > 1) {
+                    x1 = x2 -=  interval/2;
+                }
             } else {
                 y1 = y2 = y;
                 x1 = other;
                 x2 = other - axisTick.length*tickFlag;
+                if(startOnTick && type === 'category' && categories.length > 1) {
+                    y1 = y2 -=  interval/2;
+                }
             }
+           
             ticks.push({x1,x2,y1,y2,isAdd});
             if(axis === 'xAxis') {
                 x1  = x2 = x;
