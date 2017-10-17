@@ -19,7 +19,7 @@ Chart.prototype = {
 	init:function(el,option) {
 		this.container = el;
 		this.initPaper(el,option);
-		this.refresh  = _.debounce(this.refresh,80);
+		this.refresh  = _.throttle(this.refresh,200);
 	},
 	initPaper(el,option = {}){
 		var width,height,paper;
