@@ -7,7 +7,7 @@ export default class DataZoom extends Component {
 	constructor(props) {
 		super(props);
 		this.onGridReady = this.onGridReady.bind(this);
-		this.zoomAxis = _.throttle(this.zoomAxis.bind(this),50);
+		this.zoomAxis = _.throttle(this.zoomAxis.bind(this),100);
 		this.props.chartEmitter.on('gridReady',this.onGridReady);
 		var sliders = props.componentModel.getSliders();
 		this.state = {
