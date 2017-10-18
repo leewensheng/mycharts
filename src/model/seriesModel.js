@@ -130,6 +130,29 @@ export default class SeriesModel extends BaseModel {
 		var {option} = this;
 		return option.data;
 	}
+	getVisibleDataOnGrid(grid){
+		var {xAxis,yAxis} = grid;
+		var xmin = xAxis.axisData.min;
+		var xmax = xAxis.axisData.max;
+		var ymin = yAxis.axisData.min;
+		var ymax = yAxis.axisData.max;
+		if(xAxis.axisData.option.type === 'category') {
+			let intMin = Math.round(xmin);
+			let intMax = intMin + Math.round(xmax - xmin);
+			xmin = intMin;
+			xmax = intMax;
+		}
+		if(yAxis.axisData.option.type === 'category') {
+			let intMin = Math.round(ymin);
+			let intMax = intMin + Math.round(ymax - ymin);
+			ymin = intMin;
+			ymax = intMax;
+		}
+		return this.getData().filter(function(point){
+			var {x,y} = point;
+			return !(x < xmin || x > xmax || y < ymin || y > ymax);
+		})
+	}
 	getMin(){
 		var extreme = this.getExtreme();
 		return {

@@ -56,7 +56,7 @@ export default class Grid extends Component {
 	       		} else {
 	       			interval = (end - start) / (max - min);
 	       		}
-	       }
+		   }
 	       return {
 	       		start,end,interval,other,base,zeroPoisition,axisData:axis,labelPlace:{}
 	       }

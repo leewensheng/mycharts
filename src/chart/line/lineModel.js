@@ -48,8 +48,9 @@ export default class LineModel extends SeriesModel {
 		var points = this.getPointsOnGrid(grid);
 		var stackedOnPoints = this.getStackedOnPoints(grid);
 		var name = this.seriesName;
-		return this.mapData(function(point,dataIndex){
+		return this.getVisibleDataOnGrid(grid).map(function(point){
 			var {x,y,color} = point;
+			var dataIndex = x;
 			var stackX = stackedOnPoints[dataIndex].x;
 			var stackY = stackedOnPoints[dataIndex].y;
 			var plotX = points[dataIndex].x;

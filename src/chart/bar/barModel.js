@@ -108,7 +108,8 @@ export default class BarModel extends SeriesModel {
 		}
 		var realGroupWidth = barWidth*uniqueStackNumber + barGap*(uniqueStackNumber - 1);
 		var flag = end > start ? 1: -1;
-		return this.mapData(function(point,dataIndex){
+		return this.getVisibleDataOnGrid(grid).map(function(point){
+			var dataIndex = point.x;
 			var stackPoint = stackedOnPoints[dataIndex];
 			var {x,y,color} = point;
 			var plotX = points[dataIndex].x;

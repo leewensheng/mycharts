@@ -107,11 +107,6 @@ var option = {
 			borderRadius:'30%',
 			stack:2,
 			data:[20,{color:'blue',y:20},30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
-		},
-		{
-			type:'pie',
-			size:0.5,
-			data:[1,2,3,3]
 		}
 	]
 }

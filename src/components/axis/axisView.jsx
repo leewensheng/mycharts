@@ -119,7 +119,6 @@ export default class  Axis extends Component {
                     y1 = y2 -=  interval/2;
                 }
             }
-           
             ticks.push({x1,x2,y1,y2,isAdd});
             if(axis === 'xAxis') {
                 x1  = x2 = x;
