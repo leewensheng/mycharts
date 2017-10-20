@@ -131,7 +131,7 @@ export default class SeriesModel extends BaseModel {
 		return option.data;
 	}
 	getVisibleDataOnGrid(grid){
-		var {xAxis,yAxis} = grid;
+		var {xAxis,yAxis,reversed} = grid;
 		var xmin = xAxis.axisData.min;
 		var xmax = xAxis.axisData.max;
 		var ymin = yAxis.axisData.min;
@@ -150,7 +150,17 @@ export default class SeriesModel extends BaseModel {
 		}
 		return this.getData().filter(function(point){
 			var {x,y} = point;
-			return !(x < xmin || x > xmax || y < ymin || y > ymax);
+			var inGrid = true;
+			if(reversed) {
+				if(x < ymin || x > ymax || y < xmin || y > xmax) {
+					inGrid = false;
+				}
+			} else {
+				if(x < xmin || x > xmax || y < ymin || y > ymax) {
+					inGrid = false;
+				}
+			}
+			return inGrid;
 		})
 	}
 	getMin(){
