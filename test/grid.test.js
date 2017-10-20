@@ -43,12 +43,10 @@ var option = {
 		margin:40
 	},
 	xAxis:{
-		type:'category',
-		startOnTick:true,
-		categories:[10,20,30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25].map(function(val,index){return index}),
+		type:'value',
 		gridLine:{
-			enabled:0,
-			lineWidth:5,
+			enabled:true,
+			lineWidth:1,
 			color:'#e6e6e6'
 		},
 		axisLine:{
@@ -60,12 +58,11 @@ var option = {
 			text:'haha',
 			margin:10,
 			align:'end',
-		},
-		gridLine:{
-			enabled:0
 		}
 	},
 	yAxis:{
+		type:'category',
+		startOnTick:true,
 		title:{
 			text:'李文胜',
 			align:'top',
@@ -80,9 +77,10 @@ var option = {
 			inside:true
 		},
 		gridLine:{
-			enabled:1,
+			enabled:0,
 			lineColor:'red'
-		}
+		},
+		categories : ['周一','周二','周三','周四','周五','周六','周日']
 	},
 	plotOptions:{
 		bar: {
@@ -94,23 +92,44 @@ var option = {
 	},
 
 	series:[
-		{
+        {
+            name:'利润',
+            type:'bar',
+            label: {
+                normal: {
+                    show: true,
+                    position: 'inside'
+                }
+            },
+            data:[200, 170, 240, 244, 200, 220, 210]
+        },
+        {
+            name:'收入',
+            type:'bar',
+            stack: '总量',
+            label: {
+                normal: {
+                    show: true
+                }
+            },
+			data:[320, 302, 341, 374, 390, 450, 420],
+        },
+        {
+            name:'支出',
 			type:'bar',
-			borderWidth:0,
-			borderRadius:'30%',
-			stack:2,
-			data:[20,{color:'blue',y:20},30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
-		},
-		{
-			type:'line',
-			borderWidth:0,
-			borderRadius:'30%',
-			stack:2,
-			data:[20,{color:'blue',y:20},30,20,15,24,10,8,11,12,10,22,10,22,12,32,12,33,25]
-		}
-	]
+            stack: '总量',
+            label: {
+                normal: {
+                    show: true,
+                    position: 'left'
+                }
+            },
+			data:[-120, -132, -101, -134, -190, -230, -210],
+        }
+    ]
 }
 var chart = vchart.init(el,{
-	height:400
+	height:800,
+	width:800
 });
 chart.setOption(option);

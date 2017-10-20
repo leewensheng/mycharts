@@ -73,6 +73,9 @@ export default class SeriesModel extends BaseModel {
 		});
 		return this.mapData(function(point,dataIndex){
 			var {x,y} = point;
+			if(y < 0) {
+				return {x,y}
+			}
 			stackOnData.map(function(data){
 				if(data[dataIndex]) {
 					var stackedY = data[dataIndex].y;
@@ -96,6 +99,7 @@ export default class SeriesModel extends BaseModel {
 		}
 		var seriesIndex = this.seriesIndex;
 		var type = this.type;
+		var data = this.getData();
 		var stackOnData = [];
 		this.chartModel.eachSeriesByType(type,function(seriesModel){
 			var seriesOpt = seriesModel.getOption();
@@ -109,6 +113,9 @@ export default class SeriesModel extends BaseModel {
 			var fristData =stackOnData[0];
 			return fristData.map(function(point,dataIndex){
 				var {x,y} = point;
+				if(data[dataIndex].y < 0) {
+					return {x,y:null};
+				}
 				stackOnData.slice(1).map(function(data){
 					if(data[dataIndex]) {
 						var stackedY = data[dataIndex].y;
