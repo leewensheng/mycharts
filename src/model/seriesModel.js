@@ -73,13 +73,10 @@ export default class SeriesModel extends BaseModel {
 		});
 		return this.mapData(function(point,dataIndex){
 			var {x,y} = point;
-			if(y < 0) {
-				return {x,y}
-			}
 			stackOnData.map(function(data){
 				if(data[dataIndex]) {
 					var stackedY = data[dataIndex].y;
-					if(!isNaN(stackedY)) {
+					if(!isNaN(stackedY) && stackedY*y > 0) {
 						if(!isNaN(y)) {
 							y += stackedY;
 						} else {
@@ -113,7 +110,7 @@ export default class SeriesModel extends BaseModel {
 			var fristData =stackOnData[0];
 			return fristData.map(function(point,dataIndex){
 				var {x,y} = point;
-				if(data[dataIndex].y < 0) {
+				if(data[dataIndex].y*y < 0) {
 					return {x,y:null};
 				}
 				stackOnData.slice(1).map(function(data){
