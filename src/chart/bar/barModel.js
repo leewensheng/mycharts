@@ -16,7 +16,9 @@ export default class BarModel extends SeriesModel {
 		style:{
 			cursor:'default'
 		},
-		animation:true,
+		animation:{
+			during:1000
+		},
 		borderColor:'#fff',
 		borderRadius:1,
 		borderType:'solid',

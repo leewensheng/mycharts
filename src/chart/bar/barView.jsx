@@ -26,7 +26,7 @@ export default class Bar extends Component {
         var {grid,hasInited,bars} = state;
         var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
         var toggleToolTip = this.toggleToolTip;
-        var {style,borderRadius,borderColor,borderWidth} = seriesOpt;
+        var {animation,style,borderRadius,borderColor,borderWidth} = seriesOpt;
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
         return (
@@ -53,6 +53,8 @@ export default class Bar extends Component {
                                 key={'bar'+index}
                                 className="vcharts-series-point" 
                                 index={index}
+                                reversed={grid.reversed}
+                                animation={animation}
                                 x={rectX} 
                                 y={rectY} 
                                 rx={r}
@@ -117,13 +119,23 @@ class BarItem extends Component {
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.state = {
-            hasInited:false
+            animated:false
         };
     }
     render(){
         var {props,state} = this;
-        var {hasInited} = state;
+        var {animated,updateType} = state;
+        var {animation,width,height,reversed} = props;
+        if(animation && !animated) {
+            reversed ? width = 0 : height = 0;
+        }
+        if(updateType === "newProps") {
+            animation = true;
+        }
         return <Rect    {...props} 
+                        animation={animation}
+                        width={width}
+                        height={height}
                         onMouseOver={this.handleMouseOver} 
                         onMouseMove={this.handleMouseMove} 
                         onMouseOut={this.handleMouseOut} />
@@ -149,6 +161,9 @@ class BarItem extends Component {
         props.toggleToolTip(props.index,false,event);
     }
     componentDidMount(){
-        this.setState({hasInited:true});
+        this.setState({animated:true});
+    }
+    componentWillReceiveProps(){
+        this.setState({updateType:'newProps'});
     }
 }

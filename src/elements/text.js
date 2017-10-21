@@ -1,12 +1,21 @@
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import $ from 'jquery'
-class  Text extends Component{
+export default class  Text extends Component{
     constructor(props){
         super(props);
         var {x,y} = props;
         this.state = {x,y}
     }
+    static defaultProps = {
+        noAnimation:false,
+        animation:true,
+        x:0,
+        y:0,
+        style:{
+            fontSize:12
+        }
+    };
     render(){
         var {state,props} = this;
         var {x,y} = state;
@@ -29,11 +38,11 @@ class  Text extends Component{
     animate(prevProps){
         var {state,props} = this;
         var el = findDOMNode(this);
-        var {animation,x,y} = props;
+        var {animation,noAnimation,x,y} = props;
         if(x === prevProps.x && y === prevProps.y) {
             return;
         }
-        if(animation&&prevProps.animation) {
+        if(animation&&!noAnimation) {
             $(el).stopTransition().transition({
                 x:x,
                 y:y,
@@ -56,12 +65,3 @@ class  Text extends Component{
         this.setState({x,y,update})
     }
 }
-Text.defaultProps = {
-    animation:true,
-    x:0,
-    y:0,
-    style:{
-        fontSize:12
-    }
-}
-module.exports = Text;

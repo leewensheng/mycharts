@@ -1,6 +1,7 @@
 import ComponentModel from '../../model/componentModel'
 import $  from 'jquery'
 import mathUtils from 'cad/math'
+import GridAxis from './gridAxis'
 
 export default class Axis extends ComponentModel {
 	constructor(chartModel){
@@ -152,7 +153,7 @@ export default class Axis extends ComponentModel {
 		return option[axis].filter(function(axisOpt){
 			return axisOpt.grid == gridIndex;
 		}).map(function(axisOpt,indexInGrid){
-			var {index,categories} = axisOpt;
+			var {index} = axisOpt;
 			var includeSeries = that.getSeriesByAxis(axis,index);
 			var stackedData = includeSeries.map(function(seriesModel){
 				return seriesModel.getStackedData();
@@ -188,48 +189,14 @@ export default class Axis extends ComponentModel {
 					max = maxY;
 				}
 			}
-			realMin = min;
-			realMax = max;
-			isforceMin = typeof axisOpt.min === 'number' && axisOpt.min !== realMin;
-			isforceMax = typeof axisOpt.max === 'number' && axisOpt.max !== realMax
-			min = isforceMin ? axisOpt.min : min;
-			max = isforceMax ? axisOpt.max : max;
-			var {type} =  axisOpt;
-			var splitData;
-			if(type === 'value') {
-				splitData = that.getSplitArray(min,max,axisOpt.splitNumber,isforceMin,isforceMax);
-				min = splitData[0];
-				max = splitData[splitData.length-1];
-			} else {
-				splitData = categories.map(function(val,index){
-					return index;
-				});
-				if(min < 0 || typeof min !== 'number') {
-					min = 0;
-				}
-				if(max > splitData.length - 1 || typeof max !== 'number') {
-					max = splitData.length - 1;
-				}
-				splitData = splitData.slice(Math.round(min),Math.round(min)+Math.round(max-min)+1);
-			}
-			return {
-				type:axisOpt.type,
-				option:axisOpt,
-				min:min,
-				max:max,
-				realMin:realMin,
-				realMax:realMax,
-				axis:axis,
-				indexInGrid:indexInGrid,
-				splitData:splitData,
-				includeSeries:includeSeries.map(function(seriesModel){
+			var axisSeries = includeSeries.map(function(seriesModel){
 					return {
 						type:seriesModel.type,
 						seriesIndex:seriesModel.seriesIndex,
 						stack:seriesModel.stack
 					}
-				})
-			}
+				});
+			return new GridAxis(axis,min,max,axisOpt,axisSeries);
 		})
 	}
 	getSeriesByAxis(axis,index) {
@@ -243,42 +210,4 @@ export default class Axis extends ComponentModel {
 		})
 		return series;
 	}
-	getSplitArray(min,max,splitNumber,isforceMin,isforceMax) {
-        if(min === max) {
-        	if(min === null) {
-            	return [];
-        	} else {
-        		return [min];
-        	}
-        }
-        var gap =  max - min;
-        var data = [];
-        var realMax,realMin;
-        var tick = gap /(splitNumber-1);
-        var k = Math.ceil(Math.log(tick)/Math.log(10));
-        var minTick = 0.25*Math.pow(10,k);
-        var n   = Math.log(tick/minTick)/Math.log(2);
-        n = Math.round(n);
-        tick = Math.pow(2,n)*minTick;
-        realMax = Math.round(max/tick)*tick;
-        realMin = Math.round(min/tick)*tick;
-        if(realMax < max) {
-            realMax += tick;
-        } 
-        if(realMin > min) {
-            realMin -= tick;
-        }
-        splitNumber = (realMax - realMin) / tick +1;
-        for(var i = 0;i < splitNumber; i++){
-            data.push(realMin + tick*i);
-        }
-        if(isforceMin) {
-        	data[0] = min;
-        }
-        if(isforceMax) {
-        	data[data.length - 1] = max;
-        }
-        
-        return data;
-    }
 }

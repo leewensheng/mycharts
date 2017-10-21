@@ -32,11 +32,11 @@ var option = {
 	},
 	grid:{
 		top:100,
-		left:80,
+		left:50,
 		right:80,
 		bottom:150,
 		containLabel:0,
-		background:'#fff'
+		background:'#eee'
 	},
 	legend:{
 		align:'center',
@@ -54,6 +54,9 @@ var option = {
 			lineColor:'#000'
 		},
 		opposite:0,
+		axisLabel:{
+			margin:20
+		},
 		title:{
 			text:'haha',
 			margin:10,
@@ -76,11 +79,14 @@ var option = {
 		axisTick:{
 			inside:true
 		},
+		axisLine:{
+			lineColor:"#000"
+		},
 		gridLine:{
 			enabled:0,
 			lineColor:'red'
 		},
-		categories : ['周一','周二','周三','周四','周五','周六','周日']
+		categories : ['周一','周二','周三','周四','周五','周六','周日','周一','周五','周六']
 	},
 	plotOptions:{
 		bar: {
@@ -129,7 +135,6 @@ var option = {
     ]
 }
 var chart = vchart.init(el,{
-	height:800,
-	width:800
+	height:600
 });
 chart.setOption(option);

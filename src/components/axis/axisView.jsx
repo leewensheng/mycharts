@@ -7,130 +7,30 @@ import AxisTitle from './axis-title'
 export default class  Axis extends Component {
     constructor(props){
         super(props);
-        this.state = this.getRenderData(props);      
-    }
-    getRenderData(props,oldState){
-        var {start,end,other,axisData,containLabel,updateType} = props;
-        var {axis,option,includeSeries,min,max,splitData} = axisData;
-        var {opposite,startOnTick,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
-        var points = [];
-        var gap = end - start;
-        /*
-            需要计算数字宽度时，会连续更新两次，导致动画失效，在前一次保持状态
-         */
-        var keepState = oldState&&props.updateType!='adjust';
-        splitData.map(function(value,index){
-            var x,y;
-            if(axis === 'xAxis') {
-                if(splitData.length > 1) {
-                    x = start + gap*index/(splitData.length-1);
-                } else {
-                    x  = (start + end) / 2;
-                }
-
-                y = other;
-            } else {
-                if(splitData.length > 1) {
-                    y = start + gap*index/(splitData.length-1);
-                } else {
-                    y = (start + end ) / 2;
-                }
-                
-                x = other;
-            }
-            if(oldState&&oldState.points[index]) {
-                 if(keepState) {
-                     x = oldState.points[index].x;
-                     y = oldState.points[index].y;
-                 }
-            }
-            var obj = {x,y,value};
-            if(oldState && !oldState.points[index]) {
-                obj.isAdd = true;
-            }
-            points.push(obj);
-        })
-        if(keepState) {
-            start = oldState.start;
-            end = oldState.end;
-            other = oldState.other;
-        }
-        var isLabelAdjusted = false;
-        if(props.updateType==='adjust') {
-            isLabelAdjusted = true;
-        }
-        var isFirstTime = !oldState;
-        return {isLabelAdjusted,points,isFirstTime};
+        var ticks = [];
+        this.state = {
+            renderCount:0,
+            labels:props.axisData.getLabels()
+        }    
     }
     render(){
         var {props,state} = this;
-        var {axisData,start,end,other,interval,zeroPoisition,
-            otherAxisPosition,containLabel,updateType,hasOpposite,
-            top,left,right,bottom,width,height} = props;
+        var {axisData,updateType,containLabel} = props;
         var {axis,option,includeSeries,min,max,splitData} = axisData;
-        var {opposite,startOnTick,type,dataRange,minRange,splitNumber,categories,inverse,title,axisLine,axisLabel,axisTick,gridLine} = option;
-        var {isLabelAdjusted,points,isFirstTime} = state;
-        var x1,y1,x2,y2;
-        if(axis === 'xAxis') {
-            y1 = y2 = other;
-            x1 = left;
-            x2 = right;
-        } else {
-            x1 = x2 = other;
-            y1 = top;
-            y2 = bottom;
-        };
-        var labels = [],ticks = [],gridLines = [];
+        var {opposite,startOnTick,type,dataRange,
+            minRange,splitNumber,categories,inverse,title,axisLine,
+            axisLabel,axisTick,gridLine} = option;
+        var {renderCount,labels} = state;
         var labelFlag = 1,tickFlag = 1;
         if(axisLabel.inside) {
             labelFlag *= -1;
         }
-        if(axisTick.inside) {
-            tickFlag *= -1;
-        }
         if(opposite) {
             labelFlag *= -1;
-            tickFlag *= -1;
         }
-        if(!includeSeries.length&&type === 'value') {
-            points = [];
-        }
-        points.map(function(point,index){
-            var {x,y,value,isAdd} = point;
-            var x1,x2,y1,y2;
-            if(axis === 'xAxis') {
-                y = (opposite?top:bottom) + axisLabel.margin*labelFlag;
-            } else {
-                x = (opposite?right:left) - axisLabel.margin*labelFlag;
-            }
-            labels.push({x,y,value});
-            if(axis === 'xAxis') {
-                x1  = x2 = x;
-                y1 = other;
-                y2 = other + axisTick.length*tickFlag;
-                if(startOnTick && type === 'category' && categories.length > 1) {
-                    x1 = x2 -=  interval/2;
-                }
-            } else {
-                y1 = y2 = y;
-                x1 = other;
-                x2 = other - axisTick.length*tickFlag;
-                if(startOnTick && type === 'category' && categories.length > 1) {
-                    y1 = y2 -=  interval/2;
-                }
-            }
-            ticks.push({x1,x2,y1,y2,isAdd});
-            if(axis === 'xAxis') {
-                x1  = x2 = x;
-                y1 = top;
-                y2 = bottom;
-            } else {
-                y1 = y2 = y;
-                x1 = left;
-                x2 = right;
-            }
-            gridLines.push({x1,y1,x2,y2});
-        })
+        var axisLinePosition = axisData.getAxisLinePosition();
+        var ticks = axisData.getTicks();
+        var gridLines = axisData.getGridLines();
         var className = 'vcharts-grid-axis';
         if(axis === 'xAxis') {
             axisLabel.style.textBaseLine = labelFlag==1 ? 'top':'bottom';
@@ -141,45 +41,34 @@ export default class  Axis extends Component {
             axisLabel.style.textAlign = labelFlag==1 ?'right':'left';
             axisLabel.style.textBaseLine = 'middle';
         };
-        if(isFirstTime && containLabel) {
-            //等文本宽度计算后再渲染
-            gridLines = [];
-            ticks = [];
-        }
+        var update = updateType === 'adjust'|| !containLabel;
         return (
             <g className={className}>
                 {
-                    !isFirstTime&&title.enabled&&title.text
+                    renderCount > 0 
                     &&
-                    <AxisTitle update={updateType==='newProps'&&containLabel?false:true} axis={axis} option={option} start={start} end={end} other={other} top={top} left={left} right={right} bottom={bottom}/>
+                <Line   
+                    update={update}
+                    className="vcharts-axis-line" 
+                    x1={axisLinePosition.x1} 
+                    y1={axisLinePosition.y1} 
+                    x2={axisLinePosition.x2} 
+                    y2={axisLinePosition.y2} 
+                    stroke={axisLine.lineColor}
+                    strokeWidth={axisLine.lineWidth}
+                    style={axisLine.style}/>                
                 }
                 {
-                (!isFirstTime||!containLabel)&&axisLine.enabled
+                renderCount > 0 
                 &&
-                <Line   update={updateType==='newProps'&&containLabel?false:true}
-                        className="vcharts-axis-line" 
-                        x1={x1} 
-                        y1={y1} 
-                        x2={x2} 
-                        y2={y2} 
-                        stroke={axisLine.lineColor}
-                        strokeWidth={axisLine.lineWidth}
-                        style={axisLine.style}/>                
-                }
-
                 <g className="vhcart-axis-gridline">
                     {
                         gridLine.enabled
                         &&
-                        gridLines.map(function(grid,index){
-                            var {x1,y1,x2,y2} = grid;
-                            if(axis === 'yAxis' &&Math.abs(otherAxisPosition - y1)<1e-3) {
-                                return;
-                            }
-                            if(axis === 'xAxis' &&Math.abs(otherAxisPosition - x1)<1e-3) {
-                                return;
-                            }
-                            return <Line   
+                        gridLines.map(function(line,index){
+                            var {x1,y1,x2,y2} = line;
+                            return <Line  
+                                    update={update} 
                                     key={index} 
                                     x1={x1} 
                                     y1={y1} 
@@ -192,30 +81,38 @@ export default class  Axis extends Component {
                         })
                     }
                 </g>
+                }
                 <g className="vcharts-axis-labels">
                 {
                     axisLabel.enabled
                     &&
                     labels.map(function(label,index){
                         return <Text 
-                                    animation={isLabelAdjusted||!isFirstTime}
+                                    noAnimation={renderCount<=1}
                                     key={index} 
                                     x={label.x} 
                                     y={label.y} 
-                                    opacity={isFirstTime&&containLabel?0:1}
-                                    style={axisLabel.style}>{label.value}</Text>
+                                    opacity={renderCount==0&&containLabel?0:1}
+                                    style={axisLabel.style}>{label.text}</Text>
                     })
                 }
                 </g>
+                {
+                renderCount > 0 
+                &&
                 <g className="vcharts-axis-tick">
                     {
                         axisTick.enabled
                         &&
                         ticks.map(function(tick,index){
-                            var {x1,y1,x2,y2,isAdd} = tick;
+                            var {x1,y1,x2,y2} = tick;
+                            var isAdd = false;
+                            if(labels[index]) {
+                                isAdd = labels[index].isAdd;
+                            }
                             return <Line   
                                     animation={!isAdd}
-                                    update={updateType==='newProps'&&containLabel?false:true}
+                                    update={update}
                                     key={index}
                                     x1={x1} 
                                     y1={y1} 
@@ -226,14 +123,25 @@ export default class  Axis extends Component {
                                     style={axisTick.style} />
                         })
                     }
-                </g>
+                </g>    
+                }
+                
             </g>
         )
     }
     componentWillReceiveProps(nextProps){
-        var oldState = this.state;
-        var nextState = this.getRenderData(nextProps,oldState);
-        this.setState(nextState);
+        var {renderCount,labels} = this.state;
+        renderCount++;
+        if(nextProps.updateType === 'adjust') {
+            var oldLables = labels;
+            labels = nextProps.axisData.getLabels();
+            labels.forEach(function(label,index){
+                if(!oldLables[index]) {
+                    label.isAdd = true;
+                }
+            })
+        }
+        this.setState({renderCount,labels});
     }
     sendAxisData(){
         var {props,state} = this;

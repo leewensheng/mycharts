@@ -25,6 +25,12 @@ Chart.prototype = {
 		var width,height,paper;
 		width = option.width || $(el).width();
 		height = option.height || $(el).height();
+		if(option.width) {
+			$(el).width(width);
+		}
+		if(option.height) {
+			$(el).height(height);
+		}
 		this.container = $(el).get(0);
 		this.width = width;
 		this.height = height;

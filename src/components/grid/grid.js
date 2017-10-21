@@ -3,83 +3,41 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Axis from '../axis/axisView'
 import Rect from '../../elements/rect'
+
+import GridClass from './gridClass'
 export default class Grid extends Component {
 	constructor(props){
 		super(props);
 		var {left,top,right,bottom,width,height} = props;
 		this.setAxisData = this.setAxisData.bind(this);
-		var gridAxis = this.getGridAxis(props,left,top,right,bottom);
+		var gridAxis = this.getGridAxis(props,top,left,right,bottom);
 		this.state =  {
 			top,left,right,bottom,width,height,gridAxis
 		}
 	}
-	getGridAxis(props,left,top,right,bottom){
+	getGridAxis(props,top,left,right,bottom){
 		var {xAxis,yAxis,includeSeries} = props;
 		var gridAxis = xAxis.concat(yAxis).map(function(axis,indexInGrid){
-			var {type,min,max,splitData,option,includeSeries} = axis;
-			var {opposite,categories}  = option;
-			var start ,end , other,base,interval,zeroPoisition = null;
-			if(axis.axis === 'xAxis') {
-	            start = left;
-	            end = right;
-	            other = opposite?top:bottom;
-	        } else if(axis.axis === 'yAxis') {
-	            start = bottom;
-	            end = top;
-	            other = opposite?right:left;
-	        }
-	       	base = other;
-	        if(option.inverse) {
-	        	var tempVar =  start;
-	        	start = end;
-	        	end = tempVar;
-			}
-			if(option.startOnTick && type === 'category') {
-				if(categories.length > 1) {
-					var gap =  (end - start)/(max - min+1)/2;
-					start += gap;
-					end -= gap;
-				}
-			}
-	       if(type === 'value' && min * max < 0) {
-	       		zeroPoisition = start + (0 - min)/(max - min)*(end  - start);
-	       }
-	       if(type === 'value') {
-	        	if(splitData.length === 1) {
-	        		interval = end - start;
-	        	} else {
-	        		interval = (end - start)/(splitData.length - 1);
-	        	}
-	       } else if(type === 'category') {
-	       		if(option.categories.length === 1) {
-	       			interval = end - start;
-	       		} else {
-	       			interval = (end - start) / (max - min);
-	       		}
-		   }
-	       return {
-	       		start,end,interval,other,base,zeroPoisition,axisData:axis,labelPlace:{}
-	       }
-		})
+			return axis.computedAxisPosition({top,left,right,bottom});
+		});
+		//支持轴在零上
 		includeSeries.map(function(series){
 			var xAxisIndex = series.xAxis;
 			var yAxisIndex = series.yAxis;
 			var xAxisData = gridAxis.filter(function(axis){
-				var {axisData} = axis;
-				return axisData.option.index === xAxisIndex && axisData.axis === 'xAxis';
+				return axis.index === xAxisIndex && axis.axis === 'xAxis';
 			})[0];
 			var yAxisData = gridAxis.filter(function(axis){
-				var {axisData} = axis;
-				return axisData.option.index === yAxisIndex && axisData.axis === 'yAxis';
+				return axis.index === yAxisIndex && axis.axis === 'yAxis';
 			})[0];
-			if(xAxisData.axisData.type === 'value' && yAxisData.axisData.option.axisLine.onZero) {
-				if(xAxisData.zeroPoisition !== null) {
-					yAxisData.other = xAxisData.zeroPoisition;
+			if(xAxisData.type === 'value' && yAxisData.option.axisLine.onZero) {
+				if(xAxisData.min*xAxisData.max < 0) {
+					yAxisData.other = xAxisData.getPositionByValue(0);
 				}
 			}
-			if(yAxisData.axisData.type === 'value' && xAxisData.axisData.option.axisLine.onZero) {
-				if(yAxisData.zeroPoisition !== null) {
-					xAxisData.other = yAxisData.zeroPoisition;
+			if(yAxisData.type === 'value' && xAxisData.option.axisLine.onZero) {
+				if(yAxisData.min*yAxisData.max < 0) {
+					xAxis.other = yAxisData.getPositionByValue(0);
 				}
 			}
 			xAxisData.otherAxisPosition = yAxisData.other;;
@@ -100,27 +58,14 @@ export default class Grid extends Component {
                     <Rect update={containLabel?updateType==='adjust':true} className="vcharts-grid-backgrould" x={left} y={top} width={width} height={height} fill={background}/>
 				}
 				{
-					gridAxis.map(function(axis,gridAxisIndex){
-						var hasOpposite;
-						var {start,end,other,interval,axisData,zeroPoisition,otherAxisPosition} = axis;
+					gridAxis.map(function(axisData,gridAxisIndex){
 						return <Axis 	
 									key={'xaxis'+gridAxisIndex}
-									start = {start}
-									end={end}
-									other={other}
-									interval={interval}
-									top={top}
-									left={left}
-									right={right}
-									bottom={bottom}
-									axisData={axisData}
 									containLabel={containLabel}
-									hasOpposite={false}
+									axisData={axisData}
 									setAxisData={setAxisData}
 									updateType={updateType}
 									gridAxisIndex={gridAxisIndex}
-									zeroPoisition={zeroPoisition}
-									otherAxisPosition={otherAxisPosition}
 									/>
 					})
 				}
@@ -163,12 +108,13 @@ export default class Grid extends Component {
         bottom  -= bottomLabelHeight,
         width = right - left;
         height = bottom - top;
-        gridAxis = that.getGridAxis(props,left,top,right,bottom);
+        gridAxis = that.getGridAxis(props,top,left,right,bottom);
         var updateType = 'adjust';
         var hasInited  = true;
         this.setState({left,right,top,bottom,width,height,gridAxis,updateType,hasInited});
 	}
 	sendGridInfo(){
+		return;
 		var {props,state} = this;
 		var {includeSeries,chartEmitter} = props;
 		var {top,left,right,bottom,width,height,gridAxis} = state;
@@ -177,36 +123,33 @@ export default class Grid extends Component {
 			var xAxisIndex = series.xAxis;
 			var yAxisIndex = series.yAxis;
 			var xAxisData = gridAxis.filter(function(axis){
-				return axis.axisData.option.index === xAxisIndex && axis.axisData.axis === 'xAxis';
+				return axis.option.index === xAxisIndex && axis.axis === 'xAxis';
 			})[0];
 			var yAxisData = gridAxis.filter(function(axis){
-				return axis.axisData.option.index === yAxisIndex && axis.axisData.axis === 'yAxis';
+				return axis.option.index === yAxisIndex && axis.axis === 'yAxis';
 			})[0];
 			var isEmpty = !includeSeries.length;
 			var reversed = false;
-			if(xAxisData.axisData.type === 'value' && yAxisData.axisData.type === 'category') {
+			if(xAxisData.type === 'value' && yAxisData.type === 'category') {
 				reversed = true;
 			}
+			var grid = new GridClass(xAxisData,yAxisData,reversed,includeSeries);
+			grid.setGridRect(top,left,right,bottom);
 			chartEmitter.emit('grid',{
 				seriesIndex:seriesIndex,
-				xAxis:xAxisData,
-				yAxis:yAxisData,
-				top,left,right,
-				bottom,width,height,
-				reversed,
-				isEmpty
+				grid:grid
 			});
 		});
-		chartEmitter.emit('gridReady',{
+		/* chartEmitter.emit('gridReady',{
 			axis:gridAxis,
 			top,left,right,
 			bottom,width,height,
 			includeSeries:includeSeries
-		});
+		}); */
 	}
 	componentWillReceiveProps(nextProps){
 		var {left,top,right,bottom} = nextProps;
-		var gridAxis = this.getGridAxis(nextProps,left,top,right,bottom);
+		var gridAxis = this.getGridAxis(nextProps,top,left,right,bottom);
 		var updateType = 'newProps';
 		this.setState({updateType,gridAxis});
 	}
