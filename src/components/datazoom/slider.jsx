@@ -10,87 +10,49 @@ export default class Slider extends Component {
 		this.onQuickPanning = this.onQuickPanning.bind(this);
 		this.startHandleMove = this.startHandleMove.bind(this);
 		this.endHandleMove = this.endHandleMove.bind(this);
-		this.state = this.getSliderState(props);
-	}
-	getSliderState(props){
-		var {axis,top,left,right,bottom,gridAxis,sliderOpt} = props;
-		var {axisData} = gridAxis;
-		var {min,max,realMin,realMax,includeSeries} = axisData;
-		if(min < realMin) {
-			min = realMin;
-		}
-		if(max > realMax) {
-			max = realMax;
-		}
-		var {inverse} = axisData.option;
-		var {margin,height,handle,background} = sliderOpt;
-		var sliderStart,sliderEnd,sliderOther,handleStart,handleEnd;
-		if(axis === 'xAxis') {
-			sliderStart = inverse ? right:left;
-			sliderEnd = inverse ? left : right;
-			sliderOther = bottom +margin;
-		} else if(axis  === 'yAxis') {
-			sliderStart = inverse ? top:bottom;
-			sliderEnd  = inverse ? bottom : top;
-			sliderOther = right + margin;
-		}
-		if(realMin === realMax) {
-			handleStart = handleEnd = (sliderStart + sliderEnd)/2;
-		} else {
-			handleStart = sliderStart + (sliderEnd - sliderStart)*(min - realMin)/ (realMax - realMin);
-			handleEnd = sliderStart + (sliderEnd - sliderStart	)*(max - realMin) / (realMax - realMin);
-		}
-		return {
-			sliderStart,
-			sliderEnd,
-			sliderOther,
-			min,
-			max,
-			realMin,
-			realMax
+		this.state = {
+			startValue:props.gridAxis.startValue,
+			endValue:props.gridAxis.endValue
 		}
 	}
-	getPositionByValue(val){
-		var {state} = this;
-		var {sliderStart,sliderEnd,realMin,realMax} = state;
-		if(realMin === realMax) {
-			return (sliderStart + sliderEnd) /2;
-		} else {
-			return sliderStart + (sliderEnd - sliderStart	)*(val - realMin) / (realMax - realMin);
+	static defaultProps = {
+		gridAxis:null,
+		index:null,
+		sliderOpt:null,
+		zoomAxis(){
+
 		}
-	}
-	getValueByPosition(position){
-		var {state} = this;
-		var {sliderStart,sliderEnd,realMin,realMax} = state;
-		return realMin + (realMax - realMin)*(position - sliderStart)/(sliderEnd - sliderStart);
 	}
 	render(){
 		var that = this;
 		var {props,state} = this;
-		var {axis,top,left,right,bottom,gridAxis,sliderOpt} = props;
-		var {axisData} = gridAxis;
-		var {realMin,realMax,includeSeries} = axisData;
-		var {margin,height,handle,background} = sliderOpt;
-		var {min,max,sliderStart,sliderEnd,sliderOther} = state;
-		var handleStart = this.getPositionByValue(min);
-		var handleEnd = this.getPositionByValue(max);
-		var size = height;
+		var {gridAxis,sliderOpt} = props;
+		const size = 40;
+		var {axis,start,end,other,includeSeries} = gridAxis;
+		var {startValue,endValue} = state;
+		var {background} = sliderOpt;
+		var handleStart = gridAxis.getPositionByValue(startValue);
+		var handleEnd = gridAxis.getPositionByValue(endValue);
 		if(axis === 'xAxis') {
+			var x = Math.min(start,end);
+			var y = other;
+			var width = Math.abs(start-end);
+			var height = 40;
 			return (
 			<g className="vcharts-slider">
-				<Rect onclick={this.onQuickPanning} animation={false} className="datazoom-slider" x={left} y={sliderOther} width={right-left} height={height} fill={background} stroke="none"/>
+				<Rect onclick={this.onQuickPanning} animation={false} className="datazoom-slider" x={x} y={y} width={width} height={height} fill={background} stroke="none"/>
 				{
 				includeSeries.length
 				&&
 				<g>
-					<Draggable containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
-						<Rect animation={false} className="datazoom-pan" x={handleStart-size/2} y={sliderOther} width={handleEnd - handleStart} height={height} fill={background} stroke="none" />
+					<Draggable key="pan" axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
+						<Rect animation={false} className="datazoom-pan" x={handleStart-size/2} y={other} width={handleEnd - handleStart} height={height} fill={background} stroke="none" />
 					</Draggable>
-					<Draggable key="start" containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
-						<Rect animation={false}className="datazoom-handle" x={handleStart-size/2} y={sliderOther} width={size} height={height} fill="blue" stroke="none" />
+					<Draggable key="start"  axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
+						<Rect animation={false}className="datazoom-handle" x={handleStart-size/2} y={other} width={size} height={height} fill="blue" stroke="none" />
 					</Draggable>
-					<Draggable key="end" containment={[left - handleStart,0,right - handleEnd,0]} axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
-						<Rect animation={false} className="datazoom-handle" x={handleEnd-size/2} y={sliderOther} width={size} height={height} fill="blue" stroke="none" />
+					<Draggable key="end" axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
+						<Rect animation={false} className="datazoom-handle" x={handleEnd-size/2} y={other} width={size} height={height} fill="blue" stroke="none" />
 					</Draggable>
 				</g>
 				}
@@ -99,81 +61,63 @@ export default class Slider extends Component {
 		}
 	}
 	onQuickPanning(event) {
-		var {props,state} = this;
-		var {sliderStart,sliderEnd} = this;
 		//计算出平移的距离
 	}
 	onPanning(dx,dy){
 		var {props,state} = this;
-		var {min,max,realMin,realMax} = state;
-		if(min === realMin && dx < 0) {
+		var {gridAxis,sliderOpt,zoomAxis} = props;
+		var {axis,min,max} = gridAxis;
+		var {startValue,endValue} = state;
+		var change = axis === 'xAxis' ? dx:dy;
+		var changeValue = gridAxis.getChangeByDistance(change);
+		startValue += changeValue;
+		endValue += changeValue;
+		if(startValue < min || startValue > max) {
 			return;
 		}
-		if(max === realMax && dx > 0) {
+		if(endValue < min || endValue > max) {
 			return;
 		}
-		var {axis} = props;
-		var handleStart = this.getPositionByValue(min);
-		var handleEnd = this.getPositionByValue(max);
-		handleStart += axis === 'xAxis' ? dx:dy;
-		handleEnd +=  axis === 'xAxis' ? dx:dy;
-		min = this.getValueByPosition(handleStart);
-		max = this.getValueByPosition(handleEnd);
-		if(min <= realMin ) {
-			min = realMin;
-		}
-		if(max >= realMax) {
-			max = realMax;
-		}
-		this.setState({min,max,updateType:'zoom'});
+		this.setState({startValue,endValue});
+		zoomAxis(gridAxis,Math.min(startValue,endValue),Math.max(startValue,endValue));
 	}
 	startHandleMove(dx,dy){
 		var {props,state} = this;
-		var {min,max,realMin,realMax} = state;
-		if(min === realMin && dx < 0) {
-			return;
+		var {gridAxis,sliderOpt,zoomAxis} = props;
+		var {startValue,endValue} = state;
+		var {axis,min,max} = gridAxis;
+		var change = axis === 'xAxis' ? dx:dy;
+		var changeValue = gridAxis.getChangeByDistance(change);
+		startValue += changeValue;
+		if(startValue < min) {
+			startValue = min;
 		}
-		var {axis} = props;
-		var handleStart = this.getPositionByValue(min);
-		handleStart += axis === 'xAxis' ? dx:dy;
-		var nextMin = this.getValueByPosition(handleStart);
-		if(nextMin < realMin) {
-			nextMin = realMin;
+		if(startValue > max) {
+			startValue = max;
 		}
-		this.setState({
-			min:Math.min(nextMin,max),
-			max:Math.max(nextMin,max),
-			updateType:'zoom'
-		});
+		this.setState({startValue,endValue});
+		zoomAxis(gridAxis,Math.min(startValue,endValue),Math.max(startValue,endValue));
 	}
 	endHandleMove(dx,dy){
 		var {props,state} = this;
-		var {min,max,realMin,realMax} = state;
-		if(max === realMax && dx > 0) {
-			return;
+		var {gridAxis,sliderOpt,zoomAxis} = props;
+		var {startValue,endValue} = state;
+		var {axis,min,max} = gridAxis;
+		var change = axis === 'xAxis' ? dx:dy;
+		var changeValue = gridAxis.getChangeByDistance(change);
+		endValue += changeValue;
+		if(endValue < min) {
+			endValue = min;
 		}
-		var {axis} = props;
-		var handleEnd = this.getPositionByValue(max);
-		handleEnd += axis === 'xAxis' ? dx:dy;
-		var nextMax = this.getValueByPosition(handleEnd);
-		if(nextMax > realMax) {
-			nextMax = realMax;
+		if(endValue > max) {
+			endValue = max;
 		}
-		this.setState({
-			max:nextMax,
-			updateType:'zoom'
-		});
+		this.setState({startValue,endValue});
+		zoomAxis(gridAxis,Math.min(startValue,endValue),Math.max(startValue,endValue));
 	}
 	componentWillReceiveProps(nextProps){
-		var nextState = this.getSliderState(nextProps);
-		nextState.updateType = 'newProps';
-		this.setState(nextState);
-	}
-	componentDidUpdate(){
-		var {state} = this;
-		var {min,max,realMin,realMax} = state;
-		if(state.updateType === 'zoom') {
-			this.props.zoomAxis(this.props.gridAxis,min,max);
-		}
+		var {gridAxis} = nextProps;
+		var {startValue,endValue} = gridAxis;
+		this.setState({startValue,endValue});
 	}
 }

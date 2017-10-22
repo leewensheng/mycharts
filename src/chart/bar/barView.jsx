@@ -43,7 +43,8 @@ export default class Bar extends Component {
                             plotEnd,
                             barWidth,
                             align,
-                            startFromAxis
+                            startFromAxis,
+                            isAdd
                         } = bar;
                         var r =  seriesModel.getPercentMayBeValue(borderRadius,barWidth);
                         var attrs = {
@@ -57,8 +58,9 @@ export default class Bar extends Component {
                         }
                         return (
                         <BarItem 
-                            key={'bar'+index}
+                            key={x}
                             index={index}
+                            isAdd={isAdd}
                             visible={visible}
                             label={y}
                             animation={animation}
@@ -81,6 +83,14 @@ export default class Bar extends Component {
         var {props,state} = this;
         if(grid.seriesIndex == this.props.seriesIndex) {
             var bars = props.seriesModel.getBars(grid);
+            if(state.hasInited) {
+                bars = bars.map(function(bar,index){
+                    if(!state.bars[index]) {
+                        bar.isAdd = true;
+                    }
+                    return bar;
+                })
+            }
             this.setState({grid,bars,hasInited:true});
             this.forceUpdate();
         }
@@ -123,11 +133,11 @@ class BarItem extends Component {
     render(){
         var {props,state} = this;
         var {animated,updateType} = state;
-        var {animation,visible,label,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
+        var {animation,isAdd,visible,label,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
         if(animation && !animated) {
             plotEnd = plotStart;
         }
-        if(updateType === 'newProps') {
+        if(updateType === 'newProps' || isAdd) {
             animation = true;
         }
         var x,y,width,height;

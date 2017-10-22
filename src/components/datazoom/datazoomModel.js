@@ -61,10 +61,6 @@ export default class DataZoomModel extends ComponentModel {
 				sliderOpt:zoomOpt,
 				axis:axis,
 				gridAxis:null,
-				top:null,
-				right:null,
-				bottom:null,
-				left:null,
 			}
 		})
 	}

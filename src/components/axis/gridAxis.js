@@ -158,4 +158,28 @@ export default class  GridAxis extends Axis {
             return {x,y,text};
         })
     }
+    cloneAsSlider(margin = 40){
+        var {axis,type,option,min,max,realMin,realMax,splitData,includeSeries,grid} = this;
+        var {startEdge,endEdge,end,other} = this;
+        var copyOption = {
+            index:this.option.index,
+            type:'value',
+            min:realMin,
+            max:realMax,
+            splitNumber:this.option.splitNumber,
+            forceExtreme:true
+        };
+        var copy  = new this.constructor(axis,realMin,realMax,copyOption,includeSeries);
+        var {top,left,right,bottom} = grid;
+        if(axis === 'xAxis') {
+            other = bottom + margin;
+        } else if (axis === 'yAxis') {
+            other = right + margin;
+        }
+        copy.setAxisSide(startEdge,endEdge,other,startEdge,endEdge);
+        //此处应使用typeof number严格检测
+        copy.startValue = option.min || min;
+        copy.endValue = option.max || max;
+        return copy;
+    }
 }

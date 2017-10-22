@@ -62,6 +62,9 @@ export default class Rect extends Component{
     shouldComponentUpdate(nextProps,nextState){
         return nextState.update?true:false;
     }
+    componentWillUnmount(){
+        $(findDOMNode(this)).stopTransition();
+    }
     componentDidUpdate(prevProps){
         var {props} = this;
         var {x,y,width,height} = props;

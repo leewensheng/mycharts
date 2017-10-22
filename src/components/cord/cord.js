@@ -31,8 +31,41 @@ export default class Cord {
     }
     getPointsByData(seriesData){
         var that = this;
-        return seriesData.map(function(data,dataIndex){
-            return that.getPointByData(data,dataIndex);
-        })
+        var points = [];
+        var {xAxis,yAxis,reversed} = this;
+        var data,x,y,isInside;
+        var xmin = xAxis.min,
+            xmax = xAxis.max,
+            ymin = yAxis.min,
+            ymax = yAxis.max;
+        for(let i = 0; i < seriesData.length;i++ ) {
+            data = seriesData[i];
+            x = data.x;
+            y = data.y;
+            if(typeof x === 'number') {
+                if(reversed) {
+                    if(x < ymin || x > ymax) {
+                        continue;
+                    } 
+                } else {
+                    if(x < xmin || x > xmax) {
+                        continue;
+                    }
+                }
+            }
+            if(typeof y === 'number') {
+                if(reversed) {
+                    if(y < xmin || y > xmax) {
+                        continue;
+                    } 
+                } else {
+                    if(y < ymin || y > ymax) {
+                        continue;
+                    }
+                }
+            }
+            points.push(this.getPointByData(data,i));
+        }
+        return points;
     }
 }

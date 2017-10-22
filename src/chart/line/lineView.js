@@ -57,7 +57,7 @@ export default class Linechart extends Component {
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color} = point;
                             return <Text  
-                                    key={index}
+                                    key={x}
                                     x={plotX} 
                                     y={plotY - 10}
                                     fill={color} 
@@ -73,7 +73,7 @@ export default class Linechart extends Component {
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color} = point;
                             return <Circle  
-                                        key={index}
+                                        key={x}
                                         cx={plotX} 
                                         cy={plotY} 
                                         r={4} 

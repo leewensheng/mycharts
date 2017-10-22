@@ -44,7 +44,8 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
-		startOnTick:0,
+		min:1.2,
+		startOnTick:1,
 		gridLine:{
 			enabled:true,
 			lineWidth:1,
@@ -63,7 +64,7 @@ var option = {
 			margin:10,
 			align:'end',
 		},
-		categories:['一','二','三','四','五','六']
+		categories:['一','二','三','四','五','六','一','二','三','四','五','六','一','二','三','四','五','六']
 	},
 	yAxis:{
 		type:'category',
@@ -106,8 +107,12 @@ var option = {
 			type:'line',
 			borderWidth:1,
 			borderColor:'#fff',
-			data:[1,2,3,4,5,6]
-		}
+			data:[1,2,3,4,5,6,2,3,5,2,3,2,2,3,5,2,3,2,2,3,5]
+		},
+		{
+			type:'bar',
+			data:[2,3,5,2,3,2,2,3,5,2,3,2,2,3,5,2,3,2,2,3,5]
+		},
     ]
 }
 var chart = vchart.init(el,{

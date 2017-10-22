@@ -21,6 +21,10 @@ export default class Axis {
         var {type,categories} = option;
         var isforceMin = typeof option.min === 'number' && option.min !== realMin;
         var isforceMax = typeof option.max === 'number' && option.max !== realMax;
+        if(option.forceExtreme) {
+            isforceMin = true;
+            isforceMax = true;
+        }
         var splitData = [];
         var tick;
         min = isforceMin ? option.min : min;
@@ -44,6 +48,8 @@ export default class Axis {
             splitData = splitData.slice(Math.round(min),Math.round(min)+Math.round(max-min)+1);
             let categoryMin = splitData[0];
             let categoryMax = splitData[splitData.length-1];
+            min = categoryMin;
+            max = categoryMax;
             if(categoryMin !== categoryMax) {
                 tick = (categoryMax - categoryMin) / (splitData.length - 1);
             }
@@ -73,7 +79,7 @@ export default class Axis {
         } else {
             this.interval = tick / (max - min) * (end - start);
         }
-        this.unit = (end - start)/Math.abs(end - start);
+        this.unit = end >= start ? 1:-1;
         this.ticksPosition = splitData.map(function(val){
             return that.getPositionByValue(val);
         })
@@ -100,6 +106,13 @@ export default class Axis {
             return min;
         }
         return min + (pos - start) / (end - start) * (max - min);
+    }
+    getChangeByDistance(d) {
+        var {min,max,start,end} = this;
+        if(start === end) {
+            return 0;
+        }
+        return (max - min)*d/(end - start);
     }
     _getSplitInfo(min,max,splitNumber,isforceMin,isforceMax) {
         if(min === max) {

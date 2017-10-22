@@ -136,12 +136,12 @@ export default class Grid extends Component {
 			grid.setGridRect(top,left,right,bottom);
 			chartEmitter.emit('grid',grid);
 		});
-		/* chartEmitter.emit('gridReady',{
+		chartEmitter.emit('gridReady',{
 			axis:gridAxis,
 			top,left,right,
 			bottom,width,height,
-			includeSeries:includeSeries
-		}); */
+			includeSeries
+		}); 
 	}
 	componentWillReceiveProps(nextProps){
 		var {left,top,right,bottom} = nextProps;
