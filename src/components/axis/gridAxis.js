@@ -75,7 +75,7 @@ export default class  GridAxis extends Axis {
         }
         var ticks =  ticksPosition.map(function(position){
             if(type === 'category' && startOnTick) {
-                position -= interval / 2;
+                position += interval / 2;
             }
             var x1,y1,x2,y2;
             if(axis === 'xAxis') {
@@ -89,15 +89,32 @@ export default class  GridAxis extends Axis {
             }
             return {x1,x2,y1,y2};
         });
+        if(type === 'category' && startOnTick) {
+            if(type === 'xAxis') {
+                ticks.push({
+                    x:endEdge,
+                    y:other
+                })
+            } else if(type === 'yAxis') {
+                ticks.push({
+                    x:other,
+                    y:endEdge
+                })
+            }
+        }
         return ticks;
     }
     getGridLines(){
-        var {axis,grid,ticksPosition,otherAxisPosition} = this;
+        var {type,axis,grid,interval,option,ticksPosition,otherAxisPosition} = this;
         var lines = [];
         var {top,left,right,bottom} = grid;
+        var {startOnTick} = option;
          ticksPosition.map(function(position){
              var x1,y1,x2,y2;
             if(Math.abs(position - otherAxisPosition) > 1e-6) {
+                if(type === 'category' && startOnTick) {
+                    position += interval / 2;
+                }
                 if(axis === 'xAxis') {
                     x1 = x2 = position;
                     y1 = bottom;

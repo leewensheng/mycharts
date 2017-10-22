@@ -14,6 +14,7 @@ export default class Bar extends Component {
         this.toggleToolTip = this.toggleToolTip.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
+            grid:null,
             hasInited:false,
             bars:[]
         };
@@ -27,54 +28,56 @@ export default class Bar extends Component {
         var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
         var toggleToolTip = this.toggleToolTip;
         var {animation,style,borderRadius,borderColor,borderWidth} = seriesOpt;
-        var clipId = seriesId + 'clippath';
-        var clipPath='url(#' + clipId + ')';
         return (
-            <g clipPath={clipPath}  className="vcharts-series vcharts-bar-series">
-                {
-                hasInited 
-                && 
-                <ClipPath id={clipId}>
-                    <Rect  x={grid.left} y={grid.top} width={grid.width} height={grid.height} />
-                </ClipPath>
-                }
-                
+            <g  className="vcharts-series vcharts-bar-series">
                 <g className="vcharts-series-points">
-                    {
-                        bars.map(function(bar,index){
-                            var  {color,barWidth,barLength,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight} = bar;
-                            var r =  seriesModel.getPercentMayBeValue(borderRadius,Math.min(barLength,barWidth));
-                            if(!visible) {
-                                grid.reversed ? rectHeight = 0 : rectWidth = 0;
-                            }
-                            return (
-                            <g key={'group'+index}>
-                            <BarItem 
-                                key={'bar'+index}
-                                className="vcharts-series-point" 
-                                index={index}
-                                reversed={grid.reversed}
-                                animation={animation}
-                                x={rectX} 
-                                y={rectY} 
-                                rx={r}
-                                ry={r}
-                                width={rectWidth} 
-                                height={rectHeight} 
-                                fill={color} 
-                                stroke={borderColor} 
-                                strokeWidth={borderWidth}
-                                style={style}
-                                toggleToolTip={toggleToolTip}
-                             />
-                             <Text  key={'label'+index} 
-                                    x={rectX + rectWidth/2} 
-                                    y={rectY  - 5} 
-                                    style={{textAlign:'center',textBaseLine:'bottom',display:visible?'':'none'}}>{y}</Text>
-                             </g>
-                            )
-                        })
-                    }
+                {
+                    bars.map(function(bar,index){
+                        var {
+                            x,
+                            y,
+                            color,
+                            plotX,
+                            plotY,
+                            plotStart,
+                            plotEnd,
+                            barWidth,
+                            align,
+                            startFromAxis
+                        } = bar;
+                        var r =  seriesModel.getPercentMayBeValue(borderRadius,barWidth);
+                        var attrs = {
+                            className:"vcharts-series-point",
+                            rx:r,
+                            ry:r,
+                            fill:color,
+                            stroke:borderColor,
+                            strokeWidth:borderWidth,
+                            style
+                        }
+                        return (
+                        <g key={'group'+index}>
+                        <BarItem 
+                            key={'bar'+index}
+                            index={index}
+                            visible={visible}
+                            animation={animation}
+                            plotStart={plotStart}
+                            plotEnd={plotEnd}
+                            barWidth={barWidth}
+                            startFromAxis={startFromAxis}
+                            align={align}
+                            toggleToolTip={toggleToolTip}
+                            attrs={attrs}
+                            />
+                            <Text  key={'label'+index} 
+                                x={plotEnd.x} 
+                                y={plotEnd.y} 
+                                style={{textAlign:'center',textBaseLine:'middle',display:visible?'':'none'}}>{y}</Text>
+                            </g>
+                        )
+                    })
+                }
                 </g>
             </g>
         );
@@ -119,26 +122,50 @@ class BarItem extends Component {
         this.handleMouseOut = this.handleMouseOut.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.state = {
-            animated:false
+            renderCount:0
         };
     }
     render(){
         var {props,state} = this;
         var {animated,updateType} = state;
-        var {animation,width,height,reversed} = props;
+        var {animation,visible,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
         if(animation && !animated) {
-            reversed ? width = 0 : height = 0;
+            plotEnd = plotStart;
         }
-        if(updateType === "newProps") {
+        if(updateType === 'newProps') {
             animation = true;
         }
-        return <Rect    {...props} 
-                        animation={animation}
-                        width={width}
-                        height={height}
-                        onMouseOver={this.handleMouseOver} 
-                        onMouseMove={this.handleMouseMove} 
-                        onMouseOut={this.handleMouseOut} />
+        var x,y,width,height;
+        if(align === 'vertical') {
+            x = Math.min(plotStart.x - barWidth/2,plotStart.x + barWidth/2);
+            y = Math.min(plotStart.y,plotEnd.y);
+            width = barWidth;
+            height = Math.abs(plotStart.y - plotEnd.y);
+        } else {
+            x = Math.min(plotStart.x,plotEnd.x);
+            y = Math.min(plotStart.y - barWidth/2,plotEnd.y + barWidth/2);
+            width = Math.abs(plotStart.x - plotEnd.x);
+            height = barWidth;
+        }
+        if(!visible) {
+            if(align === 'vertical') {
+                width = 0;
+            } else {
+                height = 0;
+            }
+        }
+        return (
+            <Rect   
+                {...attrs}
+                animation={animation}
+                x={x}
+                y={y}
+                width={width}
+                height={height}
+                onMouseOver={this.handleMouseOver} 
+                onMouseMove={this.handleMouseMove} 
+                onMouseOut={this.handleMouseOut} 
+            />)
 
     }
     handleMouseOver(event){

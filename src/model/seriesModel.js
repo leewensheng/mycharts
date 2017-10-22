@@ -91,81 +91,28 @@ export default class SeriesModel extends BaseModel {
 	getStackedOnData(){
 		var option = this.getOption();
 		var {stack} = option;
-		if(!stack) {
-			return null;
-		}
 		var seriesIndex = this.seriesIndex;
 		var type = this.type;
 		var data = this.getData();
-		var stackOnData = [];
+		var stackedOnData = [];
+		var ret = data.map(function(val){
+			return {x:val.x,y:null};
+		});
+		if(!stack) {
+			return ret;
+		}
 		this.chartModel.eachSeriesByType(type,function(seriesModel){
 			var seriesOpt = seriesModel.getOption();
 			if(seriesOpt.stack === stack && seriesModel.seriesIndex < seriesIndex && seriesModel.visible) {
-				stackOnData.push(seriesModel.getData());
+				stackedOnData.push(seriesModel.getData());
 			}
 		});
-		if(stackOnData.length === 0) {
-			return null;
-		} else {
-			var fristData =stackOnData[0];
-			return fristData.map(function(point,dataIndex){
-				var {x,y} = point;
-				if(data[dataIndex].y*y < 0) {
-					return {x,y:null};
-				}
-				stackOnData.slice(1).map(function(data){
-					if(data[dataIndex]) {
-						var stackedY = data[dataIndex].y;
-						if(!isNaN(stackedY)) {
-							if(!isNaN(y)) {
-								y += stackedY;
-							} else {
-								y = stackedY;
-							}
-						}
-					}
-				});
-				return {x,y};
-			})
-		}
-		return stackOnData;
+		
+		return ret;
 	}
 	getData(){
 		var {option} = this;
 		return option.data;
-	}
-	getVisibleDataOnGrid(grid){
-		var {xAxis,yAxis,reversed} = grid;
-		var xmin = xAxis.axisData.min;
-		var xmax = xAxis.axisData.max;
-		var ymin = yAxis.axisData.min;
-		var ymax = yAxis.axisData.max;
-		if(xAxis.axisData.option.type === 'category') {
-			let intMin = Math.round(xmin);
-			let intMax = intMin + Math.round(xmax - xmin);
-			xmin = intMin;
-			xmax = intMax;
-		}
-		if(yAxis.axisData.option.type === 'category') {
-			let intMin = Math.round(ymin);
-			let intMax = intMin + Math.round(ymax - ymin);
-			ymin = intMin;
-			ymax = intMax;
-		}
-		return this.getData().filter(function(point){
-			var {x,y} = point;
-			var inGrid = true;
-			if(reversed) {
-				if(x < ymin || x > ymax || y < xmin || y > xmax) {
-					inGrid = false;
-				}
-			} else {
-				if(x < xmin || x > xmax || y < ymin || y > ymax) {
-					inGrid = false;
-				}
-			}
-			return inGrid;
-		})
 	}
 	getMin(){
 		var extreme = this.getExtreme();
@@ -216,60 +163,5 @@ export default class SeriesModel extends BaseModel {
 			var y = point.y || 0;
 			return y/num;
 		})
-	}
-	getPointsOnGrid(grid) {
-		var data = this.getStackedData();
-		return this.getDataPointsOnGrid(data,grid);
-	}
-	getStackedOnPoints(grid){
-		var that = this;
-		var seriesOpt = this.getOption();
-		var {stack}  = seriesOpt;
-		var data = this.getData();
-		var {xAxis,yAxis,reversed,isEmpty} = grid;
-		var stackedOnData = this.getStackedOnData();
-		var categoryAxis = reversed ? yAxis : xAxis;
-		var valueAxis = reversed ? xAxis : yAxis;
-		if(!stackedOnData) {
-			//有零时在0上，无0时，在轴线上
-			var {start,end,interval,other,axisData} = categoryAxis;
-			return data.map(function(point,dataIndex){
-				var x,y;
-				x =  that.getPositionOnAxis(dataIndex,categoryAxis);
-				if(valueAxis.min*valueAxis.max <= 0) {
-					y =  that.getPositionOnAxis(0,valueAxis);
-				} else {
-					y = other;
-				}
-				return {
-					x:reversed?y:x,
-					y:reversed?x:y
-				}
-			})
-		} else {
-			return this.getDataPointsOnGrid(stackedOnData,grid);
-		}
-	}
-	getDataPointsOnGrid(data,grid){
-		var that = this;
-		var {xAxis,yAxis,isEmpty,reversed} = grid;
-		if(isEmpty) {
-			return [];
-		}
-		return data.map(function(point){
-			var x = that.getPositionOnAxis(reversed?point.y:point.x,xAxis);
-			var y = that.getPositionOnAxis(reversed?point.x:point.y,yAxis);
-			return {x,y};
-		});
-	}
-	getPositionOnAxis(value,axis) {
-		var {start,end,axisData} = axis;
-		var {splitData} = axisData;
-		var min = splitData[0];
-		var max = splitData[splitData.length -1];
-		if(min === max) {
-			return (start + end) / 2;
-		}
-		return start + (end-start)*(value - min)/(max - min);
 	}
 }

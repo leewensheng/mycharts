@@ -4,9 +4,10 @@ export default class Cord {
     reversed = null;
     cordType = null;
     includeSeries = [];
-    constructor(xAxis,yAxis,reversed,includeSeries){
-        this.xAxis = [];
-        this.yAxis = [];
+    constructor(seriesIndex,xAxis,yAxis,reversed,includeSeries){
+        this.seriesIndex = seriesIndex;
+        this.xAxis = xAxis;
+        this.yAxis = yAxis;
         this.reversed = reversed;
         this.includeSeries = includeSeries;
     }
@@ -17,9 +18,9 @@ export default class Cord {
         var {x,y} = data;
         var {reversed,xAxis,yAxis} = this;
         var plotX,plotY;
-        plotX = reversed ? yAxis.getPositionByValue(x):  xAxis.getPositionByValue(x);
-        plotY = reversed ? xAxis.getPositionByValue(y) : yAxis.getPositionByValue(y);
-        return {plotX,plotY};
+        plotX = reversed ? xAxis.getPositionByValue(y) : xAxis.getPositionByValue(x);
+        plotY = reversed ? yAxis.getPositionByValue(x) : yAxis.getPositionByValue(y);
+        return {plotX,plotY,x,y};
     }
     getDataByPoint(data){
         var {x,y} = data;

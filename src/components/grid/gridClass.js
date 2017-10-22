@@ -6,8 +6,9 @@ export default class Grid extends Cord {
     bottom = null;
     width = null;
     height = null;
-    constructor(xAxis,yAxis,reversed,includeSeries){
-        super(xAxis,yAxis,reversed,includeSeries);
+    cord = 'grid';
+    constructor(seiresIndex,xAxis,yAxis,reversed,includeSeries){
+        super(seiresIndex,xAxis,yAxis,reversed,includeSeries);
     }
     setGridRect(top,left,right,bottom) {
         this.top = top;

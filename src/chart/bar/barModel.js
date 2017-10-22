@@ -47,18 +47,20 @@ export default class BarModel extends SeriesModel {
 		if(!visible) return [];
 		var seriesOpt = this.getOption();
 		var visible = this.visible;
-		var {xAxis,yAxis,width,height,reversed} = grid;
-		var points = this.getPointsOnGrid(grid);
-		var stackedOnPoints = this.getStackedOnPoints(grid);
+		var {xAxis,yAxis,reversed} = grid;
+		var data = this.getData();
+		var stackedOnData = this.getStackedOnData();
+		var stackedData = this.getStackedData();
+		var startPoints = grid.getPointsByData(stackedOnData);
+		var endPoints = grid.getPointsByData(stackedData);
+
 		var categoryAxis = reversed?yAxis:xAxis;
-		var valueAxis = reversed? xAxis:yAxis;
-		var groupBars = categoryAxis.axisData.includeSeries.filter(function(series){
+		var groupBars = categoryAxis.includeSeries.filter(function(series){
 			return series.type === 'bar';
 		});
 		//考虑特殊场景，比如只有一个类目
 		var interval = Math.abs(categoryAxis.interval);
 		var {start,end} = categoryAxis;	
-		var other = valueAxis.start||valueAxis.zeroPosition;
 		//不同stack的 bar 数量
 		var stackArray = [],currentStackIndex,uniqueStackNumber;
 		groupBars.map(function(barSeries){
@@ -110,40 +112,49 @@ export default class BarModel extends SeriesModel {
 		}
 		var realGroupWidth = barWidth*uniqueStackNumber + barGap*(uniqueStackNumber - 1);
 		var flag = end > start ? 1: -1;
-		return this.getVisibleDataOnGrid(grid).map(function(point){
-			var dataIndex = point.x;
-			var stackPoint = stackedOnPoints[dataIndex];
-			var {x,y,color} = point;
-			var plotX = points[dataIndex].x;
-			var plotY = points[dataIndex].y;
-			var center = reversed?plotY:plotX;
-			var plotWidthStart = center - realGroupWidth*flag/2 + 
-							(barWidth+barGap)*currentStackIndex*flag;
-			var plotWidthEnd = plotWidthStart + barWidth*flag;
-			var pointOtherStart = reversed ? plotX : plotY;
-			var pointOtherEnd = reversed? stackPoint.x:stackPoint.y;
-			var barLength = Math.abs(pointOtherEnd - pointOtherStart);
-			if(barLength < minBarLength) {
-				barLength = minBarLength;
-				if(!reversed) {
-					pointOtherEnd = pointOtherStart - barLength;
-				} else {
-					pointOtherEnd = pointOtherStart + barLength;
+		var align = !reversed?'vertical':'horizontal';
+		return startPoints.map(function(startPoint,index){
+			var endPoint = endPoints[index];
+			var {x,y,plotX,plotY} = endPoint;
+			var pointData = data[x];
+			var {color} = pointData;
+			var plotStart,plotEnd;
+			var groupStart,barCenter;
+			if(!reversed) {
+				groupStart = plotX - realGroupWidth/2*flag;
+				barCenter = groupStart + ((barWidth+barGap) * currentStackIndex + barWidth/2)*flag;
+				plotStart = {
+					x:barCenter,
+					y:startPoint.plotY
+				}
+				plotEnd = {
+					x:barCenter,
+					y:endPoint.plotY
+				}
+			} else {
+				groupStart = plotY - realGroupWidth/2*flag;
+				barCenter = groupStart + ((barWidth+barGap) * currentStackIndex + barWidth/2)*flag;
+				plotStart = {
+					x:startPoint.plotX,
+					y:barCenter
+				}
+				plotEnd = {
+					x:endPoint.plotX,
+					y:barCenter
 				}
 			}
-			var rectX,rectY,rectWidth,rectHeight;
-			if(!reversed) {
-				rectX = Math.min(plotWidthStart,plotWidthEnd);
-				rectY = Math.min(pointOtherStart,pointOtherEnd);
-				rectWidth = barWidth;
-				rectHeight = barLength;
-			} else {
-				rectY = Math.min(plotWidthStart,plotWidthEnd);
-				rectX = Math.min(pointOtherStart,pointOtherEnd);
-				rectWidth = barLength;
-				rectHeight = barWidth;
+			return {
+				x,
+				y,
+				color,
+				plotX,
+				plotY,
+				plotStart,
+				plotEnd,
+				barWidth,
+				align,
+				startFromAxis:!startPoint.y
 			}
-			return  {color,barWidth,barLength,plotX,plotY,x,y,rectX,rectY,rectWidth,rectHeight};
 		})
 	}
 }

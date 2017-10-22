@@ -114,7 +114,6 @@ export default class Grid extends Component {
         this.setState({left,right,top,bottom,width,height,gridAxis,updateType,hasInited});
 	}
 	sendGridInfo(){
-		return;
 		var {props,state} = this;
 		var {includeSeries,chartEmitter} = props;
 		var {top,left,right,bottom,width,height,gridAxis} = state;
@@ -133,12 +132,9 @@ export default class Grid extends Component {
 			if(xAxisData.type === 'value' && yAxisData.type === 'category') {
 				reversed = true;
 			}
-			var grid = new GridClass(xAxisData,yAxisData,reversed,includeSeries);
+			var grid = new GridClass(seriesIndex,xAxisData,yAxisData,reversed,includeSeries);
 			grid.setGridRect(top,left,right,bottom);
-			chartEmitter.emit('grid',{
-				seriesIndex:seriesIndex,
-				grid:grid
-			});
+			chartEmitter.emit('grid',grid);
 		});
 		/* chartEmitter.emit('gridReady',{
 			axis:gridAxis,

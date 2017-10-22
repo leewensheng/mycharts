@@ -84,7 +84,7 @@ export default class Axis {
         if(typeof val === 'number') {
             return start + (val - min) / (max - min) * (end - start);
         }
-        return start;
+        return this.otherAxisPosition;
     }
     getPositionsByData(data){
         var that = this;
@@ -93,6 +93,7 @@ export default class Axis {
         });
     }
     getValueByPosition(pos){
+        var {min,max,start,end} = this;
         if(min === max) {
             return min;
         }
