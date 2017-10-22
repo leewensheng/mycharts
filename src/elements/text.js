@@ -42,11 +42,16 @@ export default class  Text extends Component{
         if(x === prevProps.x && y === prevProps.y) {
             return;
         }
+        var during = 400,ease = 'easeOut',delay = 0;
+        if(typeof animation === 'object') {
+            during = animation.during || during;
+            ease = animation.ease || ease;
+        }
         if(animation&&!noAnimation) {
             $(el).stopTransition().transition({
                 x:x,
                 y:y,
-            },400,'easeout');
+            },during,ease);
         } else {
             $(el).attr('x',x).attr('y',y);
         }

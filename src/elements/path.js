@@ -29,7 +29,7 @@ export default class  PathElement extends Component{
             $(el).attr('transform',transform);
             return;
         }
-        var during = 400,ease = 'easeOut';
+        var during = 400,ease = 'easeOut',delay = 0;
         if(typeof animation === 'object') {
             during = animation.during || during;
             ease = animation.ease || ease;

@@ -56,7 +56,6 @@ export default class Bar extends Component {
                             style
                         }
                         return (
-                        <g key={'group'+index}>
                         <BarItem 
                             key={'bar'+index}
                             index={index}
@@ -69,12 +68,7 @@ export default class Bar extends Component {
                             align={align}
                             toggleToolTip={toggleToolTip}
                             attrs={attrs}
-                            />
-                            <Text  key={'label'+index} 
-                                x={plotEnd.x} 
-                                y={plotEnd.y} 
-                                style={{textAlign:'center',textBaseLine:'middle',display:visible?'':'none'}}>{y}</Text>
-                            </g>
+                        />
                         )
                     })
                 }
@@ -155,6 +149,7 @@ class BarItem extends Component {
             }
         }
         return (
+        <g>
             <Rect   
                 {...attrs}
                 animation={animation}
@@ -165,7 +160,16 @@ class BarItem extends Component {
                 onMouseOver={this.handleMouseOver} 
                 onMouseMove={this.handleMouseMove} 
                 onMouseOut={this.handleMouseOut} 
-            />)
+            />
+            <Text  
+                animation={animation}
+                x={plotEnd.x} 
+                y={plotEnd.y} 
+                style={{textAlign:'center',textBaseLine:'middle',display:visible?'':'none'}}>
+                {34}
+            </Text>
+        </g>
+        )
 
     }
     handleMouseOver(event){
