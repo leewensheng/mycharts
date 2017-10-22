@@ -91,6 +91,8 @@ var option = {
 	plotOptions:{
 		bar: {
 			barWidth:null,
+			borderWidth:10,
+			borderColor:"blue",
 			minBarLength:5,
 			maxBarWidth:500,
 			groupIng:true

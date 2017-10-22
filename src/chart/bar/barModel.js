@@ -43,6 +43,7 @@ export default class BarModel extends SeriesModel {
 		showInLegend:true
 	};
 	getBars(grid){
+		var that = this;
 		var {chartModel,seriesIndex,visible} = this;
 		if(!visible) return [];
 		var seriesOpt = this.getOption();
@@ -80,6 +81,7 @@ export default class BarModel extends SeriesModel {
 		var {
 				barGap,
 				barWidth,
+				borderWidth,
 				maxBarWidth,
 				minBarLength,
 				groupIng,
@@ -143,6 +145,16 @@ export default class BarModel extends SeriesModel {
 					y:barCenter
 				}
 			}
+			//borderWidth遮住坐标轴，影响精度，要向内部收缩
+			var midY = (plotStart.y + plotEnd.y)/2;
+			var midX = (plotStart.x + plotEnd.x)/2;
+			if(!reversed) {
+				plotStart.y += that.getUnitNumber(plotStart.y,midY) * (borderWidth/2+0.25);
+				plotEnd.y += that.getUnitNumber(plotEnd.y,midY) * (borderWidth/2+0.25);
+			} else {
+				plotStart.x += that.getUnitNumber(plotStart.x,midX) * (borderWidth/2+0.25);
+				plotEnd.x += that.getUnitNumber(plotEnd.x,midX) * (borderWidth/2 +0.25 );
+			}
 			return {
 				x,
 				y,
@@ -152,8 +164,7 @@ export default class BarModel extends SeriesModel {
 				plotStart,
 				plotEnd,
 				barWidth,
-				align,
-				startFromAxis:!startPoint.y
+				align
 			}
 		})
 	}

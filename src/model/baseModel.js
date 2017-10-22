@@ -6,6 +6,13 @@ export default class BaseModel {
 		var regPercent = /^\d+(\.\d+)?%$/gi;
 		return regPercent.test(str);
 	}
+	getUnitNumber(start,end) {
+		if(start === end) {
+			return 0;
+		} else {
+			return (end - start)/Math.abs(end - start);
+		}
+	}
 	getPercentMayBeValue(percentMayBe,num) {
 		if(typeof num === 'undefined') {
 			return percentMayBe;
