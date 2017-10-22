@@ -60,6 +60,7 @@ export default class Bar extends Component {
                             key={'bar'+index}
                             index={index}
                             visible={visible}
+                            label={y}
                             animation={animation}
                             plotStart={plotStart}
                             plotEnd={plotEnd}
@@ -122,7 +123,7 @@ class BarItem extends Component {
     render(){
         var {props,state} = this;
         var {animated,updateType} = state;
-        var {animation,visible,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
+        var {animation,visible,label,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
         if(animation && !animated) {
             plotEnd = plotStart;
         }
@@ -165,8 +166,8 @@ class BarItem extends Component {
                 animation={animation}
                 x={plotEnd.x} 
                 y={plotEnd.y} 
-                style={{textAlign:'center',textBaseLine:'middle',display:visible?'':'none'}}>
-                {34}
+                style={{color:"#fff",textAlign:'center',textBaseLine:'middle',display:visible?'':'none'}}>
+                {label}
             </Text>
         </g>
         )
@@ -174,10 +175,10 @@ class BarItem extends Component {
     }
     handleMouseOver(event){
         var {props,state} = this;
-        var fillColor = this.props.fill;
+        var fillColor = this.props.attrs.fill;
         var hoverColor = colorHelper.brighten(fillColor,0.2);
         var el = findDOMNode(this);
-        $(el).attr('fill',hoverColor);
+        $(el).find('rect').attr('fill',hoverColor);
         props.toggleToolTip(props.index,true,event);
     }
     handleMouseMove(event){
@@ -186,9 +187,9 @@ class BarItem extends Component {
     }
     handleMouseOut(){
         var {props,state} = this;
-        var fillColor = props.fill;
+        var fillColor = props.attrs.fill;
         var el = findDOMNode(this);
-        $(el).attr('fill',fillColor);
+        $(el).find('rect').attr('fill',fillColor);
         props.toggleToolTip(props.index,false,event);
     }
     componentDidMount(){

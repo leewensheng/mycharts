@@ -37,7 +37,7 @@ export default class Grid extends Component {
 			}
 			if(yAxisData.type === 'value' && xAxisData.option.axisLine.onZero) {
 				if(yAxisData.min*yAxisData.max < 0) {
-					xAxis.other = yAxisData.getPositionByValue(0);
+					xAxisData.other = yAxisData.getPositionByValue(0);
 				}
 			}
 			xAxisData.otherAxisPosition = yAxisData.other;;
