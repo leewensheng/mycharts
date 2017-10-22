@@ -68,16 +68,17 @@ export default class Scatter extends SeriesModel {
 	getScatterPoints(grid){
 		var width = this.chartModel.getWidth();
 		var height = this.chartModel.getHeight();
+		var data = this.getData();
 		var option = this.getOption();
 		var {type,size,minSize,maxSize,sizeBy} = option;
-		var points = this.getPointsOnGrid(grid);
+		var points = grid.getPointsByData(data);
 		var maxValue = this.getMaxValue();
 		maxSize = this.getPercentMayBeValue(maxSize,Math.min(width,height));
-		return this.mapData(function(point,dataIndex){
+		return points.map(function(point){
+			var {x,y,plotX,plotY,dataIndex} = point;
 			var pointSize;
-			var {x,y,value,name,color} = point;
-			var plotX = points[dataIndex].x;
-			var plotY = points[dataIndex].y; 
+			var pointData = data[dataIndex];
+			var {value,name,color} = pointData;
 			if(type === "scatter") {
 				if(typeof size === 'function') {
 					pointSize = size(value);

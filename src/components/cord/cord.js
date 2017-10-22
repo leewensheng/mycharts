@@ -14,13 +14,13 @@ export default class Cord {
     getOption(){
         return this._option;
     }
-    getPointByData(data){
+    getPointByData(data,dataIndex){
         var {x,y} = data;
         var {reversed,xAxis,yAxis} = this;
         var plotX,plotY;
         plotX = reversed ? xAxis.getPositionByValue(y) : xAxis.getPositionByValue(x);
         plotY = reversed ? yAxis.getPositionByValue(x) : yAxis.getPositionByValue(y);
-        return {plotX,plotY,x,y};
+        return {plotX,plotY,x,y,dataIndex};
     }
     getDataByPoint(data){
         var {x,y} = data;
@@ -31,8 +31,8 @@ export default class Cord {
     }
     getPointsByData(seriesData){
         var that = this;
-        return seriesData.map(function(data){
-            return that.getPointByData(data);
+        return seriesData.map(function(data,dataIndex){
+            return that.getPointByData(data,dataIndex);
         })
     }
 }

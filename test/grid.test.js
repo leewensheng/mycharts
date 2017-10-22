@@ -44,7 +44,7 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
-		startOnTick:true,
+		startOnTick:0,
 		gridLine:{
 			enabled:true,
 			lineWidth:1,
@@ -63,8 +63,7 @@ var option = {
 			margin:10,
 			align:'end',
 		},
-		categories : ['周一','周二','周三','周四','周五','周六','周日','周一','周五','周六']
-
+		categories:['一','二','三','四','五','六']
 	},
 	yAxis:{
 		type:'category',
@@ -104,39 +103,11 @@ var option = {
 
 	series:[
         {
-            name:'利润',
-            type:'bar',
-            label: {
-                normal: {
-                    show: true,
-                    position: 'inside'
-                }
-            },
-            data:[200, 170, 240, 244, 200, 220, 210]
-        },
-        {
-            name:'收入',
-            type:'bar',
-            stack: '总量',
-            label: {
-                normal: {
-                    show: true
-                }
-            },
-			data:[320, 302, 341, 374, 390, 450, 420],
-        },
-        {
-            name:'支出',
-			type:'bar',
-            stack: '总量',
-            label: {
-                normal: {
-                    show: true,
-                    position: 'left'
-                }
-            },
-			data:[-120, -132, -101, -134, -190, -230, -210],
-        }
+			type:'line',
+			borderWidth:1,
+			borderColor:'#fff',
+			data:[1,2,3,4,5,6]
+		}
     ]
 }
 var chart = vchart.init(el,{

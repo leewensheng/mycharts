@@ -12,6 +12,7 @@ export default class Linechart extends Component {
         this.onGridChange = this.onGridChange.bind(this);
         props.chartEmitter.on('grid',this.onGridChange);
         this.state = {
+            grid:null,
             hasInited:0,
             points:[]
         };
@@ -19,7 +20,7 @@ export default class Linechart extends Component {
     render(){
         var that = this;
         var {props,state} = this;
-        var {width,height,seriesModel} = props;
+        var {width,height,seriesModel,chartModel} = props;
         var seriesOpt = seriesModel.getOption();
         var seriesId = seriesModel.seriesId;
         var {animation,color,lineWidth,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;

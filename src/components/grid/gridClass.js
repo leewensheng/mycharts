@@ -15,5 +15,7 @@ export default class Grid extends Cord {
         this.left = left;
         this.right = right;
         this.bottom = bottom;
+        this.width = Math.abs(right - left);
+        this.height = Math.abs(bottom - top);
     }
 }
