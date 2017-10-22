@@ -46,6 +46,11 @@ export default class  Axis extends Component {
             <g className={className}>
                 {
                     renderCount > 0 
+                    && 
+                    <AxisTitle udpate={update} axisData={axisData}/>
+                }
+                {
+                    renderCount > 0 
                     &&
                 <Line   
                     update={update}

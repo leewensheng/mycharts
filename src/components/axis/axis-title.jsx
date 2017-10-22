@@ -7,8 +7,9 @@ class AxisTitle extends Component{
 	}
 	render(){
 		var {props} = this;
-		var {update,axis,option,animation,start,end,other} = props;
-		var {type,opposite,title,inverse} = option;
+		var {update,axisData} = props;
+		var {axis,start,end,option,startEdge,endEdge,other,unit} = axisData;
+		var {title,opposite,inverse} = option;
 		var {enabled,align,margin,rotation,style,text} = title;
 		var x,y,transform;
 		var enumAlign = {
@@ -21,43 +22,51 @@ class AxisTitle extends Component{
 		}
 		if(axis === 'xAxis') {
 			if(align === 'start') {
-				x = start + margin*(inverse?1:-1);
+				x = startEdge - unit*margin;
 				y = other;
-				inverse ? style.textAlign = 'left':style.textAlign = 'right';
 				style.textBaseLine = 'middle';
-			} else if( align === 'middle') {
+				style.textAlign = inverse?'left':'right';
+			} else if(align === 'middle') {
 				x = (start + end) / 2;
-				y = other + margin*(opposite?-1:1);
-				style.textAlign = 'center';
-				style.textBaseLine = opposite ? 'bottom' : 'top';
-
-			} else if( align === 'end') {
-				x = end + margin*(inverse?-1:1);
+				y = other;
+				style.textAlign ='middle';
+				style.textBaseLine = opposite ? 'bottom':'top';
+			} else if (align === 'end') {
+				x = endEdge + unit*margin;
 				y = other;
 				style.textBaseLine = 'middle';
-				inverse ? style.textAlign = 'right':style.textAlign = 'left';
+				style.textAlign = inverse?'right':'left';
 			}
-		} else if(axis === 'yAxis') {
+		} else if (axis === 'yAxis') {
 			if(align === 'start') {
+				y = startEdge - unit*margin;
 				x = other;
-				y = start + margin*(inverse?-1:1);
 				style.textAlign = 'center';
-				style.textBaseLine = inverse?'bottom':'top';
-			}else if( align === 'middle') {
+				style.textBaseLine = inverse ? 'bottom':'top';
+			} else if(align === 'middle') {
+				y = (start + end) / 2;
 				x = other + margin*(opposite?1:-1);
-				y = (start + end) /2;
-				style.textAlign = 'center';
 				style.textBaseLine = 'middle';
-			} else if( align === 'end') {
-				x = other;
-				y = end + margin*((inverse?1:-1));
 				style.textAlign = 'center';
-				style.textBaseLine = inverse?'top':'bottom';
+			} else if(align === 'end') {
+				y = endEdge + unit*margin;
+				x = other;
+				style.textAlign = 'center';
+				style.textBaseLine = inverse ? 'top' :'bottom';
 			}
 		}
 		transform = 'rotate(' + rotation + ',' + x+ ',' + y + ')';
 		return (
-			<Text update={update} animation={animation} transform={transform} className="vcharts-axis-title" animation={animation} x={x} y={y}  style={style}>{text||''}</Text>
+			<Text 
+				update={update} 
+				className="vcharts-axis-title"  
+				transform={transform} 
+				x={x} 
+				y={y}  
+				style={style}
+			>
+			{text||''}
+			</Text>
 		)
 	}
 }

@@ -14,6 +14,7 @@ export default class Axis {
     option = null;
     includeSeries = [];
     cord = null;
+    unit = null;
     constructor(axis,min,max,option,includeSeries){
         var realMin = min;
         var realMax = max;
@@ -72,6 +73,7 @@ export default class Axis {
         } else {
             this.interval = tick / (max - min) * (end - start);
         }
+        this.unit = (end - start)/Math.abs(end - start);
         this.ticksPosition = splitData.map(function(val){
             return that.getPositionByValue(val);
         })

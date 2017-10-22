@@ -95,6 +95,7 @@ var option = {
 			barWidth:null,
 			borderWidth:0,
 			borderColor:"#fff",
+			borderRadius:'20%',
 			minBarLength:5,
 			maxBarWidth:500,
 			groupIng:true
