@@ -43,7 +43,8 @@ var option = {
 		margin:40
 	},
 	xAxis:{
-		type:'value',
+		type:'category',
+		startOnTick:true,
 		gridLine:{
 			enabled:true,
 			lineWidth:1,
@@ -61,7 +62,9 @@ var option = {
 			text:'haha',
 			margin:10,
 			align:'end',
-		}
+		},
+		categories : ['周一','周二','周三','周四','周五','周六','周日','周一','周五','周六']
+
 	},
 	yAxis:{
 		type:'category',
@@ -86,13 +89,12 @@ var option = {
 			enabled:0,
 			lineColor:'red'
 		},
-		categories : ['周一','周二','周三','周四','周五','周六','周日','周一','周五','周六']
 	},
 	plotOptions:{
 		bar: {
 			barWidth:null,
-			borderWidth:10,
-			borderColor:"blue",
+			borderWidth:0,
+			borderColor:"#fff",
 			minBarLength:5,
 			maxBarWidth:500,
 			groupIng:true
