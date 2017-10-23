@@ -52,8 +52,12 @@ export default class BarModel extends SeriesModel {
 		var data = this.getData();
 		var stackedOnData = this.getStackedOnData();
 		var stackedData = this.getStackedData();
-		var startPoints = grid.getPointsByData(stackedOnData);
-		var endPoints = grid.getPointsByData(stackedData);
+		var startPoints = grid.getPointsByData(stackedOnData).filter(function(val){
+			return val.visible;
+		})
+		var endPoints = grid.getPointsByData(stackedData).filter(function(val){
+			return val.visible;
+		})
 
 		var categoryAxis = reversed?yAxis:xAxis;
 		var groupBars = categoryAxis.includeSeries.filter(function(series){

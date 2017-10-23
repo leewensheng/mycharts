@@ -48,10 +48,7 @@ export default class  Text extends Component{
             ease = animation.ease || ease;
         }
         if(animation&&!noAnimation) {
-            $(el).stopTransition().transition({
-                x:x,
-                y:y,
-            },during,ease);
+            $(el).stopTransition().transition({x,y },during,ease);
         } else {
             $(el).attr('x',x).attr('y',y);
         }

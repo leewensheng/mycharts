@@ -2,7 +2,15 @@ import vchart from '../src/index.js'
 import $ from 'jquery'
 
 var el = document.querySelector('#root');
-var data = [];
+var base = +new Date(1968, 9, 3);
+var oneDay = 24 * 3600 * 1000;
+var date = [];
+var data = [Math.random() * 300];
+for (var i = 1; i < 200; i++) {
+    var now = new Date(base += oneDay);
+    date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+}
 var option = {
 /*	colors:['blue',{
 		type:'radialGradient',
@@ -44,12 +52,13 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
-		min:1.2,
 		startOnTick:1,
 		gridLine:{
-			enabled:true,
+			enabled:false,
 			lineWidth:1,
 			color:'#e6e6e6'
+		},
+		axisTick:{
 		},
 		axisLine:{
 			onZero:1,
@@ -64,10 +73,11 @@ var option = {
 			margin:10,
 			align:'end',
 		},
-		categories:['一','二','三','四','五','六','一','二','三','四','五','六','一','二','三','四','五','六']
+		categories:date
 	},
 	yAxis:{
 		type:'category',
+		min:0,
 		startOnTick:true,
 		title:{
 			text:'李文胜',
@@ -86,7 +96,7 @@ var option = {
 			lineColor:"#000"
 		},
 		gridLine:{
-			enabled:0,
+			enabled:1,
 			lineColor:'red'
 		},
 	},
@@ -107,12 +117,8 @@ var option = {
 			type:'line',
 			borderWidth:1,
 			borderColor:'#fff',
-			data:[1,2,3,4,5,6,2,3,5,2,3,2,2,3,5,2,3,2,2,3,5]
-		},
-		{
-			type:'bar',
-			data:[2,3,5,2,3,2,2,3,5,2,3,2,2,3,5,2,3,2,2,3,5]
-		},
+			data:data
+		}
     ]
 }
 var chart = vchart.init(el,{

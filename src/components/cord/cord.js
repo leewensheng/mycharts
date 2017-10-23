@@ -14,13 +14,40 @@ export default class Cord {
     getOption(){
         return this._option;
     }
-    getPointByData(data,dataIndex){
+    getPointByData(data){
         var {x,y} = data;
         var {reversed,xAxis,yAxis} = this;
+        var visible = true,
+            xmin = xAxis.min,
+            xmax = xAxis.max,
+            ymin = yAxis.min,
+            ymax = yAxis.max;
+        if(typeof x === 'number') {
+            if(reversed) {
+                if(x < ymin || x > ymax) {
+                    visible = false;
+                } 
+            } else {
+                if(x < xmin || x > xmax) {
+                    visible = false;
+                }
+            }
+        }
+        if(typeof y === 'number') {
+            if(reversed) {
+                if(y < xmin || y > xmax) {
+                    visible = false;
+                } 
+            } else {
+                if(y < ymin || y > ymax) {
+                    visible = false;
+                }
+            }
+        }
         var plotX,plotY;
         plotX = reversed ? xAxis.getPositionByValue(y) : xAxis.getPositionByValue(x);
         plotY = reversed ? yAxis.getPositionByValue(x) : yAxis.getPositionByValue(y);
-        return {plotX,plotY,x,y,dataIndex};
+        return {plotX,plotY,x,y,visible};
     }
     getDataByPoint(data){
         var {x,y} = data;
@@ -31,41 +58,8 @@ export default class Cord {
     }
     getPointsByData(seriesData){
         var that = this;
-        var points = [];
-        var {xAxis,yAxis,reversed} = this;
-        var data,x,y,isInside;
-        var xmin = xAxis.min,
-            xmax = xAxis.max,
-            ymin = yAxis.min,
-            ymax = yAxis.max;
-        for(let i = 0; i < seriesData.length;i++ ) {
-            data = seriesData[i];
-            x = data.x;
-            y = data.y;
-            if(typeof x === 'number') {
-                if(reversed) {
-                    if(x < ymin || x > ymax) {
-                        continue;
-                    } 
-                } else {
-                    if(x < xmin || x > xmax) {
-                        continue;
-                    }
-                }
-            }
-            if(typeof y === 'number') {
-                if(reversed) {
-                    if(y < xmin || y > xmax) {
-                        continue;
-                    } 
-                } else {
-                    if(y < ymin || y > ymax) {
-                        continue;
-                    }
-                }
-            }
-            points.push(this.getPointByData(data,i));
-        }
-        return points;
+        return seriesData.map(function(data){
+            return that.getPointByData(data);
+        })
     }
 }
