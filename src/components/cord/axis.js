@@ -75,7 +75,7 @@ export default class Axis {
         this.startEdge = startEdge;
         this.endEdge = endEdge;
         if(min === max) {
-            this.interval = end - start;
+            this.interval = (startEdge + endEdge)/2;
         } else {
             this.interval = tick / (max - min) * (end - start);
         }
