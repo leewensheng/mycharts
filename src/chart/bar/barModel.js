@@ -151,9 +151,15 @@ export default class BarModel extends SeriesModel {
 			if(!reversed) {
 				plotStart.y += that.getUnitNumber(plotStart.y,midY) * (borderWidth/2+0.5);
 				plotEnd.y += that.getUnitNumber(plotEnd.y,midY) * (borderWidth/2+0.5);
+				if(Math.abs(plotEnd.y - plotStart.y) < minBarLength) {
+					plotEnd.y = plotStart.y + yAxis.unit*minBarLength;
+				}
 			} else {
 				plotStart.x += that.getUnitNumber(plotStart.x,midX) * (borderWidth/2+0.5);
 				plotEnd.x += that.getUnitNumber(plotEnd.x,midX) * (borderWidth/2 + 0.5);
+				if(Math.abs(plotEnd.x- plotStart.x) < minBarLength) {
+					plotEnd.x = plotStart.x + xAxis.unit*minBarLength;
+				}
 			}
 			return {
 				x,

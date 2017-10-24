@@ -6,11 +6,12 @@ var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 3600 * 1000;
 var date = [];
 var data = [Math.random() * 300];
-for (var i = 1; i < 200; i++) {
+for (var i = 1; i < 20; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+    data.push(0);
 }
+date.push(Date.now())
 var option = {
 /*	colors:['blue',{
 		type:'radialGradient',
@@ -52,6 +53,8 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
+		min:1,
+		max:1,
 		startOnTick:1,
 		gridLine:{
 			enabled:false,
@@ -76,8 +79,8 @@ var option = {
 		categories:date
 	},
 	yAxis:{
-		type:'category',
 		min:0,
+		type:'category',
 		startOnTick:true,
 		title:{
 			text:'李文胜',
@@ -106,7 +109,7 @@ var option = {
 			borderWidth:0,
 			borderColor:"#fff",
 			borderRadius:'20%',
-			minBarLength:5,
+			minBarLength:20,
 			maxBarWidth:500,
 			groupIng:true
 		}
@@ -114,7 +117,7 @@ var option = {
 
 	series:[
         {
-			type:'line',
+			type:'bar',
 			borderWidth:1,
 			borderColor:'#fff',
 			data:data

@@ -189,7 +189,7 @@ class BarItem extends Component {
                 animation={animation}
                 x={plotEnd.x} 
                 y={plotEnd.y} 
-                style={{color:"#fff",textAlign:'center',textBaseLine:'middle',display:visible?'':'none'}}>
+                style={{color:"#fff",textAlign:'center',textBaseLine:'middle',display:visible&&inCord?'':'none'}}>
                 {label}
             </Text>
         </g>
