@@ -28,8 +28,16 @@ export default class Bar extends Component {
         var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
         var toggleToolTip = this.toggleToolTip;
         var {animation,style,borderRadius,borderColor,borderWidth} = seriesOpt;
+        var clipId = seriesId + 'clippath';
+        var clipPath='url(#' + clipId + ')';
         return (
-            <g  className="vcharts-series vcharts-bar-series">
+            <g clipPath={clipPath} className="vcharts-series vcharts-bar-series">
+                {
+                    grid&&
+                    <clipPath id={clipId}>
+                    <rect x={grid.left} y={grid.top} width={grid.right - grid.left} height={grid.bottom-grid.top} />
+                    </clipPath>
+                }
                 <g className="vcharts-series-points">
                 {
                     bars.map(function(bar,index){
@@ -44,7 +52,8 @@ export default class Bar extends Component {
                             barWidth,
                             align,
                             startFromAxis,
-                            isAdd
+                            isAdd,
+                            inCord
                         } = bar;
                         var r =  seriesModel.getPercentMayBeValue(borderRadius,barWidth);
                         var attrs = {
@@ -62,6 +71,7 @@ export default class Bar extends Component {
                             index={index}
                             isAdd={isAdd}
                             visible={visible}
+                            inCord={inCord}
                             label={y}
                             animation={animation}
                             plotStart={plotStart}
@@ -133,8 +143,11 @@ class BarItem extends Component {
     render(){
         var {props,state} = this;
         var {animated,updateType} = state;
-        var {animation,isAdd,visible,label,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
+        var {animation,isAdd,visible,inCord,label,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
         if(animation && !animated) {
+            plotEnd = plotStart;
+        }
+        if(!inCord) {
             plotEnd = plotStart;
         }
         if(updateType === 'newProps' || isAdd) {
@@ -186,7 +199,7 @@ class BarItem extends Component {
     handleMouseOver(event){
         var {props,state} = this;
         var fillColor = this.props.attrs.fill;
-        var hoverColor = colorHelper.brighten(fillColor,0.2);
+        var hoverColor = colorHelper.brighten(fillColor,0.3);
         var el = findDOMNode(this);
         $(el).find('rect').attr('fill',hoverColor);
         props.toggleToolTip(props.index,true,event);

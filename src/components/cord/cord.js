@@ -17,7 +17,7 @@ export default class Cord {
     getPointByData(data){
         var {x,y} = data;
         var {reversed,xAxis,yAxis} = this;
-        var visible = true,
+        var inCord = true,
             xmin = xAxis.min,
             xmax = xAxis.max,
             ymin = yAxis.min,
@@ -25,29 +25,29 @@ export default class Cord {
         if(typeof x === 'number') {
             if(reversed) {
                 if(x < ymin || x > ymax) {
-                    visible = false;
+                    inCord = false;
                 } 
             } else {
                 if(x < xmin || x > xmax) {
-                    visible = false;
+                    inCord = false;
                 }
             }
         }
         if(typeof y === 'number') {
             if(reversed) {
                 if(y < xmin || y > xmax) {
-                    visible = false;
+                    inCord = false;
                 } 
             } else {
                 if(y < ymin || y > ymax) {
-                    visible = false;
+                    inCord = false;
                 }
             }
         }
         var plotX,plotY;
         plotX = reversed ? xAxis.getPositionByValue(y) : xAxis.getPositionByValue(x);
         plotY = reversed ? yAxis.getPositionByValue(x) : yAxis.getPositionByValue(y);
-        return {plotX,plotY,x,y,visible};
+        return {plotX,plotY,x,y,inCord};
     }
     getDataByPoint(data){
         var {x,y} = data;

@@ -52,13 +52,8 @@ export default class BarModel extends SeriesModel {
 		var data = this.getData();
 		var stackedOnData = this.getStackedOnData();
 		var stackedData = this.getStackedData();
-		var startPoints = grid.getPointsByData(stackedOnData).filter(function(val){
-			return val.visible;
-		})
-		var endPoints = grid.getPointsByData(stackedData).filter(function(val){
-			return val.visible;
-		})
-
+		var startPoints = grid.getPointsByData(stackedOnData);
+		var endPoints = grid.getPointsByData(stackedData);
 		var categoryAxis = reversed?yAxis:xAxis;
 		var groupBars = categoryAxis.includeSeries.filter(function(series){
 			return series.type === 'bar';
@@ -121,6 +116,7 @@ export default class BarModel extends SeriesModel {
 		var align = !reversed?'vertical':'horizontal';
 		return startPoints.map(function(startPoint,index){
 			var endPoint = endPoints[index];
+			var inCord = startPoint.inCord && endPoint.inCord;
 			var {x,y,plotX,plotY} = endPoint;
 			var pointData = data[x];
 			var {color} = pointData;
@@ -168,7 +164,8 @@ export default class BarModel extends SeriesModel {
 				plotStart,
 				plotEnd,
 				barWidth,
-				align
+				align,
+				inCord
 			}
 		})
 	}

@@ -72,11 +72,13 @@ export default class Slider extends Component {
 		var changeValue = gridAxis.getChangeByDistance(change);
 		startValue += changeValue;
 		endValue += changeValue;
-		if(startValue < min || startValue > max) {
-			return;
+		if(startValue < min) {
+			endValue -= (startValue - min);
+			startValue = min;
 		}
-		if(endValue < min || endValue > max) {
-			return;
+		if(endValue > max) {
+			startValue -= (endValue - max);
+			endValue = max;
 		}
 		this.setState({startValue,endValue});
 		zoomAxis(gridAxis,Math.min(startValue,endValue),Math.max(startValue,endValue));
