@@ -50,6 +50,7 @@ export default class Bar extends Component {
                             plotStart,
                             plotEnd,
                             barWidth,
+                            barLength,
                             align,
                             startFromAxis,
                             isAdd,
