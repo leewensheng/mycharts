@@ -90,6 +90,34 @@ class PieModel extends SeriesModel {
 		})
 		option.data = data;
 	}
+	getLegendColors(){
+		var seriesOpt = this.getOption();
+		var {roseType} = seriesOpt;
+		var {data,color} = seriesOpt;
+		var arr_value = data.map(function(point,index){
+			return point.visible?point.value:0;
+		})
+		var sum = mathUtils.sum(arr_value);
+		if(sum === 0) {
+			sum = 1e-6;
+		}
+		var max_num = mathUtils.max(arr_value)||1e-6;
+		var min_num = mathUtils.min(arr_value);
+		var mean_num = mathUtils.mean(arr_value);
+		return data.map(function(point,index){
+			var {value} = point;
+			if(color) {
+	        	//颜色差以和平均值差对比
+	        	if(max_num - min_num > 0) {
+	        		return colorHelper.brighten(color,(value - mean_num)/(max_num - min_num )*0.5);
+	        	} else {
+	        		return color;
+	        	}
+	        } else {
+				return point.color;
+			}
+		});
+	}
 	getRenderData(width,height,oldState){
 		var seriesOpt = this.getOption();
 		var vmin = Math.min(width,height);

@@ -58,12 +58,13 @@ export default class LegendModel extends ComponentModel {
 		            seriesIndex:seriesIndex
 		        })
 		    } else {
+				let colors = seriesModel.getLegendColors();
 		        seriesModel.mapData(function(point,dataIndex){
 		            items.push({
 		                x:0,
 		                y:0,
 		                name:point.name,
-		                color:point.color,
+		                color:colors[dataIndex],
 		                icon:icon,
 		                visible:point.visible,
 		                multiple:true,
