@@ -65,7 +65,6 @@ class  Slice extends Component{
 		return (
 			<PathElement 
 				animation={animation}
-				filter="url(#shadow)"
 				transform={transform}
 				d={d}
 				fill={color}

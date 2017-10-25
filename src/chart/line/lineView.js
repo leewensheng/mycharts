@@ -40,7 +40,7 @@ export default class Linechart extends Component {
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
         return (
-            <g clipPath={clipPath} className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
+            <g  clipPath={clipPath} className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
                 {
                 animation
                 &&
@@ -48,19 +48,23 @@ export default class Linechart extends Component {
                     <Rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
                 </ClipPath>
                 }
-                <Polyline  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
                         &&
                         points.map(function(point,index){
-                            var {x,y,plotX,plotY,polyline,color} = point;
+                            var {x,y,plotX,plotY,polyline,color,inCord} = point;
+                            var mergeStyle = {
+                                display:inCord ? '' : 'none'
+                            };
                             return <Text  
                                     key={x}
                                     x={plotX} 
                                     y={plotY - 10}
                                     fill={color} 
+                                    {...mergeStyle}
                                     style={dataLabels.style} 
                                     >{y}</Text>
                         })
@@ -71,15 +75,20 @@ export default class Linechart extends Component {
                         marker.enabled
                         &&
                         points.map(function(point,index){
-                            var {x,y,plotX,plotY,polyline,color} = point;
+                            var {x,y,plotX,plotY,polyline,color,inCord} = point;
+                            var mergeStyle = {
+                                display:inCord ? '' : 'none'
+                            };
                             return <Circle  
                                         key={x}
                                         cx={plotX} 
                                         cy={plotY} 
                                         r={4} 
                                         fill="#fff" 
+                                        {...mergeStyle}
                                         stroke={color} 
                                         strokeWidth="1" 
+                                        style={{display:inCord?'':'none'}}
                                         />
                         })
                     }

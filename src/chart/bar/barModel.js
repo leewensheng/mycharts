@@ -121,7 +121,7 @@ export default class BarModel extends SeriesModel {
 			var pointData = data[x];
 			var {color} = pointData;
 			var plotStart,plotEnd;
-			var groupStart,barCenter;
+			var groupStart,barCenter,barLength;
 			if(!reversed) {
 				groupStart = plotX - realGroupWidth/2*flag;
 				barCenter = groupStart + ((barWidth+barGap) * currentStackIndex + barWidth/2)*flag;
@@ -145,21 +145,29 @@ export default class BarModel extends SeriesModel {
 					y:barCenter
 				}
 			}
+			
 			//borderWidth遮住坐标轴，影响精度，要向内部收缩
-			var midY = (plotStart.y + plotEnd.y)/2;
-			var midX = (plotStart.x + plotEnd.x)/2;
 			if(!reversed) {
 				if(Math.abs(plotEnd.y - plotStart.y) < minBarLength) {
 					plotEnd.y = plotStart.y + yAxis.unit*minBarLength;
 				}
-				plotStart.y += that.getUnitNumber(plotStart.y,midY) * (borderWidth/2+0.5);
-				plotEnd.y += that.getUnitNumber(plotEnd.y,midY) * (borderWidth/2+0.5);
+				barLength = Math.abs(plotStart.y - plotEnd.y);
 			} else {
 				if(Math.abs(plotEnd.x- plotStart.x) < minBarLength) {
 					plotEnd.x = plotStart.x + xAxis.unit*minBarLength;
 				}
+				barLength = Math.abs(plotStart.x - plotEnd.x);
+			}
+			var midY = (plotStart.y + plotEnd.y)/2;
+			var midX = (plotStart.x + plotEnd.x)/2;
+			if(!reversed) {
+				plotStart.y += that.getUnitNumber(plotStart.y,midY) * (borderWidth/2+0.5);
+				plotEnd.y += that.getUnitNumber(plotEnd.y,midY) * (borderWidth/2+0.5);
+				
+			} else {
 				plotStart.x += that.getUnitNumber(plotStart.x,midX) * (borderWidth/2+0.5);
 				plotEnd.x += that.getUnitNumber(plotEnd.x,midX) * (borderWidth/2 + 0.5);
+				
 			}
 			return {
 				x,
@@ -170,6 +178,7 @@ export default class BarModel extends SeriesModel {
 				plotStart,
 				plotEnd,
 				barWidth,
+				barLength,
 				align,
 				inCord
 			}
