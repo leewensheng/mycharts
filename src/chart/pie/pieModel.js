@@ -92,6 +92,7 @@ class PieModel extends SeriesModel {
 	}
 	getRenderData(width,height,oldState){
 		var seriesOpt = this.getOption();
+		var vmin = Math.min(width,height);
 		var {center,size,minSize,innerSize,startAngle,endAngle,roseType} = seriesOpt;
 		var {data,color} = seriesOpt;
 		data.map(function(point,index){
@@ -110,15 +111,20 @@ class PieModel extends SeriesModel {
 		var max_num = mathUtils.max(arr_value)||1e-6;
 		var min_num = mathUtils.min(arr_value);
 		var mean_num = mathUtils.mean(arr_value);
-	    var cx = center[0]*width;
-	    var cy = center[1]*height;
-	    var radius = Math.min(width,height)*size/2;
-	    radius = Math.max(radius,minSize);
-	    var innerRadius = radius*innerSize ;
+	    var cx = this.getPercentMayBeValue(center[0],width);
+		var cy = this.getPercentMayBeValue(center[1],height);
+		var radius =this.getPercentMayBeValue(size,vmin) / 2;
+		radius = Math.max(radius,minSize);
+		var innerRadius = this.getPercentMayBeValue(innerSize,radius);
+		if(innerRadius > innerRadius) {
+			let mid = innerRadius;
+			innerRadius = mid;
+			radius = innerRadius;
+		}
 	    var startAngle = startAngle - 90;
 	    var points = [];
 	    var endAngle = endAngle?(endAngle - 90):(startAngle+360);
-	    var totalAngle = endAngle - startAngle;
+		var totalAngle = endAngle - startAngle;
 	    data.reduce(function(startAngle,curData,index){
 	    	var percent,endAngle,value;
 	    	value = arr_value[index];
@@ -168,16 +174,8 @@ class PieModel extends SeriesModel {
 
 	    if(roseType === "radius" || roseType === "area")  {
 	     	innerSize = 0;
-	    }
-	    return {
-	    	points:points,
-	    	cx:cx,
-	    	cy:cy,
-	    	radius:radius,
-	    	startAngle:startAngle,
-	    	endAngle:endAngle,
-	    	innerRadius:innerRadius
-	    }
+		}
+		return {cx,cy,radius,innerRadius,startAngle,endAngle,points};
 	}
 
 }

@@ -40,7 +40,7 @@ export default class Slider extends Component {
 			var height = 40;
 			return (
 			<g className="vcharts-slider">
-				<Rect onclick={this.onQuickPanning} animation={false} className="datazoom-slider" x={x} y={y} width={width} height={height} fill={background} stroke="none"/>
+				<Rect onClick={this.onQuickPanning} animation={false} className="datazoom-slider" x={x} y={y} width={width} height={height} fill={background} stroke="none"/>
 				{
 				includeSeries.length
 				&&

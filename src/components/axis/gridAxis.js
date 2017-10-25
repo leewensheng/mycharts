@@ -62,6 +62,9 @@ export default class  GridAxis extends Axis {
         var {inside,length} = axisTick;
         var tickFlag = 1;
         var tickOther;
+        if(includeSeries.length === 0 && type === 'value') {
+            return [];
+        }
         if(inside) {
             tickFlag *= -1;
         }
@@ -105,12 +108,15 @@ export default class  GridAxis extends Axis {
         return ticks;
     }
     getGridLines(){
-        var {type,axis,grid,interval,option,ticksPosition,otherAxisPosition} = this;
+        var {type,axis,grid,interval,option,ticksPosition,otherAxisPosition,includeSeries} = this;
         var lines = [];
         var {top,left,right,bottom} = grid;
         var {startOnTick} = option;
-         ticksPosition.map(function(position){
-             var x1,y1,x2,y2;
+        if(includeSeries.length === 0 && type === 'value') {
+            return [];
+        }
+        ticksPosition.map(function(position){
+            var x1,y1,x2,y2;
             if(Math.abs(position - otherAxisPosition) > 1e-6) {
                 if(type === 'category' && startOnTick) {
                     position += interval / 2;
@@ -130,7 +136,7 @@ export default class  GridAxis extends Axis {
         return lines;
     }
     getLabels(){
-        var {axis,type,option,other,splitData,base,ticksPosition} = this;
+        var {axis,type,option,other,splitData,base,ticksPosition,includeSeries} = this;
         var {categories,axisLabel,opposite} = option;
         var {inside,margin} = axisLabel;
         var labels = [];
@@ -140,6 +146,9 @@ export default class  GridAxis extends Axis {
         }
         if(opposite) {
             labelFlag *= -1;
+        }
+        if(includeSeries.length === 0 && type === 'value') {
+            return [];
         }
         return ticksPosition.map(function(position,index){
             var x,y,text;

@@ -6,10 +6,10 @@ var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 3600 * 1000;
 var date = [];
 var data = [Math.random() * 300];
-for (var i = 1; i < 20; i++) {
+for (var i = 1; i < 40; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-    data.push(0);
+    data.push((Math.random() - 0.1)*300);
 }
 date.push(Date.now())
 var option = {
@@ -53,9 +53,7 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
-		min:1,
-		max:1,
-		startOnTick:1,
+		startOnTick:0,
 		gridLine:{
 			enabled:false,
 			lineWidth:1,
@@ -117,10 +115,23 @@ var option = {
 
 	series:[
         {
-			type:'bar',
+			type:'line',
 			borderWidth:1,
 			borderColor:'#fff',
 			data:data
+		},
+		{
+			type:'bar',
+			data:[200,200,120,200,300,200,120,200,300,200,120,{color:'red',y:200},200,300,200,120]
+		},
+		{
+			type:'pie',
+			color:'blue',
+			center:['50%','50%'],
+			size:'50%',
+			innerSize:'50%',
+			data:[1,2,3],
+			roseType:'radius'
 		}
     ]
 }
