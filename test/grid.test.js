@@ -9,7 +9,7 @@ var data = [Math.random() * 300];
 for (var i = 1; i < 20; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-    data.push(0);
+    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
 }
 date.push(Date.now())
 var option = {
@@ -42,7 +42,7 @@ var option = {
 	grid:{
 		top:100,
 		left:50,
-		right:80,
+		right:180,
 		bottom:150,
 		containLabel:0,
 		background:'#eee'
@@ -53,9 +53,7 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
-		min:1,
-		max:1,
-		startOnTick:1,
+		startOnTick:0,
 		gridLine:{
 			enabled:false,
 			lineWidth:1,
@@ -109,7 +107,7 @@ var option = {
 			borderWidth:0,
 			borderColor:"#fff",
 			borderRadius:'20%',
-			minBarLength:20,
+			minBarLength:5,
 			maxBarWidth:500,
 			groupIng:true
 		}
@@ -117,12 +115,30 @@ var option = {
 
 	series:[
         {
-			type:'bar',
+			type:'line',
 			borderWidth:1,
 			borderColor:'#fff',
 			data:data
 		}
-    ]
+	],
+	dataZoom:{
+		enabled:true,
+		type:'slider',
+		realTime:true,
+		xAxis:null,
+		yAxis:0,
+		opposite:false,
+		margin:40,
+		height:40,
+		background:"rgba(33,33,33,0.7)",
+		handle:{
+			size:'100%',
+			color:'#a7b7cc',
+			borderColor:'#000',
+			borderWidth:0,
+			borderType:''
+		}
+	}
 }
 var chart = vchart.init(el,{
 	height:600
