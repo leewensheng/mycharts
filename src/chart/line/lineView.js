@@ -5,7 +5,6 @@ import Text from '../../elements/text'
 import Polyline from '../../elements/polyline'
 import Circle from '../../elements/circle'
 import ClipPath from '../../elements/clippath'
-import Rect from '../../elements/rect'
 export default class Linechart extends Component {
     constructor(props){
         super(props);
@@ -45,27 +44,25 @@ export default class Linechart extends Component {
                 animation
                 &&
                 <ClipPath id={clipId}>
-                    <Rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
+                    <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
                 </ClipPath>
                 }
-                <Polyline ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                <Polyline clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
                         &&
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color,inCord} = point;
-                            var mergeStyle = {
-                                display:inCord ? '' : 'none'
-                            };
+                            var labelStyle = {display:inCord ? '' : 'none'};
+                            $.extend(labelStyle,dataLabels.style);
                             return <Text  
                                     key={x}
                                     x={plotX} 
                                     y={plotY - 10}
                                     fill={color} 
-                                    {...mergeStyle}
-                                    style={dataLabels.style} 
+                                    style={labelStyle} 
                                     >{y}</Text>
                         })
                     }
@@ -101,22 +98,27 @@ export default class Linechart extends Component {
         if(!animation) {
             return
         }
-        var clip = this.refs.clip;
+        var that = this;
+        var el = $(findDOMNode(this));
+        var refs = this.refs;
+        var clip = refs.clip;
         var rect = findDOMNode(clip);
-        var {left,top,width,height} = grid;
+        var {top,left,right,bottom,reversed} = grid;
         var ease = 'easeOut',during = 1000;
         if(typeof animation === 'object') {
             ease = animation.ease || ease;
             during = animation.during || during;
         }
-        $(rect)
-        .attr('x',left)
-        .attr('y',top)
-        .attr('width',0)
-        .attr('height',height)
-        .transition({
-            width:width
-        },during,ease);
+        var x = left,y = top;
+        var width = right - left;
+        var height = bottom - top;
+        $(rect).attr({
+            x,y,width:reversed?width:0,height:reversed?0:height
+        }).transition({
+            x,y,width,height
+        },during,ease,function(){
+           el.removeAttr('clip-path');
+        });
     }
     onGridChange(grid){
         var that = this;
