@@ -53,7 +53,7 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
-		startOnTick:0,
+		startOnTick:1,
 		gridLine:{
 			enabled:false,
 			lineWidth:1,
@@ -132,6 +132,12 @@ var option = {
 			innerSize:'50%',
 			data:[1,2,3],
 			roseType:'radius'
+		},
+		{
+			type:'bubble',
+			borderWidth:1,
+			borderColor:"#fff",
+			data:[[1,100,20],[2,150,50],[2,120,30],[4,200,80],[10,150,80]]
 		}
     ]
 }
