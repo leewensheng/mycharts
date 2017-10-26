@@ -27,38 +27,77 @@ export default class Slider extends Component {
 		var that = this;
 		var {props,state} = this;
 		var {gridAxis,sliderOpt} = props;
-		const size = 40;
 		var {axis,start,end,other,includeSeries} = gridAxis;
+		var {min,max} = gridAxis;
 		var {startValue,endValue} = state;
 		var {background} = sliderOpt;
 		var handleStart = gridAxis.getPositionByValue(startValue);
 		var handleEnd = gridAxis.getPositionByValue(endValue);
+		var sliderX,sliderY,startX,startY,endX,endY,panX,panY;
+		var sliderWidth,sliderHeight,startWidth,startHeight,endWidth,endHeight,panWidth,panHeight;
+		const handleSize = 40;
+		const sliderSize = 40;
 		if(axis === 'xAxis') {
-			var x = Math.min(start,end);
-			var y = other;
-			var width = Math.abs(start-end);
-			var height = 40;
-			return (
-			<g className="vcharts-slider">
-				<Rect onClick={this.onQuickPanning} animation={false} className="datazoom-slider" x={x} y={y} width={width} height={height} fill={background} stroke="none"/>
-				{
-				includeSeries.length
-				&&
-				<g>
-					<Draggable key="pan" axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
-						<Rect animation={false} className="datazoom-pan" x={handleStart-size/2} y={other} width={handleEnd - handleStart} height={height} fill={background} stroke="none" />
-					</Draggable>
-					<Draggable key="start"  axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
-						<Rect animation={false}className="datazoom-handle" x={handleStart-size/2} y={other} width={size} height={height} fill="blue" stroke="none" />
-					</Draggable>
-					<Draggable key="end" axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
-						<Rect animation={false} className="datazoom-handle" x={handleEnd-size/2} y={other} width={size} height={height} fill="blue" stroke="none" />
-					</Draggable>
-				</g>
-				}
-			</g>
-			)
+			sliderX = Math.min(start,end);
+			sliderY = other;
+			sliderWidth = Math.abs(start - end);
+			sliderHeight = sliderSize;
+
+			startX = Math.min(handleStart - handleSize/2*gridAxis.unit,handleStart);
+			startY = other;
+			startWidth = handleSize;
+			startHeight = sliderSize;
+
+			endX = Math.min(handleEnd - handleSize/2*gridAxis.unit,handleEnd);
+			endY = other;
+			endWidth = handleSize;
+			endHeight = sliderSize;
+			panX = Math.min(handleStart,handleEnd)
+			panY = other;
+			panWidth = Math.abs(handleStart - handleEnd);
+			panHeight = sliderSize;
+		} else {
+			sliderX = other;
+			sliderY = Math.min(start,end);
+			sliderWidth = sliderSize;
+			sliderHeight = Math.abs(start - end);
+
+			startX = other;
+			startY = Math.min(handleStart - handleSize/2*gridAxis.unit,handleStart);
+			startWidth = sliderSize;
+			startHeight = handleSize;
+
+			endX = other;
+			endY = Math.min(handleEnd - handleSize/2*gridAxis.unit,handleEnd);
+			endWidth = sliderSize;
+			endHeight = handleSize;
+
+			panX = other;
+			panY = Math.min(handleSize,handleEnd);
+			panWidth = sliderSize;
+			panHeight = Math.abs(handleStart - handleEnd);
 		}
+		return (
+		<g className="vcharts-slider">
+			<Rect onclick={this.onQuickPanning} animation={false} className="datazoom-slider" x={sliderX} y={sliderY} width={sliderWidth} height={sliderHeight} fill={background} stroke="none"/>
+			{
+			includeSeries.length
+			&&
+			<g>
+			<Draggable key="pan" axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
+				<Rect animation={false} className="datazoom-pan" x={panX} y={panY} width={panWidth} height={panHeight} fill={background} stroke="none" />
+			</Draggable>
+			<Draggable key="start"  axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
+				<Rect animation={false}className="datazoom-handle" x={startX} y={startY} width={startWidth} height={startHeight} fill="blue" stroke="none" />
+			</Draggable>
+			<Draggable key="end" axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
+				<Rect animation={false} className="datazoom-handle" x={endX} y={endY} width={endWidth} height={endHeight} fill="blue" stroke="none" />
+			</Draggable>
+			</g>
+			}
+		</g>
+		)
+		
 	}
 	onQuickPanning(event) {
 		//计算出平移的距离

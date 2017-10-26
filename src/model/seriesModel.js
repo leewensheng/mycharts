@@ -164,4 +164,10 @@ export default class SeriesModel extends BaseModel {
 			return y/num;
 		})
 	}
+	getLegendColors(){
+		var seriesColor = this.seriesColor;
+		return this.mapData(function(point){
+			return point.color||seriesColor;
+		})
+	}
 }

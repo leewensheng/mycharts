@@ -187,8 +187,8 @@ export default class  GridAxis extends Axis {
         }
         copy.setAxisSide(startEdge,endEdge,other,startEdge,endEdge);
         //此处应使用typeof number严格检测
-        copy.startValue = option.min || min;
-        copy.endValue = option.max || max;
+        copy.startValue = typeof option.min === 'number' ?option.min : min;
+        copy.endValue = typeof option.max === 'number' ?option.max : max;
         return copy;
     }
 }

@@ -5,10 +5,19 @@ import PathElement from './path'
 import Path from 'cad/path'
 import browser from 'cad/browser'
 //todo 多行支持tspan
-class  Line extends Component{
+export default class  Line extends Component{
     constructor(props) {
         super(props);
     }
+    static defaultProps = {
+        animation:true,
+        x1:0,
+        y1:0,
+        x2:0,
+        y2:0,
+        strokeWidth:1,
+        stroke:'#333'
+    };
     render(){
         var {props} = this;
         var {x1,y1,x2,y2} = props;
@@ -35,14 +44,3 @@ class  Line extends Component{
         return <PathElement {...props} style={defaultStyle} d={d} /> 
     }
 }
-Line.defaultProps = 
-{
-    animation:true,
-    x1:0,
-    y1:0,
-    x2:0,
-    y2:0,
-    strokeWidth:1,
-    stroke:'#333'
-}
-module.exports = Line;

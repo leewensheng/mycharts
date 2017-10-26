@@ -47,7 +47,7 @@ export default class  Axis extends Component {
                 {
                     renderCount > 0 
                     && 
-                    <AxisTitle udpate={update} axisData={axisData}/>
+                    <AxisTitle update={update} axisData={axisData}/>
                 }
                 {
                     renderCount > 0 
@@ -72,8 +72,13 @@ export default class  Axis extends Component {
                         &&
                         gridLines.map(function(line,index){
                             var {x1,y1,x2,y2} = line;
+                            var isAdd = false;
+                            if(labels[index]) {
+                                isAdd = labels[index].isAdd;
+                            }
                             return <Line  
                                     update={update} 
+                                    animation={!isAdd}
                                     key={index} 
                                     x1={x1} 
                                     y1={y1} 
