@@ -8,7 +8,6 @@ export default class  Text extends Component{
         this.state = {x,y}
     }
     static defaultProps = {
-        noAnimation:false,
         animation:true,
         x:0,
         y:0,
@@ -38,7 +37,7 @@ export default class  Text extends Component{
     animate(prevProps){
         var {state,props} = this;
         var el = findDOMNode(this);
-        var {animation,noAnimation,x,y} = props;
+        var {animation,x,y} = props;
         if(x === prevProps.x && y === prevProps.y) {
             return;
         }
@@ -47,7 +46,7 @@ export default class  Text extends Component{
             during = animation.during || during;
             ease = animation.ease || ease;
         }
-        if(animation&&!noAnimation) {
+        if(animation) {
             $(el).stopTransition().transition({x,y },during,ease);
         } else {
             $(el).attr('x',x).attr('y',y);

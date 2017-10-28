@@ -93,7 +93,7 @@ export default class  Axis extends Component {
                         var {x,y,text,isAdd} = label;
                         return <Text 
                                     key={index} 
-                                    noAnimation={renderCount<=1||isAdd}
+                                    animation={renderCount>1&&!isAdd}
                                     x={label.x} 
                                     y={label.y} 
                                     opacity={renderCount==0&&containLabel?0:1}

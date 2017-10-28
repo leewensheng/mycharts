@@ -44,7 +44,7 @@ var option = {
 		left:20,
 		right:80,
 		bottom:150,
-		containLabel:1,
+		containLabel:0,
 		background:'#eee'
 	},
 	legend:{
