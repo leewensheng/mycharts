@@ -101,11 +101,15 @@ export default class SeriesModel extends BaseModel {
 		return data.map(function(point,dataIndex){
 			var {x,y} = point;
 			var relativeY = relativeData[dataIndex].y;
-			stackOnData.map(function(data){
+			var  hasStack = false;
+			stackOnData.map(function(data,stackIndex){
 				if(data[dataIndex]) {
 					var stackedY = data[dataIndex].y;
 					if(typeof stackedY === 'number' && typeof relativeY === 'number' && relativeY * stackedY >= 0 ) {
 						y += stackedY;
+						if(stackIndex !== stackOnData.length -1) {
+							hasStack = true;
+						}
 					} else {
 						if(typeof relativeY !== 'number') {
 							y = stackedY;
@@ -113,7 +117,7 @@ export default class SeriesModel extends BaseModel {
 					}
 				}
 			});
-			return  {x,y};
+			return  {x,y,hasStack};
 		})
 	}
 	getData(){

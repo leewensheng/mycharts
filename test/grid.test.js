@@ -65,7 +65,8 @@ var option = {
 		},
 		axisLine:{
 			onZero:1,
-			lineColor:'#000'
+			lineColor:'green',
+			lineWidth:1
 		},
 		axisLabel:{
 			margin:20
@@ -107,7 +108,7 @@ var option = {
 			barWidth:null,
 			borderWidth:0,
 			borderColor:"#fff",
-			borderRadius:'20%',
+			borderRadius:0,
 			minBarLength:20,
 			maxBarWidth:500,
 			groupIng:true
@@ -117,9 +118,7 @@ var option = {
 	series:[
 		{
 			type:'bar',
-			borderWidth:1,
 			stack:1,
-			borderColor:'#fff',
 			data:[1,2,3,4,5,6]
 		},{
 			type:'bar',
