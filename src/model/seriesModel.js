@@ -71,7 +71,7 @@ export default class SeriesModel extends BaseModel {
 				stackOnData.push(seriesModel.getData());
 			}
 		});
-		return this._getStackedData(stackOnData);
+		return this._getStackedData(stackOnData,data);
 	}
 	getStackedOnData(){
 		var option = this.getOption();
@@ -80,11 +80,11 @@ export default class SeriesModel extends BaseModel {
 		var type = this.type;
 		var data = this.getData();
 		var stackedOnData = [];
-		var ret = data.map(function(val){
+		var defaultStack = data.map(function(val){
 			return {x:val.x,y:null};
 		});
 		if(!stack) {
-			return ret;
+			return defaultStack
 		}
 		this.chartModel.eachSeriesByType(type,function(seriesModel){
 			var seriesOpt = seriesModel.getOption();
@@ -92,20 +92,22 @@ export default class SeriesModel extends BaseModel {
 				stackedOnData.push(seriesModel.getData());
 			}
 		});
-		stackedOnData.push(ret);
-		return this._getStackedData(stackedOnData);
+		return this._getStackedData(stackedOnData,data);
 	}
-	_getStackedData(stackOnData){
-		var data = stackOnData.pop();
+	_getStackedData(stackOnData,relativeData){
+		var data = relativeData.map(function(val){
+			return {x:val.x,y:null};
+		})
 		return data.map(function(point,dataIndex){
 			var {x,y} = point;
+			var relativeY = relativeData[dataIndex].y;
 			stackOnData.map(function(data){
 				if(data[dataIndex]) {
 					var stackedY = data[dataIndex].y;
-					if(!isNaN(stackedY) && stackedY*y > 0) {
-						if(!isNaN(y)) {
-							y += stackedY;
-						} else {
+					if(typeof stackedY === 'number' && typeof relativeY === 'number' && relativeY * stackedY >= 0 ) {
+						y += stackedY;
+					} else {
+						if(typeof relativeY !== 'number') {
 							y = stackedY;
 						}
 					}
