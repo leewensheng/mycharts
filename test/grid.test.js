@@ -41,10 +41,10 @@ var option = {
 	},
 	grid:{
 		top:100,
-		left:20,
+		left:2,
 		right:80,
 		bottom:150,
-		containLabel:0,
+		containLabel:1,
 		background:'#eee'
 	},
 	legend:{
@@ -78,6 +78,7 @@ var option = {
 	},
 	yAxis:{
 		min:0,
+		inverse:1,
 		type:'category',
 		startOnTick:true,
 		title:{

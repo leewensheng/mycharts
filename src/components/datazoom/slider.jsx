@@ -79,7 +79,7 @@ export default class Slider extends Component {
 		}
 		return (
 		<g className="vcharts-slider">
-			<Rect onclick={this.onQuickPanning} animation={false} className="datazoom-slider" x={sliderX} y={sliderY} width={sliderWidth} height={sliderHeight} fill={background} stroke="none"/>
+			<Rect onClick={this.onQuickPanning} animation={false} className="datazoom-slider" x={sliderX} y={sliderY} width={sliderWidth} height={sliderHeight} fill={background} stroke="none"/>
 			{
 			includeSeries.length
 			&&
@@ -101,6 +101,21 @@ export default class Slider extends Component {
 	}
 	onQuickPanning(event) {
 		//计算出平移的距离
+		var {props,state} = this;
+		var {gridAxis} = props;
+		var {startValue,endValue} = state;
+		var el = findDOMNode(this);
+		var point = $(el).getOffsetMouse(event);
+		var {x,y} = point;
+		var value = gridAxis.getValueByPosition(axis === 'xAxis' ? x : y);
+		var panValue = endValue - startValue;
+		if(value < startValue) {
+			
+		} else {
+			if(value > endValue) {
+				
+			}
+		}
 	}
 	onPanning(dx,dy){
 		var {props,state} = this;

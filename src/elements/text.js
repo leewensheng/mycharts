@@ -49,7 +49,7 @@ export default class  Text extends Component{
         if(animation) {
             $(el).stopTransition().transition({x,y },during,ease);
         } else {
-            $(el).attr('x',x).attr('y',y);
+            $(el).stopTransition().attr('x',x).attr('y',y);
         }
     }
     componentWillReceiveProps(nextProps){

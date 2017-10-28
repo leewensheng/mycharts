@@ -85,14 +85,25 @@ export default class Axis {
         })
     }
     getPositionByValue(val){
-        var {min,max,start,end} = this;
+        var {min,max,start,end,option} = this;
         if(min === max) {
             return (start + end) / 2;
         }
         if(typeof val === 'number') {
             return start + (val - min) / (max - min) * (end - start);
         }
-        return this.otherAxisPosition;
+        var otherAxisPosition = this.otherAxisPosition;
+        if(option.inverse) {
+            if(otherAxisPosition === start) {
+                return end;
+            }
+            if(otherAxisPosition === end) {
+                return start;
+            }
+            return otherAxisPosition;
+        } else {
+            return otherAxisPosition;
+        }
     }
     getPositionsByData(data){
         var that = this;
