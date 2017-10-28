@@ -115,17 +115,16 @@ var option = {
 	},
 
 	series:[
-        {
-			type:'line',
-			borderWidth:1,
-			borderColor:'#fff',
-			data:data
-		},
 		{
 			type:'bar',
 			borderWidth:1,
+			stack:1,
 			borderColor:'#fff',
 			data:[1,2,3,4,5,6]
+		},{
+			type:'bar',
+			data:[1,2,-3,4,5,6],
+			stack:1
 		}
     ]
 }

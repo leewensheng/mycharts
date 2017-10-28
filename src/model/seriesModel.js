@@ -67,26 +67,11 @@ export default class SeriesModel extends BaseModel {
 		var stackOnData = [];
 		this.chartModel.eachSeriesByType(type,function(seriesModel){
 			var seriesOpt = seriesModel.getOption();
-			if(seriesOpt.stack === stack && seriesModel.seriesIndex < seriesIndex && seriesModel.visible) {
+			if(seriesOpt.stack === stack && seriesModel.seriesIndex <= seriesIndex && seriesModel.visible) {
 				stackOnData.push(seriesModel.getData());
 			}
 		});
-		return this.mapData(function(point,dataIndex){
-			var {x,y} = point;
-			stackOnData.map(function(data){
-				if(data[dataIndex]) {
-					var stackedY = data[dataIndex].y;
-					if(!isNaN(stackedY) && stackedY*y > 0) {
-						if(!isNaN(y)) {
-							y += stackedY;
-						} else {
-							y = stackedY;
-						}
-					}
-				}
-			});
-			return  {x,y};
-		})
+		return this._getStackedData(stackOnData);
 	}
 	getStackedOnData(){
 		var option = this.getOption();
@@ -107,8 +92,27 @@ export default class SeriesModel extends BaseModel {
 				stackedOnData.push(seriesModel.getData());
 			}
 		});
-		
-		return ret;
+		stackedOnData.push(ret);
+		return this._getStackedData(stackedOnData);
+	}
+	_getStackedData(stackOnData){
+		var data = stackOnData.pop();
+		return data.map(function(point,dataIndex){
+			var {x,y} = point;
+			stackOnData.map(function(data){
+				if(data[dataIndex]) {
+					var stackedY = data[dataIndex].y;
+					if(!isNaN(stackedY) && stackedY*y > 0) {
+						if(!isNaN(y)) {
+							y += stackedY;
+						} else {
+							y = stackedY;
+						}
+					}
+				}
+			});
+			return  {x,y};
+		})
 	}
 	getData(){
 		var {option} = this;
