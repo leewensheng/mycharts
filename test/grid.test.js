@@ -6,10 +6,10 @@ var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 3600 * 1000;
 var date = [];
 var data = [Math.random() * 300];
-for (var i = 1; i < 10; i++) {
+for (var i = 1; i < 5; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-    data.push((Math.random() - 0.1)*300000);
+    data.push(Math.random()*300+520);
 }
 date.push(Date.now())
 var option = {
@@ -53,6 +53,8 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
+		opposite:0,
+		inverse:0,
 		startOnTick:1,
 		gridLine:{
 			enabled:false,
@@ -65,7 +67,6 @@ var option = {
 			onZero:1,
 			lineColor:'#000'
 		},
-		opposite:0,
 		axisLabel:{
 			margin:20
 		},
@@ -77,8 +78,7 @@ var option = {
 		categories:date
 	},
 	yAxis:{
-		min:0,
-		inverse:1,
+		inverse:0,
 		type:'category',
 		startOnTick:true,
 		title:{

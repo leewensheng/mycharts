@@ -86,23 +86,17 @@ export default class Axis {
     }
     getPositionByValue(val){
         var {min,max,start,end,option} = this;
+        var {inverse} = option;
         if(min === max) {
             return (start + end) / 2;
         }
         if(typeof val === 'number') {
             return start + (val - min) / (max - min) * (end - start);
         }
-        var otherAxisPosition = this.otherAxisPosition;
-        if(option.inverse) {
-            if(otherAxisPosition === start) {
-                return end;
-            }
-            if(otherAxisPosition === end) {
-                return start;
-            }
-            return otherAxisPosition;
+        if(min * max <= 0) {
+            return this.getPositionByValue(0);
         } else {
-            return otherAxisPosition;
+            return this.getPositionByValue(min);
         }
     }
     getPositionsByData(data){
