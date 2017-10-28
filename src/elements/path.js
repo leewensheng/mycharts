@@ -83,4 +83,3 @@ export default class  PathElement extends Component{
         $(findDOMNode(this)).stopTransition();
     }
 }
-module.exports = PathElement;

@@ -41,7 +41,7 @@ var option = {
 	},
 	grid:{
 		top:100,
-		left:50,
+		left:20,
 		right:80,
 		bottom:150,
 		containLabel:1,
@@ -119,6 +119,12 @@ var option = {
 			borderWidth:1,
 			borderColor:'#fff',
 			data:data
+		},
+		{
+			type:'bar',
+			borderWidth:1,
+			borderColor:'#fff',
+			data:[1,2,3,4,5,6]
 		}
     ]
 }

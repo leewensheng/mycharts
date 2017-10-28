@@ -11,7 +11,10 @@ export default class  Axis extends Component {
         var {axisData} = props;
         this.state = {
             renderCount:0,
-            labels:axisData.getLabels()
+            labels:axisData.getLabels(),
+            ticks:[],
+            gridLines:[],
+            axisLinePosition:null
         }    
     }
     render(){
@@ -21,7 +24,7 @@ export default class  Axis extends Component {
         var {opposite,startOnTick,type,dataRange,
             minRange,splitNumber,categories,inverse,title,axisLine,
             axisLabel,axisTick,gridLine} = option;
-        var {renderCount,labels} = state;
+        var {renderCount,labels,ticks,gridLines} = state;
         var labelFlag = 1,tickFlag = 1;
         if(axisLabel.inside) {
             labelFlag *= -1;
@@ -30,8 +33,6 @@ export default class  Axis extends Component {
             labelFlag *= -1;
         }
         var axisLinePosition = axisData.getAxisLinePosition();
-        var ticks = axisData.getTicks();
-        var gridLines = axisData.getGridLines();
         var className = 'vcharts-grid-axis';
         if(axis === 'xAxis') {
             axisLabel.style.textBaseLine = labelFlag==1 ? 'top':'bottom';
@@ -64,23 +65,15 @@ export default class  Axis extends Component {
                     strokeWidth={axisLine.lineWidth}
                     style={axisLine.style}/>                
                 }
-                {
-                renderCount > 0 
-                &&
                 <g className="vhcart-axis-gridline">
                     {
                         gridLine.enabled
                         &&
                         gridLines.map(function(line,index){
-                            var {x1,y1,x2,y2} = line;
-                            var isAdd = false;
-                            if(labels[index]) {
-                                isAdd = labels[index].isAdd;
-                            }
+                            var {x1,y1,x2,y2,isAdd} = line;
                             return <Line  
-                                    update={update} 
-                                    animation={!isAdd}
                                     key={index} 
+                                    animation={!isAdd}
                                     x1={x1} 
                                     y1={y1} 
                                     x2={x2} 
@@ -92,15 +85,15 @@ export default class  Axis extends Component {
                         })
                     }
                 </g>
-                }
                 <g className="vcharts-axis-labels">
                 {
                     axisLabel.enabled
                     &&
                     labels.map(function(label,index){
+                        var {x,y,text,isAdd} = label;
                         return <Text 
-                                    noAnimation={renderCount<=1}
                                     key={index} 
+                                    noAnimation={renderCount<=1||isAdd}
                                     x={label.x} 
                                     y={label.y} 
                                     opacity={renderCount==0&&containLabel?0:1}
@@ -108,23 +101,15 @@ export default class  Axis extends Component {
                     })
                 }
                 </g>
-                {
-                renderCount > 0 
-                &&
                 <g className="vcharts-axis-tick">
                     {
                         axisTick.enabled
                         &&
                         ticks.map(function(tick,index){
-                            var {x1,y1,x2,y2} = tick;
-                            var isAdd = false;
-                            if(labels[index]) {
-                                isAdd = labels[index].isAdd;
-                            }
+                            var {x1,y1,x2,y2,isAdd} = tick;
                             return <Line   
-                                    animation={!isAdd}
-                                    update={update}
                                     key={index}
+                                    animation={!isAdd}
                                     x1={x1} 
                                     y1={y1} 
                                     x2={x2} 
@@ -135,33 +120,69 @@ export default class  Axis extends Component {
                         })
                     }
                 </g>    
-                }
-                
             </g>
         )
     }
     componentWillReceiveProps(nextProps){
-        var {renderCount,labels} = this.state;
-        var oldLables = labels;
-        var nextLabels = nextProps.axisData.getLabels();
+        var {props,state} = this;
+        var {axisData} = nextProps;
+        var {renderCount} = this.state;
+        var {gridLines,ticks,labels} = state;
         renderCount++;
         if(nextProps.updateType === 'adjust') {
-            nextLabels.forEach(function(label,index){
-                if(!oldLables[index]) {
+            labels = axisData.getLabels().map(function(label,index){
+                if(labels[index]) {
+                    label.isAdd = labels[index].isAdd;
+                }
+                return label;
+            });
+            ticks = axisData.getTicks().map(function(tick,index){
+                if(ticks[index]) {
+                    tick.isAdd = ticks[index].isAdd
+                } else {
+                    tick.isAdd = true;
+                }
+                return tick;
+            });
+            gridLines = axisData.getGridLines().map(function(gridLine,index){
+                if(gridLines[index]) {
+                    gridLine.isAdd = gridLines[index].isAdd;
+                } else {
+                    gridLine.isAdd = true;
+                }
+                return gridLine;
+            });
+        } else if(nextProps.updateType==='newProps' && axisData.includeSeries.length){
+            labels = axisData.getLabels().map(function(label,index){
+                if(!labels[index]){
                     label.isAdd = true;
+                } else {
+                    label.x = labels[index].x;
+                    label.y = labels[index].y;
+                    label.isAdd = false;
+                }
+                return label;
+            });
+            ticks = axisData.getTicks().map(function(tick,index){
+                if(!ticks[index]){
+                    tick.isAdd = true;
+                    return tick;
+                } else {
+                    ticks[index].isAdd = false;
+                    return ticks[index];
+                }
+            });
+            gridLines = axisData.getGridLines().map(function(gridline,index){
+                if(!gridLines[index]){
+                    gridline.isAdd = true;
+                    return gridline;
+                } else {
+                    gridLines[index].isAdd = false;
+                    return gridLines[index];
                 }
             })
-        } else {
-           nextLabels.forEach(function(label,index){
-                if(oldLables[index]){
-                    label.x = oldLables[index].x;
-                    label.y = oldLables[index].y;
-                } else {
-                    label.isAdd = true;
-                }
-           }) 
         }
-        this.setState({renderCount,labels:nextLabels});
+        this.setState({renderCount,labels,ticks,gridLines});
     }
     sendAxisData(){
         var {props,state} = this;
