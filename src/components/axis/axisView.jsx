@@ -8,9 +8,10 @@ export default class  Axis extends Component {
     constructor(props){
         super(props);
         var ticks = [];
+        var {axisData} = props;
         this.state = {
             renderCount:0,
-            labels:props.axisData.getLabels()
+            labels:axisData.getLabels()
         }    
     }
     render(){
@@ -141,17 +142,26 @@ export default class  Axis extends Component {
     }
     componentWillReceiveProps(nextProps){
         var {renderCount,labels} = this.state;
+        var oldLables = labels;
+        var nextLabels = nextProps.axisData.getLabels();
         renderCount++;
         if(nextProps.updateType === 'adjust') {
-            var oldLables = labels;
-            labels = nextProps.axisData.getLabels();
-            labels.forEach(function(label,index){
+            nextLabels.forEach(function(label,index){
                 if(!oldLables[index]) {
                     label.isAdd = true;
                 }
             })
+        } else {
+           nextLabels.forEach(function(label,index){
+                if(oldLables[index]){
+                    label.x = oldLables[index].x;
+                    label.y = oldLables[index].y;
+                } else {
+                    label.isAdd = true;
+                }
+           }) 
         }
-        this.setState({renderCount,labels});
+        this.setState({renderCount,labels:nextLabels});
     }
     sendAxisData(){
         var {props,state} = this;

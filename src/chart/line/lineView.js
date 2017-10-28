@@ -39,7 +39,7 @@ export default class Linechart extends Component {
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
         return (
-            <g  clipPath={clipPath} className="vcharts-series vcharts-line-series" style={{display:visible?'':'none'}}>
+            <g  clipPath={clipPath} className="vcharts-series vcharts-line-series" >
                 {
                 animation
                 &&
@@ -47,15 +47,15 @@ export default class Linechart extends Component {
                     <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
                 </ClipPath>
                 }
-                <Polyline clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled
                         &&
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color,inCord} = point;
-                            var labelStyle = {display:inCord ? '' : 'none'};
+                            var labelStyle = {display:inCord&&visible ? '' : 'none'};
                             $.extend(labelStyle,dataLabels.style);
                             return <Text  
                                     key={x}
@@ -73,19 +73,14 @@ export default class Linechart extends Component {
                         &&
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color,inCord} = point;
-                            var mergeStyle = {
-                                display:inCord ? '' : 'none'
-                            };
                             return <Circle  
                                         key={x}
                                         cx={plotX} 
                                         cy={plotY} 
-                                        r={4} 
+                                        r={visible&&inCord?4:0} 
                                         fill="#fff" 
-                                        {...mergeStyle}
                                         stroke={color} 
                                         strokeWidth="1" 
-                                        style={{display:inCord?'':'none'}}
                                         />
                         })
                     }
