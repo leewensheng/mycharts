@@ -102,20 +102,33 @@ export default class Slider extends Component {
 	onQuickPanning(event) {
 		//计算出平移的距离
 		var {props,state} = this;
-		var {gridAxis} = props;
+		var {gridAxis,sliderOpt,zoomAxis} = props;
 		var {startValue,endValue} = state;
+		var {axis,min,max} = gridAxis;
 		var el = findDOMNode(this);
 		var point = $(el).getOffsetMouse(event);
 		var {x,y} = point;
 		var value = gridAxis.getValueByPosition(axis === 'xAxis' ? x : y);
 		var panValue = endValue - startValue;
 		if(value < startValue) {
-			
-		} else {
-			if(value > endValue) {
-				
+			if(startValue - value > (panValue/2) && (value - panValue/2) > min) {
+				startValue = value - panValue /2;
+				endValue = value + panValue/2;
+			} else {
+				startValue = min;
+				endValue = startValue + panValue;
+			}
+		} else if(value > endValue) {
+			if(value - endValue > (panValue/2) && (value + panValue/2) < max) {
+				startValue = value - panValue /2;
+				endValue = value + panValue/2;
+			} else {
+				endValue = max;
+				startValue = endValue - panValue;
 			}
 		}
+		this.setState({startValue,endValue});
+		zoomAxis(gridAxis,Math.min(startValue,endValue),Math.max(startValue,endValue));
 	}
 	onPanning(dx,dy){
 		var {props,state} = this;
