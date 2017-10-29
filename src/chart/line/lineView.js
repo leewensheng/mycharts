@@ -124,6 +124,8 @@ export default class Linechart extends Component {
             var points = props.seriesModel.getLinePoints(grid);
             if(!hasInited || !visible) {
                 this.animate(grid);
+            } else {
+                $(this.refs.clip).stopTransition().removeAttr('clip-path');
             }
             this.setState({grid,points,hasInited:++hasInited,visible:true});
             this.forceUpdate();
