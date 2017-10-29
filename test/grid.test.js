@@ -54,7 +54,6 @@ var option = {
 	xAxis:{
 		type:'category',
 		opposite:0,
-		inverse:0,
 		startOnTick:1,
 		gridLine:{
 			enabled:false,

@@ -85,13 +85,13 @@ export default class Slider extends Component {
 			&&
 			<g>
 			<Draggable key="pan" axis={axis} onDragMove={that.onPanning} onDragEnd={that.onPanning}>
-				<Rect animation={false} className="datazoom-pan" x={panX} y={panY} width={panWidth} height={panHeight} fill={background} stroke="none" />
+				<Rect animation={false} className="datazoom-pan" x={panX} y={panY} width={panWidth} height={panHeight} fill={background} stroke="none" style={{cursor:'move'}}/>
 			</Draggable>
 			<Draggable key="start"  axis={axis} onDragMove={that.startHandleMove} onDragEnd={that.startHandleMove}>
-				<Rect animation={false}className="datazoom-handle" x={startX} y={startY} width={startWidth} height={startHeight} fill="blue" stroke="none" />
+				<Rect animation={false}className="datazoom-handle" x={startX} y={startY} width={startWidth} height={startHeight} fill="blue" stroke="none"  style={{cursor:axis === 'xAxis' ? 'e-resize':'n-resize'}}/>
 			</Draggable>
 			<Draggable key="end" axis={axis} onDragMove={that.endHandleMove} onDragEnd={that.endHandleMove}>
-				<Rect animation={false} className="datazoom-handle" x={endX} y={endY} width={endWidth} height={endHeight} fill="blue" stroke="none" />
+				<Rect animation={false} className="datazoom-handle" x={endX} y={endY} width={endWidth} height={endHeight} fill="blue" stroke="none"  style={{cursor:axis === 'xAxis' ? 'e-resize':'n-resize'}}/>
 			</Draggable>
 			</g>
 			}
