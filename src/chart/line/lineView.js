@@ -89,7 +89,7 @@ export default class Linechart extends Component {
             </g>
         );
     }
-    animate(grid){
+    animate(grid,isStop){
         var animation = this.props.seriesModel.getOption().animation;
         if(!animation) {
             return
@@ -108,6 +108,10 @@ export default class Linechart extends Component {
         var x = left,y = top;
         var width = right - left;
         var height = bottom - top;
+        if(isStop) {
+            $(rect).stopTransition().attr({x,y,width,height});
+            return;
+        }
         $(rect).stopTransition().attr({
             x,y,width:reversed?width:0,height:reversed?0:height
         }).transition({
@@ -125,7 +129,7 @@ export default class Linechart extends Component {
             if(!hasInited || !visible) {
                 this.animate(grid);
             } else {
-                $(this.refs.clip).stopTransition().removeAttr('clip-path');
+                this.animate(grid,true)
             }
             this.setState({grid,points,hasInited:++hasInited,visible:true});
             this.forceUpdate();
