@@ -108,13 +108,15 @@ export default class Linechart extends Component {
         var x = left,y = top;
         var width = right - left;
         var height = bottom - top;
-        if(isStop) {
-            $(rect).stopTransition().attr({x,y,width,height});
-            return;
-        }
-        $(rect).stopTransition().attr({
-            x,y,width:reversed?width:0,height:reversed?0:height
-        }).transition({
+        if(!isStop) {
+            $(rect).stopTransition().attr({
+                x,y,width:reversed?width:0,height:reversed?0:height
+            });
+        } else {
+            $(rect).stopTransition();
+            during = 400;
+       }
+       $(rect).transition({
             x,y,width,height
         },during,ease,function(){
            el.removeAttr('clip-path');
