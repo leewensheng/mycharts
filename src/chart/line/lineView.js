@@ -13,6 +13,7 @@ export default class Linechart extends Component {
         this.state = {
             grid:null,
             hasInited:0,
+            visible:props.seriesModel.visible,
             points:[]
         };
     }
@@ -107,7 +108,7 @@ export default class Linechart extends Component {
         var x = left,y = top;
         var width = right - left;
         var height = bottom - top;
-        $(rect).attr({
+        $(rect).stopTransition().attr({
             x,y,width:reversed?width:0,height:reversed?0:height
         }).transition({
             x,y,width,height
@@ -118,15 +119,20 @@ export default class Linechart extends Component {
     onGridChange(grid){
         var that = this;
         var {props,state} = this;
-        var {hasInited} = state;
+        var {hasInited,visible} = state;
         if(grid.seriesIndex == this.props.seriesIndex) {
             var points = props.seriesModel.getLinePoints(grid);
-            if(!hasInited) {
+            if(!hasInited || !visible) {
                 this.animate(grid);
             }
-            this.setState({grid,points,hasInited:++hasInited});
+            this.setState({grid,points,hasInited:++hasInited,visible:true});
             this.forceUpdate();
             
+        }
+    }
+    componentWillReceiveProps(nextProps){
+        if(!nextProps.seriesModel.visible) {
+            this.setState({visible:false});
         }
     }
     shouldComponentUpdate(nextProps,nextState){

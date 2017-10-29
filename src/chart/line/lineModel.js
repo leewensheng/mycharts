@@ -55,9 +55,9 @@ export default class LineModel extends SeriesModel {
 		return points.map(function(point,index){
 			var stackPoint = stackedOnPoints[index];
 			var inCord = point.inCord && stackPoint.inCord;
-			var {x,y,plotX,plotY} = point;
+			var {plotX,plotY} = point;
 			var pointData  = data[index];
-			var {color} = pointData;
+			var {color,x,y} = pointData;
 			var stackX = stackPoint.plotX;
 			var stackY = stackPoint.plotY;
 			return {x,y,stackX,stackY,plotX,plotY,color,inCord};

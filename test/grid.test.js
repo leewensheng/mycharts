@@ -65,7 +65,7 @@ var option = {
 		},
 		axisLine:{
 			onZero:1,
-			lineColor:'green',
+			lineColor:'#333',
 			lineWidth:1
 		},
 		axisLabel:{
@@ -106,7 +106,7 @@ var option = {
 	plotOptions:{
 		bar: {
 			barWidth:null,
-			borderWidth:0,
+			borderWidth:1,
 			borderColor:"#fff",
 			borderRadius:0,
 			minBarLength:20,
@@ -117,12 +117,12 @@ var option = {
 
 	series:[
 		{
-			type:'bar',
+			type:'line',
 			stack:1,
 			data:[1,2,3,4,5,6]
 		},{
-			type:'bar',
-			data:[1,2,-3,4,5,6],
+			type:'line',
+			data:[1,2,3,4,5,6],
 			stack:1
 		}
     ]
