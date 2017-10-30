@@ -164,7 +164,12 @@ export default class  GridAxis extends Axis {
                 text  = categories[splitData[index]];
             } else if(type === 'value') {
                 text = splitData[index];
-                text =  parseFloat(text.toFixed(Math.abs(k-3)));
+                if(k < 3) {
+                    text =  parseFloat(
+                        text.toFixed(Math.min(20,Math.abs(k-3)))
+                    );
+                }
+                
             }
             return {x,y,text};
         })
