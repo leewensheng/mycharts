@@ -114,7 +114,7 @@ export default class Linechart extends Component {
             });
         } else {
             $(rect).stopTransition();
-            during = 400;
+            during = 300;
        }
        $(rect).transition({
             x,y,width,height
