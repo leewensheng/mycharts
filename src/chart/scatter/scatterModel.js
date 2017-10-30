@@ -26,7 +26,7 @@ export default class Scatter extends SeriesModel {
 		},
 		size:20,
 		maxSize:'20%',//图表vmin的百分比
-		minSize:'8',
+		minSize:8,
 		sizeBy:'area'//根据面积成比例，还是根据size成比例
 	};
 	normalLizeData(){

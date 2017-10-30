@@ -168,6 +168,8 @@ export default class  GridAxis extends Axis {
                     text =  parseFloat(
                         text.toFixed(Math.min(20,Math.abs(k-3)))
                     );
+                } else {
+                    text = parseInt(text);
                 }
                 
             }

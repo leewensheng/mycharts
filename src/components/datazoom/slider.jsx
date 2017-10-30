@@ -139,6 +139,12 @@ export default class Slider extends Component {
 		var {startValue,endValue} = state;
 		var change = axis === 'xAxis' ? dx:dy;
 		var changeValue = gridAxis.getChangeByDistance(change);
+		if(startValue <= min && changeValue < 0) {
+			return;
+		}
+		if(endValue >= max && changeValue > 0) {
+			return;
+		}
 		startValue += changeValue;
 		endValue += changeValue;
 		if(startValue < min) {
