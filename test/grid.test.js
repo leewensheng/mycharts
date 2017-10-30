@@ -124,7 +124,12 @@ var option = {
 			data:[1,2,3,4,5,6],
 			stack:1
 		}
-    ]
+	],
+	dataZoom:[{
+		yAxis:0
+	},{
+		xAxis:0
+	}]
 }
 var chart = vchart.init(el,{
 	height:600

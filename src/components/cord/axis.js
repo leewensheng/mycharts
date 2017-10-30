@@ -28,7 +28,7 @@ export default class Axis {
         var splitData = [];
         var tick;
         min = isforceMin ? option.min : min;
-		max = isforceMax ? option.max : max;
+        max = isforceMax ? option.max : max;
         if(type === 'value') {
             let splitInfo = this._getSplitInfo(min,max,option.splitNumber,isforceMin,isforceMax);
             splitData = splitInfo.data;

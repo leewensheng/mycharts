@@ -30,6 +30,8 @@ export default class Slider extends Component {
 		var {axis,start,end,other,includeSeries} = gridAxis;
 		var {min,max} = gridAxis;
 		var {startValue,endValue} = state;
+		startValue = Math.max(startValue,min);
+		endValue = Math.min(endValue,max);
 		var {background} = sliderOpt;
 		var handleStart = gridAxis.getPositionByValue(startValue);
 		var handleEnd = gridAxis.getPositionByValue(endValue);
@@ -63,17 +65,17 @@ export default class Slider extends Component {
 			sliderHeight = Math.abs(start - end);
 
 			startX = other;
-			startY = Math.min(handleStart - handleSize/2*gridAxis.unit,handleStart);
+			startY = Math.min(handleStart + handleSize/2*gridAxis.unit,handleStart);
 			startWidth = sliderSize;
 			startHeight = handleSize;
 
 			endX = other;
-			endY = Math.min(handleEnd - handleSize/2*gridAxis.unit,handleEnd);
+			endY = Math.min(handleEnd + handleSize/2*gridAxis.unit,handleEnd);
 			endWidth = sliderSize;
 			endHeight = handleSize;
 
 			panX = other;
-			panY = Math.min(handleSize,handleEnd);
+			panY = Math.min(handleStart,handleEnd);
 			panWidth = sliderSize;
 			panHeight = Math.abs(handleStart - handleEnd);
 		}

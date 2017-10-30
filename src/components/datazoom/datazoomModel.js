@@ -12,7 +12,7 @@ export default class DataZoomModel extends ComponentModel {
 		enabled:true,
 		type:'slider',
 		realTime:true,
-		xAxis:0,
+		xAxis:null,
 		yAxis:null,
 		opposite:false,
 		margin:40,
