@@ -136,9 +136,10 @@ export default class  GridAxis extends Axis {
         return lines;
     }
     getLabels(){
-        var {axis,type,option,other,splitData,base,ticksPosition,includeSeries} = this;
+        var {axis,tick,type,option,other,splitData,base,ticksPosition,includeSeries} = this;
         var {categories,axisLabel,opposite} = option;
         var {inside,margin} = axisLabel;
+        var k = Math.ceil(Math.log(tick)/Math.log(10));
         var labels = [];
         var labelFlag = 1;
         if(inside) {
@@ -161,8 +162,9 @@ export default class  GridAxis extends Axis {
             }
             if(type === 'category') {
                 text  = categories[splitData[index]];
-            } else {
+            } else if(type === 'value') {
                 text = splitData[index];
+                text =  parseFloat(text.toFixed(Math.abs(k-3)));
             }
             return {x,y,text};
         })

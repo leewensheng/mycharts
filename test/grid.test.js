@@ -118,11 +118,7 @@ var option = {
 		{
 			type:'line',
 			stack:1,
-			data:[1,2,3,4,5,6]
-		},{
-			type:'line',
-			data:[1,2,3,4,5,6],
-			stack:1
+			data:[0.01,0.02,0.03,0.04]
 		}
 	],
 	dataZoom:[{

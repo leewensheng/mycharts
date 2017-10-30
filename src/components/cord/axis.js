@@ -152,7 +152,14 @@ export default class Axis {
         	data[0] = min;
         }
         if(isforceMax) {
-        	data[data.length - 1] = max;
+           while(data.length) {
+             let num = data.pop();
+             if(num < max) {
+                 data.push(num);
+                 break;
+             }
+           }
+            data.push(max);
         }
         return {data,tick};
     }
