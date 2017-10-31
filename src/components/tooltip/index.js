@@ -18,7 +18,7 @@ export default class Tooltip extends Component {
 		style.position = 'absolute';
 		style.zIndex = 1;
 		style.borderRadius = '5px';
-		style.borderWidth = '3';
+		style.borderWidth = '3px';
 		style.borderColor = 'transparent';
 		style.background = 'rgba(0,0,0,0.3)';
 		style.padding = '5px';

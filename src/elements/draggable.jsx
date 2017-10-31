@@ -34,14 +34,15 @@ export default class Draggable extends Component {
 		}
 	};
 	render(){
-		return (<g onMouseDown={this.dragStart}>
+		return (<g onMouseDown={this.dragStart} onTouchStart={this.dragStart}>
 			{this.props.children}
 		</g>)
 	}
 	dragStart(event){
 		event.preventDefault();
 		event.stopPropagation();
-		var {clientX,clientY} = event;
+		var mouse = $.mouse(event);
+		var {clientX,clientY} = mouse;
 		this.setState({
 			isDragging:true,
 			startX:clientX,
@@ -50,14 +51,17 @@ export default class Draggable extends Component {
 			endY:clientY
 		});
 		$(document).on("mousemove",this.dragMove);
+		$(document).on("touchmove",this.dragMove);
 		$(document).on("mouseup",this.dragEnd);
+		$(document).on("touchend",this.dragEnd);
 		this.props.onDragStart();
 	}
 	dragMove(event){
 		event.preventDefault();
 		event.stopPropagation();
 		var {props,state} = this;
-		var {clientX,clientY} = event;
+		var mouse = $.mouse(event);
+		var {clientX,clientY} = mouse;
 		var {startX,startY} = state;
 		this.setState({
 			endX:clientX,
@@ -68,16 +72,11 @@ export default class Draggable extends Component {
 	dragEnd(event){
 		event.preventDefault();
 		event.stopPropagation();
-		var {startX,startY} = this.state;
-		var {clientX,clientY} = event;
-		this.setState({
-			isDragging:false,
-			endX:clientX,
-			endY:clientY
-		});
 		$(document).off("mousemove",this.dragMove);
+		$(document).off("touchmove",this.dragMove);
 		$(document).off("mouseup",this.dragEnd);
-		this.props.onDragEnd(clientX - startX,clientY - startY);
+		$(document).off("touchend",this.dragEnd);
+		this.props.onDragEnd();
 	}
 	componentWillReceiveProps(){
 		var {endX,endY} = this.state;
