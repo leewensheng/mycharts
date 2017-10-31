@@ -78,6 +78,8 @@ export default class Linechart extends Component {
                                         key={x}
                                         cx={plotX} 
                                         cy={plotY} 
+                                        onMouseOver={that.toggleToolTip.bind(that,index,true)}
+                                        onMouseOut={that.toggleToolTip.bind(that,index,false)}
                                         r={visible&&inCord?4:0} 
                                         fill="#fff" 
                                         stroke={color} 
@@ -120,6 +122,19 @@ export default class Linechart extends Component {
             x,y,width,height
         },during,ease,function(){
            el.removeAttr('clip-path');
+        });
+    }
+    toggleToolTip(index,isShow,event){
+        var {props,state} = this;
+        var point = props.seriesModel.getData()[index];
+        var plot = this.state.points[index];
+        var {plotX,plotY} = plot;
+        props.chartEmitter.emit('toggleToolTip',{
+            show:isShow,
+            point:point,
+            plotX:plotX,
+            plotY:plotY,
+            event:event
         });
     }
     onGridChange(grid){
