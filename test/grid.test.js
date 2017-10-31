@@ -6,7 +6,7 @@ var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 3600 * 1000;
 var date = [];
 var data = [Math.random() * 300];
-for (var i = 1; i < 50; i++) {
+for (var i = 1; i <50; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
     data.push(Math.random()*300+520);
@@ -118,18 +118,17 @@ var option = {
 		{
 			type:'line',
 			stack:1,
-			data:[0.01,5000000,0.03,0.04]
-		},{
-			type:'bar',
-			data:[0.01,5000000,0.03,0.04]
-		},{
-			type:'bubble',
-			data:[0.01,5000000,0.03,0.04]
+			data:(function(){
+				var data = [];
+				let n = 50;
+				for(var i = 0 ;i < n;i++) {
+					data.push(Math.random()*Math.random()*200)
+				}
+				return data;
+			})()
 		}
 	],
 	dataZoom:[{
-		yAxis:0
-	},{
 		xAxis:0
 	}]
 }

@@ -78,7 +78,12 @@ export default class Axis extends ComponentModel {
 	            textBaseLine:"bottom"
 	        }
 	    }
-    };
+	};
+	getOption(){
+		var option = this.chartModel.getOption();
+		var {xAxis,yAxis} = option;
+		return {xAxis,yAxis};
+	}
 	initOption() {
 		var {defaultOption,chartModel} = this;
 		var option= chartModel.getOption();
@@ -149,19 +154,44 @@ export default class Axis extends ComponentModel {
 	}
 	getAxisDataByGrid(axis,gridIndex) {
 		var that = this;
-		var option = this.chartModel.getOption();
+		var option = this.getOption();
 		return option[axis].filter(function(axisOpt){
 			return axisOpt.grid == gridIndex;
 		}).map(function(axisOpt,indexInGrid){
-			var {index} = axisOpt;
+			var {index,type} = axisOpt;
 			var includeSeries = that.getSeriesByAxis(axis,index);
-			var stackedData = includeSeries.map(function(seriesModel){
-				return seriesModel.getStackedData();
+			var stackedSeries = includeSeries.map(function(seriesModel){
+				var seriesOpt = seriesModel.getOption();
+				var {xAxis,yAxis} = seriesOpt;
+				var data = seriesModel.getStackedData();
+				return {xAxis,yAxis,data}
 			})
 			var stackedX = [],stackedY = [];
-			stackedData.map(function(data){
+			stackedSeries.map(function(series){
+				//xAxis,yAxis为index
+				var {xAxis,yAxis,data} = series;
+				xAxis = option['xAxis'][xAxis];
+				yAxis = option['yAxis'][yAxis];
+				var otherAxis = axis === 'xAxis' ? yAxis : xAxis;
+				var otherType = otherAxis.type;
+				var otherMin = otherAxis.min;
+				var otherMax = otherAxis.max;
 				data.map(function(point){
 					var {x,y} = point;
+					var otherValue;
+					if(axis === 'xAxis') {
+						otherValue = !reversed ? y : x;
+					} else if(axis === 'yAxis') {
+						otherValue = !reversed ? x : y;
+					}
+					if(otherType === 'category') {
+						if(typeof otherMin === 'number' && otherValue < otherMin) {
+							return;
+						}
+						if(typeof otherMax === 'number' && otherValue > otherMax) {
+							return;
+						}
+					}
 					stackedX.push(x);
 					stackedY.push(y);
 				})
