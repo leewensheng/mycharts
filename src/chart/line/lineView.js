@@ -4,7 +4,6 @@ import {findDOMNode} from 'react-dom'
 import Text from '../../elements/text'
 import Polyline from '../../elements/polyline'
 import Circle from '../../elements/circle'
-import ClipPath from '../../elements/clippath'
 export default class Linechart extends Component {
     constructor(props){
         super(props);
@@ -44,9 +43,9 @@ export default class Linechart extends Component {
                 {
                 animation
                 &&
-                <ClipPath id={clipId}>
+                <clipPath id={clipId}>
                     <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
-                </ClipPath>
+                </clipPath>
                 }
                 <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
                 <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>

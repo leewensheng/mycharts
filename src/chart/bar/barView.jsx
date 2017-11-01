@@ -3,7 +3,6 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Text from '../../elements/text'
 import Rect from '../../elements/rect'
-import ClipPath from '../../elements/clippath'
 
 import colorHelper from 'cad/color/index'
 
