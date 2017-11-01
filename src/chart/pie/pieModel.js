@@ -19,7 +19,7 @@ class PieModel extends SeriesModel {
 		},
 		color:null,//主色
 		colors:null,//系列色
-		center:[0.5,0.5],//中心位置
+		center:['50%','50%'],//中心位置
 		borderColor:"#fff",//描边颜色
 		borderWidth:0,//描边
 		itemStyle:{
