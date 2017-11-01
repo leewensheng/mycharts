@@ -122,7 +122,8 @@ var option = {
 				var data = [];
 				let n = 50;
 				for(var i = 0 ;i < n;i++) {
-					data.push(Math.random()*Math.random()*200)
+					let num = Math.random()*100;
+					data.push(parseFloat(num.toFixed(2)));
 				}
 				return data;
 			})()

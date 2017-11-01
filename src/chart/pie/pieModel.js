@@ -47,7 +47,7 @@ class PieModel extends SeriesModel {
 		},
 		roseType:false,//南丁格尔玫瑰'radius'：同时半径和角度按比例变化,'area'角度相同，半径不同
 		selectMode:"single",//多选模式
-		size:0.75,//外径
+		size:'75%',//外径
 		minSize:40,//最小半径
 		innerSize:0,//内径
 		startAngle:0,//起始角度，以上向为0
