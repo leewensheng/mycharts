@@ -3,7 +3,6 @@ import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Text from '../../elements/text'
 import Rect from '../../elements/rect'
-import ClipPath from '../../elements/clippath'
 
 import colorHelper from 'cad/color/index'
 
@@ -209,7 +208,7 @@ class BarItem extends Component {
         var {props,state} = this;
         props.toggleToolTip(props.index,true,event);
     }
-    handleMouseOut(){
+    handleMouseOut(event){
         var {props,state} = this;
         var fillColor = props.attrs.fill;
         var el = findDOMNode(this);
