@@ -209,7 +209,7 @@ class BarItem extends Component {
         var {props,state} = this;
         props.toggleToolTip(props.index,true,event);
     }
-    handleMouseOut(){
+    handleMouseOut(event){
         var {props,state} = this;
         var fillColor = props.attrs.fill;
         var el = findDOMNode(this);
