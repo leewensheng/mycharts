@@ -38,13 +38,14 @@ export default class Linechart extends Component {
         var fillAreaPoints = polylinePoints.concat(stackOnPoints.reverse());
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
+        var markerSize = 10;
         return (
             <g  clipPath={clipPath} className="vcharts-series vcharts-line-series" >
                 {
                 animation
                 &&
                 <clipPath id={clipId}>
-                    <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?grid.left:0} y={hasInited?grid.top:0} width={hasInited?grid.width:width} height={hasInited?grid.height:height} />
+                    <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?(grid.left - markerSize):0} y={hasInited?(grid.top-markerSize):0} width={hasInited?(grid.width+markerSize):width} height={hasInited?(grid.height+markerSize):height} />
                 </clipPath>
                 }
                 <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
@@ -67,7 +68,7 @@ export default class Linechart extends Component {
                         })
                     }
                 </g>
-                <g className="series-symbols">
+                <g className="series-symbols" clipPath={clipPath}>
                     {
                         marker.enabled
                         &&
