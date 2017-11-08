@@ -8,6 +8,7 @@ export default class Draggable extends Component {
 		this.dragStart = this.dragStart.bind(this);
 		this.dragMove = this.dragMove.bind(this);
 		this.dragEnd = this.dragEnd.bind(this);
+		this.start = this.start.bind(this);
 		this.state = {
 			isDragging:false,
 			startX:0,
@@ -34,6 +35,9 @@ export default class Draggable extends Component {
 		}
 	};
 	render(){
+		if(this.props.containment) {
+			return <g className="draggable draggable-area"></g>;
+		}
 		return (<g onMouseDown={this.dragStart} onTouchStart={this.dragStart}>
 			{this.props.children}
 		</g>)
@@ -78,11 +82,34 @@ export default class Draggable extends Component {
 		$(document).off("touchend",this.dragEnd);
 		this.props.onDragEnd();
 	}
+	start(event){
+		var {props} = this;
+		var {containment} = props;
+		var mouse = $.mouse(event);
+		var {clientX,clientY} = mouse;
+		var {left,right,bottom,top} = containment;
+		if(clientX >= left && clientX <= right && clientY > top && clientY <= bottom) {
+			this.dragStart(event);
+		}
+	}
+	componentDidMount(){
+		var that = this;
+		if(this.props.containment) {
+			var containment = this.props.containment;
+			var {top,left,right,bottom} = containment;
+			$(document).on('mousedown',this.start);
+			$(document).on('touchstart',this.start);
+		}
+	}
 	componentWillReceiveProps(){
 		var {endX,endY} = this.state;
 		this.setState({
 			startX:endX,
 			startY:endY
 		});
+	}
+	componentWillUnmount(){
+		$(document).off('mousedown',this.start);
+		$(document).off('touchstart',this.start);
 	}
 }

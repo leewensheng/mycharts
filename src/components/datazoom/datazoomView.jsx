@@ -2,7 +2,7 @@ import $ from 'jquery'
 import React,{Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Slider from './slider'
-
+import Panning from './panning'
 import _ from 'lodash'
 
 export default class DataZoom extends Component {
@@ -29,13 +29,20 @@ export default class DataZoom extends Component {
 						if(!gridAxis) {
 							return;
 						}
-						return <Slider 
-							key={'slider'+index} 
+						return <g>
+							<Panning 
 							index={index} 
 							zoomAxis={that.zoomAxis}
 							sliderOpt={sliderOpt}
 							gridAxis={gridAxis}
 							/>
+							<Slider 
+								index={index} 
+								zoomAxis={that.zoomAxis}
+								sliderOpt={sliderOpt}
+								gridAxis={gridAxis.cloneAsSlider()}
+							/>
+							</g>
 					})
 				}
 			</g>
@@ -51,7 +58,7 @@ export default class DataZoom extends Component {
 			axis.map(function(gridAxis){
 				if(gridAxis.axis === slider.axis) {
 					//TODO index也应当一样
-					slider.gridAxis = gridAxis.cloneAsSlider();
+					slider.gridAxis = gridAxis;
 				}
 			})
 		});

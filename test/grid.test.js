@@ -5,8 +5,9 @@ var el = document.querySelector('#root');
 var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 3600 * 1000;
 var date = [];
+var number = 100;
 var data = [Math.random() * 300];
-for (var i = 1; i <50; i++) {
+for (var i = 1; i <number; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
     data.push(Math.random()*300+520);
@@ -53,6 +54,8 @@ var option = {
 	},
 	xAxis:{
 		type:'category',
+		min:0,
+		max:10,
 		opposite:0,
 		startOnTick:1,
 		gridLine:{
@@ -120,8 +123,8 @@ var option = {
 			stack:1,
 			data:(function(){
 				var data = [];
-				let n = 50;
-				for(var i = 0 ;i < n;i++) {
+				let n = 100;
+				for(var i = 0 ;i <number;i++) {
 					let num = Math.random()*100;
 					data.push(parseFloat(num.toFixed(2)));
 				}

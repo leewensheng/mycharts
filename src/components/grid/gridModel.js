@@ -52,7 +52,11 @@ export default class GridModel extends ComponentModel {
 			var xAxis = axisModel.getAxisDataByGrid('xAxis',gridIndex);
 			var yAxis = axisModel.getAxisDataByGrid('yAxis',gridIndex);
 			var includeSeries = that.getSeriesByGrid(gridIndex);
-            var {top,left,bottom,right,background,containLabel} = gridOpt;
+			var {top,left,bottom,right,background,containLabel} = gridOpt;
+			top = that.getPercentMayBeValue(top,chartHeight);
+			left = that.getPercentMayBeValue(left,chartWidth);
+			right = that.getPercentMayBeValue(right,chartWidth);
+			bottom = that.getPercentMayBeValue(bottom,chartHeight);
             var width = chartWidth - right - left;
             var height = chartHeight - bottom - top;
 			return {top,left,right,bottom,background,width,height,containLabel,xAxis,yAxis,includeSeries};
