@@ -58,7 +58,7 @@ export default class Slider extends Component {
 			panY = other;
 			panWidth = Math.abs(handleStart - handleEnd);
 			panHeight = sliderSize;
-		} else {
+		} else if(axis === 'yAxis') {
 			sliderX = other;
 			sliderY = Math.min(start,end);
 			sliderWidth = sliderSize;
@@ -113,7 +113,7 @@ export default class Slider extends Component {
 		var value = gridAxis.getValueByPosition(axis === 'xAxis' ? x : y);
 		var panValue = endValue - startValue;
 		if(value < startValue) {
-			if(startValue - value > (panValue/2) && (value - panValue/2) > min) {
+			if((value - panValue/2) > min) {
 				startValue = value - panValue /2;
 				endValue = value + panValue/2;
 			} else {
@@ -121,7 +121,7 @@ export default class Slider extends Component {
 				endValue = startValue + panValue;
 			}
 		} else if(value > endValue) {
-			if(value - endValue > (panValue/2) && (value + panValue/2) < max) {
+			if( (value + panValue/2) < max) {
 				startValue = value - panValue /2;
 				endValue = value + panValue/2;
 			} else {
