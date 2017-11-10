@@ -85,10 +85,10 @@ export default class Draggable extends Component {
 	start(event){
 		var {props} = this;
 		var {containment} = props;
-		var mouse = $.mouse(event);
-		var {clientX,clientY} = mouse;
+		var offset = $(findDOMNode(this)).getOffsetMouse(event);
+		var {x,y} = offset;
 		var {left,right,bottom,top} = containment;
-		if(clientX >= left && clientX <= right && clientY > top && clientY <= bottom) {
+		if(x >= left && x <= right && y > top && y <= bottom) {
 			this.dragStart(event);
 		}
 	}

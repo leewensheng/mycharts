@@ -4,11 +4,16 @@ import Draggable from '../../elements/draggable'
 export default class Panning extends Component {
 	constructor(props) {
         super(props);
+        var {gridAxis} = props;
         this.onPanning = this.onPanning.bind(this);
-        this.state = {
-            min:props.gridAxis.min,
-            max:props.gridAxis.max
+        var {min,max,option} = gridAxis;
+        if(typeof option.min === 'number') {
+            min = option.min;
         }
+        if(typeof option.max === 'number') {
+            max = option.max;
+        }
+        this.state = {min,max};
 	}
 	static defaultProps = {
 		gridAxis:null,
@@ -53,7 +58,13 @@ export default class Panning extends Component {
     }
     componentWillReceiveProps(nextProps){
         var {gridAxis} = nextProps;
-		var {min,max} = gridAxis;
+        var {min,max,option} = gridAxis;
+        if(typeof option.min === 'number') {
+            min = option.min;
+        }
+        if(typeof option.max === 'number') {
+            max = option.max;
+        }
 		this.setState({min,max});
     }
 }
