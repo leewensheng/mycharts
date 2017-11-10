@@ -90,7 +90,7 @@ export default class  GridAxis extends Axis {
                x1 = other;
                x2 = tickOther;
             }
-            return {x1,x2,y1,y2};
+            return {x1,x2,y1,y2,type:'line'};
         });
         if(type === 'category' && startOnTick) {
             if(type === 'xAxis') {
@@ -130,7 +130,7 @@ export default class  GridAxis extends Axis {
                     x1 = left;
                     x2 = right;
                 }
-                lines.push({x1,y1,x2,y2});
+                lines.push({x1,y1,x2,y2,type:'line'});
             }
         })
         return lines;

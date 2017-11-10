@@ -48,11 +48,11 @@ export default class Linechart extends Component {
                     <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?(grid.left - markerSize):0} y={hasInited?(grid.top-markerSize):0} width={hasInited?(grid.width+markerSize):width} height={hasInited?(grid.height+markerSize):height} />
                 </clipPath>
                 }
-                <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                <Polyline animation={{group:seriesId}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <Polyline animation={{group:seriesId}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
-                        dataLabels.enabled
+                        dataLabels.enabled&&false
                         &&
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color,inCord} = point;
@@ -70,7 +70,7 @@ export default class Linechart extends Component {
                 </g>
                 <g className="series-symbols" clipPath={clipPath}>
                     {
-                        marker.enabled
+                        marker.enabled&&false
                         &&
                         points.map(function(point,index){
                             var {x,y,plotX,plotY,polyline,color,inCord} = point;

@@ -29,10 +29,11 @@ export default class  PathElement extends Component{
             $(el).attr('transform',transform);
             return;
         }
-        var during = 400,ease = 'easeOut',delay = 0;
+        var during = 400,ease = 'easeOut',delay = 0,group = null;
         if(typeof animation === 'object') {
             during = animation.during || during;
             ease = animation.ease || ease;
+            group = animation.group || group;
         }
         onAnimationChange&&onAnimationChange(true);
         if(d.toString()=== prevProps.d.toString()&&transform === prevProps.transform) {
@@ -51,6 +52,7 @@ export default class  PathElement extends Component{
             from:0,
             to:1,
             ease:ease,
+            group:group,
             during:during,
             onUpdate(k) {
                 var easeD;

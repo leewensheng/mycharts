@@ -4,6 +4,10 @@ import {findDOMNode} from 'react-dom'
 import Text from '../../elements/text'
 import Line from '../../elements/line'
 import AxisTitle from './axis-title'
+import PathElement from '../../elements/path'
+
+import Path from 'cad/path'
+import shape from 'cad/shape'
 export default class  Axis extends Component {
     constructor(props){
         super(props);
@@ -44,6 +48,8 @@ export default class  Axis extends Component {
             axisLabel.style.textBaseLine = 'middle';
         };
         var update = updateType === 'adjust'|| !containLabel;
+        var tickPath  = shape.getShapesPath(ticks);
+        var gridPath = shape.getShapesPath(gridLines);
         return (
             <g className={className}>
                 {
@@ -65,29 +71,20 @@ export default class  Axis extends Component {
                     strokeWidth={axisLine.lineWidth}
                     style={axisLine.style}/>                
                 }
-                <g className="vhcart-axis-gridline">
-                    {
-                        gridLine.enabled
-                        &&
-                        gridLines.map(function(line,index){
-                            var {x1,y1,x2,y2,isAdd} = line;
-                            return <Line  
-                                    key={index} 
-                                    animation={!isAdd}
-                                    x1={x1} 
-                                    y1={y1} 
-                                    x2={x2} 
-                                    y2={y2} 
-                                    stroke={gridLine.lineColor}
-                                    strokeWidth={gridLine.lineWidth}
-                                    style={gridLine.style}
-                                   />
-                        })
-                    }
-                </g>
+                {
+                    gridLine.enabled
+                    &&
+                    <PathElement  
+                    className="vhcart-axis-gridline"
+                    d={gridPath}
+                    stroke={gridLine.lineColor}
+                    strokeWidth={gridLine.lineWidth}
+                    style={gridLine.style}
+                    />
+                }
                 <g className="vcharts-axis-labels">
                 {
-                    axisLabel.enabled
+                    axisLabel.enabled&&false
                     &&
                     labels.map(function(label,index){
                         var {x,y,text,isAdd} = label;
@@ -101,25 +98,16 @@ export default class  Axis extends Component {
                     })
                 }
                 </g>
-                <g className="vcharts-axis-tick">
-                    {
-                        axisTick.enabled
-                        &&
-                        ticks.map(function(tick,index){
-                            var {x1,y1,x2,y2,isAdd} = tick;
-                            return <Line   
-                                    key={index}
-                                    animation={!isAdd}
-                                    x1={x1} 
-                                    y1={y1} 
-                                    x2={x2} 
-                                    y2={y2} 
-                                    stroke={axisTick.lineColor}
-                                    strokeWidth={axisTick.lineWidth}
-                                    style={axisTick.style} />
-                        })
-                    }
-                </g>    
+                {
+                    axisTick.enabled
+                    &&
+                    <PathElement   
+                        d={tickPath}
+                        className="vcharts-axis-tick"
+                        stroke={axisTick.lineColor}
+                        strokeWidth={axisTick.lineWidth}
+                        style={axisTick.style} />
+                }
             </g>
         )
     }
@@ -163,24 +151,6 @@ export default class  Axis extends Component {
                 }
                 return label;
             });
-            ticks = axisData.getTicks().map(function(tick,index){
-                if(!ticks[index]){
-                    tick.isAdd = true;
-                    return tick;
-                } else {
-                    ticks[index].isAdd = false;
-                    return ticks[index];
-                }
-            });
-            gridLines = axisData.getGridLines().map(function(gridline,index){
-                if(!gridLines[index]){
-                    gridline.isAdd = true;
-                    return gridline;
-                } else {
-                    gridLines[index].isAdd = false;
-                    return gridLines[index];
-                }
-            })
         }
         this.setState({renderCount,labels,ticks,gridLines});
     }
