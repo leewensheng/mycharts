@@ -96,7 +96,8 @@ export default class Axis {
         if(min * max <= 0) {
             return this.getPositionByValue(0);
         } else {
-            return this.getPositionByValue(min);
+            //同为正数或负数时取离零值近的那一个
+           return this.getPositionByValue(Math.min(Math.abs(min),Math.abs(max))*min/Math.abs(min));
         }
     }
     getPositionsByData(data){

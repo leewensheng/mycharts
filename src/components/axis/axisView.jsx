@@ -84,7 +84,7 @@ export default class  Axis extends Component {
                 }
                 <g className="vcharts-axis-labels">
                 {
-                    axisLabel.enabled&&false
+                    axisLabel.enabled
                     &&
                     labels.map(function(label,index){
                         var {x,y,text,isAdd} = label;
