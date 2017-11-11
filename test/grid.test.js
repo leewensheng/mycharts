@@ -2,23 +2,21 @@ import vchart from '../src/index.js'
 import $ from 'jquery'
 
 var el = document.querySelector('#root');
-var base = +new Date(1968, 9, 3);
-var oneDay = 24 * 3600 * 1000;
 var date = [];
-var number = 100;
+var base = +new Date(1968, 9, 3);
+var oneDay = 24 * 36 * 1000;
 var data = [Math.random() * 300];
-for (var i = 1; i <number; i++) {
+for (var i = 1; i < 50; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
-    data.push(Math.random()*300+520);
+    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
 }
-date.push(Date.now())
 var option = {
-/*	colors:['blue',{
-		type:'radialGradient',
+	colors:[{
+		type:'linearGradient',
 		stops:[
 			[0,'blue'],
-			[1,'darkblue']
+			[1,'red']
 		]
 	},{
 		type:'radialGradient',
@@ -26,7 +24,7 @@ var option = {
 			[0,'red'],
 			[1,'darkred']
 		]
-	},'red'],*/
+	},'red'],
 	title:{
 		text:'统计图表测试标题',
 		margin:0,
@@ -42,7 +40,7 @@ var option = {
 	},
 	grid:{
 		top:100,
-		left:2,
+		left:20,
 		right:80,
 		bottom:150,
 		containLabel:1,
@@ -55,7 +53,6 @@ var option = {
 	xAxis:{
 		type:'category',
 		min:0,
-		max:10,
 		opposite:0,
 		startOnTick:1,
 		gridLine:{
@@ -121,15 +118,8 @@ var option = {
 		{
 			type:'line',
 			stack:1,
-			data:(function(){
-				var data = [];
-				let n = 100;
-				for(var i = 0 ;i <number;i++) {
-					let num = Math.random()*100;
-					data.push(parseFloat(num.toFixed(2)));
-				}
-				return data;
-			})()
+			lineWidth:1,
+			data:data
 		}
 	],
 	dataZoom:[{
