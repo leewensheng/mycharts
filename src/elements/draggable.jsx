@@ -11,6 +11,7 @@ export default class Draggable extends Component {
 		this.start = this.start.bind(this);
 		this.state = {
 			isDragging:false,
+			preventDefault:false,
 			startX:0,
 			startY:0,
 			endX:0,
@@ -66,10 +67,28 @@ export default class Draggable extends Component {
 		var {props,state} = this;
 		var mouse = $.mouse(event);
 		var {clientX,clientY} = mouse;
-		var {startX,startY} = state;
+		var {startX,startY,preventDefault} = state;
+		var dx = clientX - startX;
+		var dy = clientY - startY;
+		if(!preventDefault) {
+			if(props.axis === 'xAxis') {
+				if(Math.abs(dx / dy) > 1) {
+					preventDefault = true;
+				}
+			} else {
+				if(Math.abs(dy / dx) > 1) {
+					preventDefault = true;
+				}
+			}
+		}
+		if(preventDefault) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
 		this.setState({
 			endX:clientX,
-			endY:clientY
+			endY:clientY,
+			preventDefault:preventDefault
 		});
 		this.props.onDragMove(clientX - startX,clientY - startY);
 	}
@@ -81,6 +100,9 @@ export default class Draggable extends Component {
 		$(document).off("mouseup",this.dragEnd);
 		$(document).off("touchend",this.dragEnd);
 		this.props.onDragEnd();
+		this.setState({
+			preventDefault:false
+		})
 	}
 	start(event){
 		var {props} = this;

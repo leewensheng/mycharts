@@ -42,16 +42,17 @@ export default class Panning extends Component {
         var {min,max}  = state;
         var change = axis === 'xAxis' ? dx:dy;
         change *= -1;
+        var gap = max - min;
         var changeValue = gridAxis.getChangeByDistance(change);
 		min += changeValue;
         max += changeValue;
 		if(min < realMin) {
             min = realMin;
-            return;
+            max = min + gap;
         }
         if(max > realMax) {
             max = realMax;
-            return;
+            min = max - gap;
         }
         this.setState({min,max});
 		zoomAxis(gridAxis,min,max);
