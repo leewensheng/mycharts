@@ -93,6 +93,7 @@ export default class Core extends Component {
     componentDidMount(){
         this.props.chart.vchart = this;
         var el = findDOMNode(this);
+        el.style.MozUserSelect = 'none';
         var $svg = $(el).find('svg');
         $svg.addSVGNamespace();
         var paper = new Paper($svg[0]);
