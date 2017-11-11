@@ -83,7 +83,7 @@ export default class Slider extends Component {
 		<g className="vcharts-slider">
 			<Rect onClick={this.onQuickPanning} animation={false} className="datazoom-slider" x={sliderX} y={sliderY} width={sliderWidth} height={sliderHeight} fill={background} stroke="none"/>
 			{
-			includeSeries.length
+			includeSeries.length > 0 
 			&&
 			<g>
 			<Draggable key="pan" axis={axis} onDragMove={that.onPanning}>

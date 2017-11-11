@@ -29,7 +29,7 @@ export default class DataZoom extends Component {
 						if(!gridAxis) {
 							return;
 						}
-						return <g>
+						return <g key={'datazoom'+index}>
 							<Panning 
 							index={index} 
 							zoomAxis={that.zoomAxis}

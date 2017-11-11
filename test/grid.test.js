@@ -6,7 +6,7 @@ var date = [];
 var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 36 * 1000;
 var data = [Math.random() * 300];
-for (var i = 1; i < 50; i++) {
+for (var i = 1; i < 500; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
     data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
@@ -19,9 +19,9 @@ var option = {
 			[1,'red']
 		]
 	},{
-		type:'radialGradient',
+		type:'linearGradient',
 		stops:[
-			[0,'red'],
+			[0,'black'],
 			[1,'darkred']
 		]
 	},'red'],
@@ -111,6 +111,11 @@ var option = {
 			minBarLength:20,
 			maxBarWidth:500,
 			groupIng:true
+		},
+		line:{
+			dataLabels:{
+				enabled:false
+			}
 		}
 	},
 
@@ -120,6 +125,10 @@ var option = {
 			stack:1,
 			lineWidth:1,
 			data:data
+		},{
+			type:'line',
+			stack:1,
+			data:[50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,]
 		}
 	],
 	dataZoom:[{

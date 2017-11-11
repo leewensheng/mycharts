@@ -44,8 +44,6 @@ export default class Draggable extends Component {
 		</g>)
 	}
 	dragStart(event){
-		event.preventDefault();
-		event.stopPropagation();
 		var mouse = $.mouse(event);
 		var {clientX,clientY} = mouse;
 		this.setState({

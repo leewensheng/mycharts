@@ -26,7 +26,7 @@ export default class WheelZoom extends Component {
 		var {min,max} = gridAxis;
         var grid = gridAxis.grid;
         return (
-            <Zoom key="start" containment={grid} onWheel={this.onMouseWheel} />
+            <Zoom  containment={grid} onWheel={this.onMouseWheel} />
         )
 	}
 	onMouseWheel(delta){

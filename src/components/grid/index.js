@@ -25,6 +25,7 @@ export default class  Grids extends Component {
                     containLabel,xAxis,yAxis,includeSeries} = grid;
 		        return <Grid 
                             key={index}
+                            index={index}
 		        			background={background}
 		        			top={top}
 		        			left={left}
