@@ -1,11 +1,6 @@
 import $ from 'jquery'
 import React,{Component} from 'react'
-import {findDOMNode} from 'react-dom'
-import Text from '../../elements/text'
-import Rect from '../../elements/rect'
-
-import colorHelper from 'cad/color/index'
-
+import BarItem from './barItem'
 export default class Bar extends Component {
     constructor(props){
         super(props);
@@ -26,7 +21,7 @@ export default class Bar extends Component {
         var {grid,hasInited,bars} = state;
         var {seriesColor,visible,seriesIndex,seriesId} = seriesModel;
         var toggleToolTip = this.toggleToolTip;
-        var {animation,style,borderRadius,borderColor,borderWidth} = seriesOpt;
+        var {animation,style,borderRadius,borderColor,borderWidth,dataLabels} = seriesOpt;
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
         return (
@@ -50,7 +45,7 @@ export default class Bar extends Component {
                             plotEnd,
                             barWidth,
                             barLength,
-                            align,
+                            reversed,
                             startFromAxis,
                             isAdd,
                             inCord
@@ -68,17 +63,19 @@ export default class Bar extends Component {
                         return (
                         <BarItem 
                             key={x}
+                            valueAxis={grid.reversed?grid.xAxis:grid.yAxis}
                             index={index}
                             isAdd={isAdd}
                             visible={visible}
                             inCord={inCord}
                             label={y}
+                            dataLabels={dataLabels}
                             animation={animation}
                             plotStart={plotStart}
                             plotEnd={plotEnd}
                             barWidth={barWidth}
                             startFromAxis={startFromAxis}
-                            align={align}
+                            reversed={reversed}
                             toggleToolTip={toggleToolTip}
                             attrs={attrs}
                         />
@@ -128,97 +125,5 @@ export default class Bar extends Component {
     componentWillUnmount(){
         var {props,state} = this;
         props.chartEmitter.off('grid',this.onGridChange);
-    }
-}
-class BarItem extends Component {
-    constructor(props) {
-        super(props);
-        this.handleMouseOver = this.handleMouseOver.bind(this);
-        this.handleMouseOut = this.handleMouseOut.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.state = {
-            renderCount:0
-        };
-    }
-    render(){
-        var {props,state} = this;
-        var {animated,updateType} = state;
-        var {animation,isAdd,visible,inCord,label,plotStart,plotEnd,startFromAxis,align,barWidth,attrs} = props;
-        if(animation && !animated) {
-            plotEnd = plotStart;
-        }
-        if(!inCord) {
-            plotEnd = plotStart;
-        }
-        if(updateType === 'newProps' || isAdd) {
-            animation = true;
-        }
-        var x,y,width,height;
-        if(align === 'vertical') {
-            x = Math.min(plotStart.x - barWidth/2,plotStart.x + barWidth/2);
-            y = Math.min(plotStart.y,plotEnd.y);
-            width = barWidth;
-            height = Math.abs(plotStart.y - plotEnd.y);
-        } else {
-            x = Math.min(plotStart.x,plotEnd.x);
-            y = Math.min(plotStart.y - barWidth/2,plotEnd.y + barWidth/2);
-            width = Math.abs(plotStart.x - plotEnd.x);
-            height = barWidth;
-        }
-        if(!visible) {
-            if(align === 'vertical') {
-                width = 0;
-            } else {
-                height = 0;
-            }
-        }
-        return (
-        <g>
-            <Rect   
-                {...attrs}
-                animation={animation}
-                x={x}
-                y={y}
-                width={width}
-                height={height}
-                onMouseOver={this.handleMouseOver} 
-                onMouseMove={this.handleMouseMove} 
-                onMouseOut={this.handleMouseOut} 
-            />
-            <Text  
-                animation={animation}
-                x={plotEnd.x} 
-                y={plotEnd.y} 
-                style={{color:"#fff",textAlign:'center',textBaseLine:'middle',display:visible&&inCord?'':'none'}}>
-                {label}
-            </Text>
-        </g>
-        )
-
-    }
-    handleMouseOver(event){
-        var {props,state} = this;
-        var fillColor = this.props.attrs.fill;
-        var hoverColor = colorHelper.brighten(fillColor,0.3);
-        var el = findDOMNode(this);
-        $(el).find('rect').attr('fill',hoverColor);
-        props.toggleToolTip(props.index,true,event);
-    }
-    handleMouseMove(event){
-        var {props,state} = this;
-        props.toggleToolTip(props.index,true,event);
-    }
-    handleMouseOut(event){
-        var {props,state} = this;
-        var fillColor = props.attrs.fill;
-        var el = findDOMNode(this);
-        $(el).find('rect').attr('fill',fillColor);
-        props.toggleToolTip(props.index,false,event);
-    }
-    componentDidMount(){
-        this.setState({animated:true});
-    }
-    componentWillReceiveProps(){
-        this.setState({updateType:'newProps'});
     }
 }

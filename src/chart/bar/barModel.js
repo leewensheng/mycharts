@@ -36,7 +36,10 @@ export default class BarModel extends SeriesModel {
 		data:[],
 		dataLabels:{
 			enabled:true,
-
+			align:'end',
+			rotation:0,
+			inside:false,
+			padding:5
 		},
 		stack:null,
 		visible:true,
@@ -113,7 +116,6 @@ export default class BarModel extends SeriesModel {
 		}
 		var realGroupWidth = barWidth*uniqueStackNumber + barGap*(uniqueStackNumber - 1);
 		var flag = end > start ? 1: -1;
-		var align = !reversed?'vertical':'horizontal';
 		return startPoints.map(function(startPoint,index){
 			var endPoint = endPoints[index];
 			var inCord = startPoint.inCord && endPoint.inCord;
@@ -178,7 +180,7 @@ export default class BarModel extends SeriesModel {
 				plotEnd,
 				barWidth,
 				barLength,
-				align,
+				reversed,
 				inCord
 			}
 		})
