@@ -45,13 +45,14 @@ export default class Rect extends Component{
             y = y - height;
         }
         var el = findDOMNode(this);
-        var during = 400,ease = 'easeOut';
+        var during = 400,ease = 'easeOut',group;
         if(animation) {
             if(typeof animation === 'object') {
                 during = animation.during || during;
                 ease = animation.ease || ease;
+                group = animation.group;
             }
-            $(el).stopTransition().transition({x,y,width,height},during,ease);        
+            $(el).stopTransition().transition({x,y,width,height},during,ease,null,group);        
         } else {
             $(el).stopTransition().attr({x,y,width,height});        
         }

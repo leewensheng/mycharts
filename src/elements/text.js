@@ -41,13 +41,14 @@ export default class  Text extends Component{
         if(x === prevProps.x && y === prevProps.y) {
             return;
         }
-        var during = 400,ease = 'easeOut',delay = 0;
+        var during = 400,ease = 'easeOut',delay = 0,group;
         if(typeof animation === 'object') {
             during = animation.during || during;
             ease = animation.ease || ease;
+            group = animation.group;
         }
         if(animation) {
-            $(el).stopTransition().transition({x,y },during,ease);
+            $(el).stopTransition().transition({x,y },during,ease,null,group);
         } else {
             $(el).stopTransition().attr('x',x).attr('y',y);
         }

@@ -40,6 +40,7 @@ export default class Legend extends Component {
 						var symbolY =  y + (itemHeight - symbolHeight)/2;
 						var textX = x + symbol.width + symbol.padding;
 						var textY = y + itemHeight/2;
+						var animateOpt = animation&&!isAdd ? {group:'legend'} :false;
 						return (
 							<g 	className="vcharts-legend-item" 
 								key={index} 
@@ -49,9 +50,9 @@ export default class Legend extends Component {
 								onMouseOver={that.handleMouseEvent.bind(that,index,true)}
 								onMouseOut={that.handleMouseEvent.bind(that,index,false)}
 								>
-								<Rect animation={animation&&!isAdd} fill="transparent" x={x} y={y} width={width} height={itemHeight} stroke="none"/>
-								<Icon animation={animation&&!isAdd} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={visible!==false?color:'gray'}/>
-								<Text animation={animation&&!isAdd} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
+								<Rect animation={animateOpt} fill="transparent" x={x} y={y} width={width} height={itemHeight} stroke="none"/>
+								<Icon animation={animateOpt} x={x} y={symbolY} width={symbol.width} height={symbolHeight} color={visible!==false?color:'gray'}/>
+								<Text animation={animateOpt} x={textX} y={textY} fill="red" style={itemStyle}>{item.name}</Text>
 							</g>
 						)
 					})
