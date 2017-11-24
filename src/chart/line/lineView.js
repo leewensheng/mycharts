@@ -4,6 +4,10 @@ import {findDOMNode} from 'react-dom'
 import Text from '../../elements/text'
 import Polyline from '../../elements/polyline'
 import Circle from '../../elements/circle'
+import PathElement from '../../elements/path'
+
+import Path from 'cad/path'
+
 export default class Linechart extends Component {
     constructor(props){
         super(props);
@@ -34,8 +38,11 @@ export default class Linechart extends Component {
             var x = point.stackX;
             var y = point.stackY;
             return {x,y};
-        })
-        var fillAreaPoints = polylinePoints.concat(stackOnPoints.reverse());
+        }).reverse();
+        var fillareaPath = new Path().CurveToAll(polylinePoints);
+        if(stackOnPoints.length) {
+            fillareaPath.L(stackOnPoints[0].x,stackOnPoints[0].y).CurveToAll(stackOnPoints)
+        }
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
         var markerSize = 10;
@@ -54,7 +61,7 @@ export default class Linechart extends Component {
                 </clipPath>
                 }
                 <Polyline animation={{group:group}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
-                <Polyline animation={{group:group}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" points={fillAreaPoints}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                <PathElement animation={{group:group}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" d={fillareaPath}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled

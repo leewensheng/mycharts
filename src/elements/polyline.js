@@ -13,7 +13,7 @@ export default class  Polyline extends Component {
 	render(){
 		var {props} = this;
 		var {points} = props;
-		var d = new Path().spline(points);
+		var d = new Path().CurveToAll(points);
 		return <PathElement d={d}  {...props} points={undefined}/>
 	}
 }
