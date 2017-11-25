@@ -2,29 +2,16 @@ import vchart from '../src/index.js'
 import $ from 'jquery'
 
 var el = document.querySelector('#root');
-var date = [];
+var date = ['1968/05/05'];
 var base = +new Date(1968, 9, 3);
 var oneDay = 24 * 36 * 1000;
 var data = [Math.random() * 300];
-for (var i = 1; i < 500; i++) {
+for (var i = 1; i < 15; i++) {
     var now = new Date(base += oneDay);
     date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
     data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
 }
 var option = {
-	colors:[{
-		type:'linearGradient',
-		stops:[
-			[0,'blue'],
-			[1,'red']
-		]
-	},{
-		type:'linearGradient',
-		stops:[
-			[0,'black'],
-			[1,'darkred']
-		]
-	},'red'],
 	title:{
 		text:'统计图表测试标题',
 		margin:0,
@@ -111,29 +98,30 @@ var option = {
 			minBarLength:20,
 			maxBarWidth:500,
 			groupIng:true
-		},
-		line:{
-			dataLabels:{
-				enabled:false
-			}
 		}
 	},
-
+	attachHTML:function(){
+		
+	},
+	attachGraphic:function(React,ReactDOM,Elements){
+		var chartModel = this;
+		var width = chartModel.width;
+		return <image href="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png" 
+			x={width/2}
+			y="0"
+			width="100"
+			height="100"
+		/>
+	},
 	series:[
 		{
-			type:'line',
+			type:'pie',
 			stack:1,
-			lineWidth:1,
+			smooth:true,
+			lineWidth:2,
 			data:data
-		},{
-			type:'line',
-			stack:1,
-			data:[50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,50,30,20,40,30,20,]
 		}
-	],
-	dataZoom:[{
-		xAxis:0
-	}]
+	]
 }
 var chart = vchart.init(el,{
 	height:600

@@ -26,7 +26,7 @@ export default class Linechart extends Component {
         var {width,height,seriesModel,chartModel} = props;
         var seriesOpt = seriesModel.getOption();
         var seriesId = seriesModel.seriesId;
-        var {animation,color,lineWidth,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
+        var {type,animation,color,smooth,lineWidth,lineDash,data,xAxis,yAxis,dataLabels,marker} = seriesOpt;
         var {points,grid,hasInited} = this.state;
         var {seriesColor,visible} = seriesModel;
         var polylinePoints = points.map(function(point){
@@ -39,9 +39,20 @@ export default class Linechart extends Component {
             var y = point.stackY;
             return {x,y};
         }).reverse();
-        var fillareaPath = new Path().CurveToAll(polylinePoints);
-        if(stackOnPoints.length) {
+        var linePath = new Path();
+        var fillareaPath = new Path();
+        if(smooth) {
+            linePath.CurveToAll(polylinePoints);
+            fillareaPath.CurveToAll(polylinePoints);
+            stackOnPoints.length
+            &&
             fillareaPath.L(stackOnPoints[0].x,stackOnPoints[0].y).CurveToAll(stackOnPoints)
+        } else {
+            linePath.LineToAll(polylinePoints);
+            fillareaPath.LineToAll(polylinePoints);
+            stackOnPoints.length
+            &&
+            fillareaPath.L(stackOnPoints[0].x,stackOnPoints[0].y).LineToAll(stackOnPoints)
         }
         var clipId = seriesId + 'clippath';
         var clipPath='url(#' + clipId + ')';
@@ -60,8 +71,12 @@ export default class Linechart extends Component {
                     <rect  ref="clip" animation={hasInited<2 && animation} x={hasInited?(grid.left - markerSize):0} y={hasInited?(grid.top-markerSize):0} width={hasInited?(grid.width+markerSize):width} height={hasInited?(grid.height+markerSize):height} />
                 </clipPath>
                 }
-                <Polyline animation={{group:group}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" points={polylinePoints}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                <PathElement animation={{group:group}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="polyline" className="vcharts-series-polyline" d={linePath}  stroke={color||seriesColor} fill='none'  strokeDasharray={lineDash=='solid'?'':'5,5'} strokeWidth={lineWidth}/>
+                {
+                type === 'area'
+                &&
                 <PathElement animation={{group:group}} style={{display:visible?'':'none'}} clipPath={clipPath}  ref="fillArea" className="vcharts-series-fillarea" d={fillareaPath}  stroke='none' fill={seriesColor} fillOpacity="0.3"/>
+                }
                 <g className="series-line-labels">
                     {
                         dataLabels.enabled

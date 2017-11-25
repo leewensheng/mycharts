@@ -7,5 +7,6 @@ module.exports = {
     pie:Pie,
     bar:Bar,
     scatter:Scatter,
-    bubble:Scatter
+    bubble:Scatter,
+    area:Line
 };

@@ -25,6 +25,7 @@ export default class Legend extends Component {
 			margin,padding,itemWidth,itemHeight,itemGap,itemPadding,itemStyle,selectMode,inactiveColor,symbol
 		} = legend;
 		if(!enabled) return <g></g>;
+		var chartId = chartModel.chartId;
 		animation = animation&&hasInited;
 		itemStyle.userSelect = 'none';
 		return (
@@ -40,7 +41,7 @@ export default class Legend extends Component {
 						var symbolY =  y + (itemHeight - symbolHeight)/2;
 						var textX = x + symbol.width + symbol.padding;
 						var textY = y + itemHeight/2;
-						var animateOpt = animation&&!isAdd ? {group:'legend'} :false;
+						var animateOpt = animation&&!isAdd ? {group:chartId + '.legend'} :false;
 						return (
 							<g 	className="vcharts-legend-item" 
 								key={index} 

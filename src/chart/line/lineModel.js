@@ -18,9 +18,12 @@ export default class LineModel extends SeriesModel {
 	    name:'',
 	    xAxis:0,
 	    yAxis:0,
-	    lineWidth:2,
+		lineWidth:2,
+		smooth:false,
 	    linecap:'round',
-	    lineDash:'solid',
+		lineDash:'solid',
+		fillColor:null,
+		fillOpacity:0.8,
 	    dataLabels:{
 	    	enabled:true,
 	        style:{

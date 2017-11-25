@@ -7,5 +7,6 @@ module.exports = {
 	line:lineModel,
 	bar:barModel,
 	scatter:scatterModel,
-	bubble:scatterModel
+	bubble:scatterModel,
+	area:lineModel
 };
