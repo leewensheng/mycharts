@@ -14,48 +14,35 @@ for (var i = 1; i < 12; i++) {
 var options =[ 
     {
         title:{
-            text:'常规折线图',
+            text:'常规柱状图',
             margin:0
         },
         xAxis:{
-            categories:date
+            categories:date,
+            startOnTick:true,
         },
         series:[
             {
-                type:'line',
+                type:'bar',
                 data:data
             }
         ]
     },
     {
         title:{
-            text:'曲线图',
+            text:'渐变圆角柱状图',
             margin:0
         },
         xAxis:{
-            categories:date
+            categories:date,
+            startOnTick:true,
         },
         series:[
             {
-                type:'line',
-                smooth:true,
-                data:data
-            }
-        ]
-    },
-    {
-        title:{
-            text:'渐变面积图',
-            margin:0
-        },
-        xAxis:{
-            categories:date
-        },
-        series:[
-            {
-                type:'area',
+                type:'bar',
                 smooth:true,
                 data:data,
+                borderRadius:15,
                 color:{
                     type:'linearGradient',
                     x1:0,
@@ -64,7 +51,7 @@ var options =[
                     y2:1,
                     stops:[
                        [0,'red'],
-                       [1,'blue']
+                       [1,'pink']
                     ]
                 }
             }
@@ -72,24 +59,22 @@ var options =[
     },
     {
         title:{
-            text:'堆叠面积图',
+            text:'堆叠柱状图',
             margin:0
         },
-        yAxis:{
-            min:0
-        },
         xAxis:{
-            categories:date
+            categories:date,
+            startOnTick:true,
         },
         series:[
             {
-                type:'area',
+                type:'bar',
                 smooth:true,
                 data:data,
                 stack:1
             },
             {
-                type:'area',
+                type:'bar',
                 smooth:true,
                 data:data,
                 stack:1
@@ -98,16 +83,17 @@ var options =[
     },
     {
         title:{
-            text:'坐标轴翻转的折线图',
+            text:'坐标轴翻转柱状图',
             margin:0
         },
         yAxis:{
             categories:date,
             inverse:true,
+            startOnTick:true,
         },
         series:[
             {
-                type:'line',
+                type:'bar',
                 smooth:true,
                 data:data
             }
@@ -122,11 +108,12 @@ var options =[
             axisLine:{
                 lineColor:'#000'
             },
+            startOnTick:true,
             categories:['一','二','三','四','五','六'],
         },
         series:[
             {
-                type:'area',
+                type:'bar',
                 smooth:true,
                 data:[1,-1,2,-2,3,-3]
             }

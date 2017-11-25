@@ -91,7 +91,9 @@ export default class Core extends Component {
         )
     }
     componentDidMount(){
-        this.props.chart.vchart = this;
+        if(this.props.chart) {
+            this.props.chart.vchart = this;
+        }
         var el = findDOMNode(this);
         el.style.MozUserSelect = 'none';
         var $svg = $(el).find('svg');
@@ -104,8 +106,10 @@ export default class Core extends Component {
         });
     }
     componentWillUnmount(){
-        this.props.chart.vchart = null;
-        this.props.chart = null;
+        if(this.props.chart) {
+            this.props.chart.vchart = null;
+            this.props.chart = null;
+        }
     }
     setOption(nextProps){
         var {width,height,option} = nextProps;
